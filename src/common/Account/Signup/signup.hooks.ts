@@ -24,7 +24,9 @@ export const useSignupLogic = ({ validateEmail = false }) => {
         setEmailSent(true);
       } else {
         notifications.success('Account created successfully');
-        window.location.href = '/';
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1500);
       }
     } catch (err) {
       console.error(err);

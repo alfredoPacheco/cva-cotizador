@@ -1,8 +1,8 @@
 ---
 import SignupForm from '@/common/Account/Signup';
-import EmptyLayout from '../layouts/EmptyLayout.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<EmptyLayout title={import.meta.env.PUBLIC_APP_NAME}>
-  <SignupForm client:visible />
-</EmptyLayout>
+<BaseLayout title={import.meta.env.PUBLIC_APP_NAME}>
+  <SignupForm client:only="react" />
+</BaseLayout>
