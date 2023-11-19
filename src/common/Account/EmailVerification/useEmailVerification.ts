@@ -1,4 +1,4 @@
-import { account } from '@/core/appwrite';
+import { account } from '@/core/appwriteClient';
 import { useEffect, useState } from 'react';
 
 export const useEmailVerification = () => {

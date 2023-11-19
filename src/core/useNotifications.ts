@@ -1,35 +1,38 @@
 import toast from 'react-hot-toast';
 
 export const useNotifications = () => {
-  const success = (message: string, autoHideDuration: number | null = 1200) => {
-    const handler = toast.success(message, {
-      duration: autoHideDuration
-      // onClick: () => closeSnackbar(key)
-    });
+  const success = (
+    message: string,
+    autoHideDuration: number | undefined = 1200
+  ) => {
+    toast.success(message, { duration: autoHideDuration });
   };
-  const error = (messageOrErr: any, autoHideDuration: number | null = 3000) => {
+
+  const error = (
+    messageOrErr: any,
+    autoHideDuration: number | undefined = 3000
+  ) => {
     let msg = messageOrErr;
     if (typeof messageOrErr !== 'string') {
       if (messageOrErr.message) {
         msg = messageOrErr.message;
       }
     }
-    const handler = toast.error(msg, {
-      duration: autoHideDuration
-      // onClick: () => closeSnackbar(key)
-    });
+    toast.error(msg, { duration: autoHideDuration });
   };
-  const info = (message: string, autoHideDuration: number | null = 1200) => {
-    const handler = toast(message, {
-      duration: autoHideDuration
-      // onClick: () => closeSnackbar(key)
-    });
+
+  const info = (
+    message: string,
+    autoHideDuration: number | undefined = 1200
+  ) => {
+    toast(message, { duration: autoHideDuration });
   };
-  const message = (message: string, autoHideDuration: number | null = 1200) => {
-    const handler = toast(message, {
-      duration: autoHideDuration
-      // onClick: () => closeSnackbar(key)
-    });
+
+  const message = (
+    message: string,
+    autoHideDuration: number | undefined = 1200
+  ) => {
+    toast(message, { duration: autoHideDuration });
   };
 
   // const confirm = async message => {

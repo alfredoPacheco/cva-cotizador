@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { functions } from '@/core/appwrite';
+import { functions } from '@/core/appwriteClient';
 import type { Models } from 'appwrite';
 
 const getAccounts = async () => {
@@ -17,7 +17,7 @@ const getAccounts = async () => {
 };
 
 const useAccountsQuery = () => {
-  return useQuery(['accounts'], () => getAccounts());
+  return useQuery({ queryKey: ['accounts'], queryFn: () => getAccounts() });
 };
 
 export default useAccountsQuery;

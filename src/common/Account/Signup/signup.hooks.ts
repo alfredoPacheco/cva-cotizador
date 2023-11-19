@@ -1,10 +1,10 @@
 import { useForm } from 'react-hook-form';
-import { useSignupMutation } from './useSignupMutation';
 import { useNotifications } from '@/core/useNotifications';
 import { handleErrors } from '@/core/utils';
 import { useState } from 'react';
 import type { SignupDto } from './signup';
-import { account } from '@/core/appwrite';
+import { ID, account } from '@/core/appwriteClient';
+import { useMutation } from '@tanstack/react-query';
 
 export const useSignupLogic = ({ validateEmail = false }) => {
   const notifications = useNotifications();
@@ -49,4 +49,23 @@ export const useSignupLogic = ({ validateEmail = false }) => {
     buttonIsDisabled,
     emailSent
   };
+};
+
+export const useSignupMutation = () => {
+  return useMutation({
+    mutationFn: async (data: SignupDto) => {
+      const { email, password, confirmPassword, name } = data;
+      if (password !== confirmPassword) {
+        throw new Error('Passwords do not match');
+      }
+      try {
+        const session = await account.getSession('current');
+        if (session) {
+          await account.deleteSession('current');
+        }
+      } catch {}
+
+      return await account.create(ID.unique(), email, password, name);
+    }
+  });
 };

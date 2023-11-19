@@ -4,7 +4,7 @@ import isEqual from 'lodash/isEqual';
 import omit from 'lodash/omit';
 import { isArrayEqual } from './utils.ts';
 import { type Models } from 'appwrite';
-import { account } from './appwrite.ts';
+import { account } from './appwriteClient.ts';
 import { useEffect } from 'react';
 
 const authChanged = (auth, nextAuth) => {

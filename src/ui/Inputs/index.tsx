@@ -1,11 +1,11 @@
-import { account } from '@/core/appwrite';
+import { account } from '@/core/appwriteClient';
 import { Chip, Input, type InputProps } from '@nextui-org/react';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Controller, type Control } from 'react-hook-form';
 import { PiEyeBold, PiEyeClosedBold } from 'react-icons/pi';
 import useConfirmDialog from '../Dialog/useConfirmDialog';
-import useNotifications from '@/core/useNotifications';
+import { useNotifications } from '@/core/useNotifications';
 import { handleErrors } from '@/core/utils';
 
 interface TextInputProps extends InputProps {

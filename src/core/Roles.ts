@@ -1,9 +1,9 @@
 export enum Roles {
-  Admin = 'Admin'
+  admin = 'Admin'
 }
 
 export const RolesI18n = {
   mx: {
-    Admin: 'Admin'
+    admin: 'Admin'
   }
 };

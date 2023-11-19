@@ -1,5 +1,5 @@
-import { useSignupLogic } from '@/common/Account/Signup/useSignupLogic';
 import { TextInput } from '@/ui/Inputs';
+import { useSignupLogic } from './signup.hooks';
 
 const Signup = () => {
   const { form, onSubmit, emailSent } = useSignupLogic({ validateEmail: true });

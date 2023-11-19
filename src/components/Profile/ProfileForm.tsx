@@ -1,8 +1,8 @@
 import { Button } from '@nextui-org/react';
-import { account } from '@/core/appwrite';
+import { account } from '@/core/appwriteClient';
 import { useForm } from '@/core';
 import { handleErrors } from '@/core/utils';
-import useNotifications from '@/core/useNotifications';
+import { useNotifications } from '@/core/useNotifications';
 import { Dialog, useDialog } from '@/ui/Dialog';
 import Providers from '../Providers';
 import Avatar from '@/ui/Buckets/Avatar';

@@ -1,4 +1,4 @@
-import { ID, account } from '@/core/appwrite';
+import { ID, account } from '@/core/appwriteClient';
 import { useMutation } from '@tanstack/react-query';
 
 export interface SignUpDto {

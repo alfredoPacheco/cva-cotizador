@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { account } from '@/core/appwrite';
+import { account } from '@/core/appwriteClient';
 import Logo from '@/images/logo.svg';
 
 const EmailVerification = () => {
