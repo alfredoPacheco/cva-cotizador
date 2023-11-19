@@ -1,109 +1,27 @@
 import { Button } from '@nextui-org/react';
-import { account } from '@/core/appwriteClient';
-import { useForm } from '@/core';
-import { handleErrors } from '@/core/utils';
-import { useNotifications } from '@/core/useNotifications';
-import { Dialog, useDialog } from '@/ui/Dialog';
+import { Dialog } from '@/ui/Dialog';
 import AppShell from '@/common/AppShell';
 import Avatar from '@/ui/Buckets/Avatar';
-import { type Models } from 'appwrite';
 import { EmailInput, PasswordInput, PhoneInput, TextInput } from '@/ui/Inputs';
-import { useEffect } from 'react';
-
-type accountDto = Models.User<Models.Preferences>;
-
-const getAccount = async () => {
-  console.log('getAccount========================');
-  const acc = await account.get();
-  const prefs = await account.getPrefs();
-  acc.prefs = prefs;
-  return acc;
-};
+import { useProfileLogic } from './profile.hooks';
 
 const ProfileForm = () => {
-  const { success, error } = useNotifications();
+  const { form, onSubmit, askForPasswordDialog, onAvatarChange } =
+    useProfileLogic();
   const {
-    control,
-    isValid,
-    dirtyFields,
-    handleSubmit,
-    reset,
-    getVal,
-    setVal,
-    formState,
-    isSubmitSuccessful
-  } = useForm<accountDto>({
-    load: getAccount
-  });
-
-  console.log('formState', formState);
-  console.log('formdata', getVal());
-
-  const askForPassword = async () => {
-    const dialogResponse = await openDialog('');
-    return dialogResponse.feedback.password;
-  };
-
-  useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset();
-    }
-  }, [isSubmitSuccessful]);
-
-  const onSubmit = async (data: accountDto) => {
-    try {
-      if (!isValid) return;
-
-      let password = '';
-      if (dirtyFields.email || dirtyFields.phone) {
-        password = await askForPassword();
-      }
-      if (dirtyFields.email) {
-        await account.updateEmail(data.email, password);
-        success('Email actualizado');
-
-        // cleanDirtyField('email');
-      }
-      if (dirtyFields.phone) {
-        await account.updatePhone(data.phone, password);
-        success('Teléfono actualizado');
-        // cleanDirtyField('phone');
-      }
-
-      if (dirtyFields.name) {
-        await account.updateName(data.name);
-        success('Nombre actualizado');
-        // cleanDirtyField('name');
-      }
-
-      // await reset
-    } catch (e) {
-      if (e?.feedback === 'cancel') {
-        console.log(e);
-        return;
-      }
-      handleErrors(e, error, {
-        'Missing required parameter: "password"': 'Debe ingresar el password'
-      });
-    }
-  };
-
-  const onAvatarChange = async fileId => {
-    const prefs = getVal('prefs') || {};
-    prefs.avatar = fileId;
-    await account.updatePrefs(prefs);
-    setVal('prefs', prefs);
-    success('Imagen de perfil actualizada');
-  };
-
-  const { isOpen, openDialog, closeDialog } = useDialog();
-
+    getValues,
+    formState: { dirtyFields, isValid }
+  } = form;
   return (
     <>
-      <Dialog open={isOpen} onClose={closeDialog} okLabel="Guardar">
+      <Dialog
+        open={askForPasswordDialog.isOpen}
+        onClose={askForPasswordDialog.closeDialog}
+        okLabel="Guardar"
+      >
         {dialog => {
           dialog.onOk = async a => {
-            dialog.close(getVal());
+            dialog.close(getValues());
           };
           return (
             <div className="flex flex-col gap-5">
@@ -112,7 +30,7 @@ const ProfileForm = () => {
                 contraseña
               </h4>
               <PasswordInput
-                control={control}
+                control={form.control}
                 label="Contraseña"
                 focus
                 required={dirtyFields.email || dirtyFields.phone}
@@ -124,31 +42,31 @@ const ProfileForm = () => {
 
       <form
         className="container max-w-sm mx-auto flex flex-col items-center gap-5 h-full justify-center"
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={onSubmit}
         autoComplete="off"
       >
         <h1 className="text-4xl">Profile</h1>
 
-        <Avatar fileId={getVal('prefs.avatar')} onChange={onAvatarChange} />
+        <Avatar fileId={getValues('prefs.avatar')} onChange={onAvatarChange} />
 
         <TextInput
           label="Nombre"
           name="name"
-          control={control}
+          control={form.control}
           color={dirtyFields.name ? 'warning' : 'default'}
         />
         <EmailInput
           required
-          control={control}
+          control={form.control}
           color={dirtyFields.email ? 'warning' : 'default'}
-          emailVerification={getVal('emailVerification')}
+          emailVerification={getValues('emailVerification')}
         />
         <PhoneInput
           label="Teléfono"
-          control={control}
+          control={form.control}
           color={dirtyFields.phone ? 'warning' : 'default'}
           requiresVerification={false}
-          phoneVerification={getVal('phoneVerification')}
+          phoneVerification={getValues('phoneVerification')}
         />
 
         <Button type="submit" size="md" isDisabled={!isValid}>
