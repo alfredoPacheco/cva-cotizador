@@ -1,0 +1,8 @@
+---
+import ProfileForm from '@/components/Profile/ProfileForm';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout title={import.meta.env.PUBLIC_APP_NAME}>
+  <ProfileForm client:only="react" />
+</BaseLayout>

@@ -1,0 +1,8 @@
+---
+import AccountsList from '@/components/Accounts/AccountsList';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout title={import.meta.env.PUBLIC_APP_NAME}>
+  <AccountsList client:only="react" />
+</BaseLayout>

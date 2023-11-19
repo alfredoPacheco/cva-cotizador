@@ -1,0 +1,8 @@
+---
+import SignupForm from '../components/Signup/Signup.tsx';
+import EmptyLayout from '../layouts/EmptyLayout.astro';
+---
+
+<EmptyLayout title={import.meta.env.PUBLIC_APP_NAME}>
+  <SignupForm client:visible />
+</EmptyLayout>
