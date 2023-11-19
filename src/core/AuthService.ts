@@ -1,18 +1,18 @@
 import { Subject } from 'rxjs';
 import isEqual from 'lodash/isEqual';
 import omit from 'lodash/omit';
-import { isArrayEqual } from './utils.ts';
 import type { Models } from 'appwrite';
 import { account } from './appwriteClient.ts';
 
-const authChanged = (auth, nextAuth) => {
+const authChanged = (auth?: Models.Session, nextAuth?: Models.Session) => {
   if (
     !isEqual(
       omit(auth, 'SessionId', 'Roles', 'Instances'),
       omit(nextAuth, 'SessionId', 'Roles', 'Instances')
-    ) ||
-    !isArrayEqual(auth?.Roles || [], nextAuth?.Roles || []) ||
-    !isArrayEqual(auth?.Instances || [], nextAuth?.Instances || [])
+    )
+    // ||
+    // !isArrayEqual(auth?.Roles || [], nextAuth?.Roles || []) ||
+    // !isArrayEqual(auth?.Instances || [], nextAuth?.Instances || [])
   ) {
     return true;
   }

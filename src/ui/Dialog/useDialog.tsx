@@ -9,14 +9,14 @@ interface DialogPromise {
 
 export interface useDialogReturn {
   openDialog(d?: any): Promise<DialogPromise>;
-  closeDialog(dialogId: string, feedback: any): void;
+  closeDialog(dialogId?: string, feedback?: any): void;
   data: any;
   isOpen: boolean;
-  onOpenChange(): void;
+//   onOpenChange(): void;
 }
 
 const useDialog = (dialogId?: string): useDialogReturn => {
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [data, setData] = useState();
   const resolveRef = useRef<any>();
   const rejectRef = useRef<any>();
@@ -53,7 +53,7 @@ const useDialog = (dialogId?: string): useDialogReturn => {
   return {
     openDialog,
     closeDialog,
-    onOpenChange,
+    // onOpenChange,
     data,
     isOpen
   };

@@ -4,7 +4,7 @@ import { useForm } from '@/core';
 import { handleErrors } from '@/core/utils';
 import { EmailInput, PasswordInput } from '@/ui/Inputs';
 import { useLoginMutation } from './useLoginMutation';
-import useNotifications from '@/core/useNotifications';
+import { useNotifications } from '@/core/useNotifications';
 
 const Login = ({ isOpen, onOpenChange }) => {
   const { control, handleSubmit, setVal } = useForm<any>({

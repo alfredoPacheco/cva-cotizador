@@ -1,4 +1,4 @@
-import useNotifications from '@/core/useNotifications';
+import { useNotifications } from '@/core/useNotifications';
 import Dialog from '@/ui/Dialog/Dialog';
 import useDialog from '@/ui/Dialog/useDialog';
 import useConfirmDialog from '@/ui/Dialog/useConfirmDialog';

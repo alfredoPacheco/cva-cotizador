@@ -5,8 +5,8 @@ import { NextUIProvider } from '@nextui-org/react';
 import { useDialog } from '@/ui/Dialog';
 import AppBar from '@/components/AppBar';
 
-const App = ({ children }) => {
-  const { login, logout } = useAuth('App');
+const AppShell = ({ children }: { children: React.ReactNode }) => {
+  const { logout } = useAuth('App');
 
   const loginDialog = useDialog();
 
@@ -18,7 +18,7 @@ const App = ({ children }) => {
   return (
     <NextUIProvider>
       {loginDialog.isOpen && (
-        <Login isOpen={loginDialog.isOpen} onLogin={login} />
+        <Login isOpen={loginDialog.isOpen} onClose={loginDialog.closeDialog} />
       )}
       <AppBar logout={logout} />
       {/* <main className="green-light text-foreground bg-background"> */}
@@ -28,4 +28,4 @@ const App = ({ children }) => {
   );
 };
 
-export default App;
+export default AppShell;

@@ -2,19 +2,19 @@ import { Subject, Subscription } from 'rxjs';
 import { AuthService } from './AuthService';
 import isEqual from 'lodash/isEqual';
 import omit from 'lodash/omit';
-import { isArrayEqual } from './utils.ts';
 import { type Models } from 'appwrite';
 import { account } from './appwriteClient.ts';
 import { useEffect } from 'react';
 
-const authChanged = (auth, nextAuth) => {
+const authChanged = (auth?: Models.Session, nextAuth?: Models.Session) => {
   if (
     !isEqual(
       omit(auth, '$createdAt', '$id', 'expire'),
       omit(nextAuth, '$createdAt', '$id', 'expire')
-    ) ||
-    !isArrayEqual(auth?.Roles || [], nextAuth?.Roles || []) ||
-    !isArrayEqual(auth?.Instances || [], nextAuth?.Instances || [])
+    )
+    // ||
+    // !isArrayEqual(auth?.Roles || [], nextAuth?.Roles || []) ||
+    // !isArrayEqual(auth?.Instances || [], nextAuth?.Instances || [])
   ) {
     return true;
   }
@@ -57,7 +57,13 @@ export class AuthCentralService {
     localStorage.setItem('authCentral', JSON.stringify(auth));
   };
 
-  static login = async ({ email, password }) => {
+  static login = async ({
+    email,
+    password
+  }: {
+    email: string;
+    password: string;
+  }) => {
     try {
       const centralAuth = await account.createEmailSession(email, password);
       AuthCentralService.setAuth(centralAuth);
@@ -99,7 +105,13 @@ export class AuthCentralService {
     AuthCentralService.DisplayForbiddenError();
   };
 
-  static useAuthSuscription = ({ openLogin, closeLogin }) => {
+  static useAuthSuscription = ({
+    openLogin,
+    closeLogin
+  }: {
+    openLogin: () => {};
+    closeLogin: (dialogId?: string, feedback?: any) => void;
+  }) => {
     useEffect(() => {
       let subscription: Subscription | undefined;
 

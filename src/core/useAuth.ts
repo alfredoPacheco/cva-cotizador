@@ -6,9 +6,15 @@ import { Roles } from '.';
 
 interface IUseAuthReturn {
   auth?: Models.Session;
-  login({ email, password }: { email: string; password: string });
-  logout();
-  hasRole(role: string);
+  login({
+    email,
+    password
+  }: {
+    email: string;
+    password: string;
+  }): Promise<Models.Session>;
+  logout(): void;
+  hasRole(role: string): boolean;
   Roles: typeof Roles;
 }
 

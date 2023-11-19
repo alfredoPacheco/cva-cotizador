@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@nextui-org/react';
 import Logo from '@/images/logo.svg';
 import useForm from '@/core/useForm';
-import useNotifications from '@/core/useNotifications';
+import { useNotifications } from '@/core/useNotifications';
 import { handleErrors } from '@/core/utils';
 import ProvidersBlank from '../ProvidersBlank';
 import { EmailInput, PasswordInput, TextInput } from '@/ui/Inputs';

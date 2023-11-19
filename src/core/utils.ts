@@ -49,27 +49,11 @@ export const makeQueryParameters = ({
   return result;
 };
 
-// export function debounce(func: any, wait: number, immediate?: boolean): any {
-//   let timeout: Timeout | null;
-//   return function () {
-//     const context = this,
-//       args = arguments;
-//     const later = function () {
-//       timeout = null;
-//       if (!immediate) func.apply(context, args);
-//     };
-//     const callNow = immediate && !timeout;
-//     clearTimeout(timeout!);
-//     timeout = setTimeout(later, wait);
-//     if (callNow) func.apply(context, args);
-//   };
-// }
-
-export const stringify = json => {
+export const stringify = (json: string) => {
   return JSON.stringify(json, null, 2);
 };
 
-export const getParameterByName = (name, url = '') => {
+export const getParameterByName = (name: string, url = '') => {
   if (typeof window === 'undefined') return undefined;
   if (!url) url = window.location.href;
   name = name.replace(/[\[\]]/g, '\\$&');
@@ -95,8 +79,8 @@ export const formatMonthStringValue = (string: string | number) => {
 };
 
 export const filterEmptyItemsFromProp = (
-  fromObject,
-  path,
+  fromObject: any,
+  path: string,
   inPlace = false,
   ignoredProps: string[] = []
 ) => {
@@ -119,7 +103,7 @@ export const filterEmptyItemsFromProp = (
   return cloned;
 };
 
-export const filterEmptyItems = (list, ignoredProps: string[] = []) => {
+export const filterEmptyItems = (list: any[], ignoredProps: string[] = []) => {
   if (isArray(list)) {
     const filtered = list.filter(d => {
       return Object.getOwnPropertyNames(d).some(
@@ -156,7 +140,7 @@ export const handleErrors = (
   }
   if (typeof err === 'object') {
     if (err.Errors) {
-      err.Errors.forEach(e => {
+      err.Errors.forEach((e: any) => {
         if (e.FieldName) {
           if (
             e.FieldName.includes('.') &&

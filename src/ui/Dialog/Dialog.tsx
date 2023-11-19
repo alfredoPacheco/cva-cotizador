@@ -13,7 +13,7 @@ export interface DialogProps {
   okLabel?: string | boolean;
   title?: string;
   open?: boolean;
-  onOpenChange(): void;
+  // onOpenChange(): void;
   hideCloseButton?: boolean;
   onClose?(...params: any[]): void;
   fullScreen?: boolean;
@@ -90,7 +90,7 @@ export class DialogWidget extends Component<DialogProps> {
       okLabel,
       title,
       open,
-      onOpenChange,
+      // onOpenChange,
       hideCloseButton = false,
       //   maxWidth = 'sm',
       fullScreen,
@@ -116,7 +116,7 @@ export class DialogWidget extends Component<DialogProps> {
     return (
       <Modal
         isOpen={open}
-        onOpenChange={onOpenChange}
+        // onOpenChange={onOpenChange}
         size={fullScreen ? 'full' : size || 'md'}
         hideCloseButton={hideCloseButton}
         isKeyboardDismissDisabled={!esc}

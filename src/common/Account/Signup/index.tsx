@@ -2,7 +2,9 @@ import { TextInput } from '@/ui/Inputs';
 import { useSignupLogic } from './signup.hooks';
 
 const Signup = () => {
-  const { form, onSubmit, emailSent } = useSignupLogic({ validateEmail: true });
+  const { form, onSubmit, emailSent } = useSignupLogic({
+    validateEmail: false
+  });
 
   if (emailSent)
     return (
@@ -18,10 +20,14 @@ const Signup = () => {
     <div>
       Signup
       <form onSubmit={onSubmit} className="flex flex-col p-5">
-        <TextInput control={form.control} name="name" />
-        <TextInput control={form.control} name="email" />
-        <TextInput control={form.control} name="password" />
-        <TextInput control={form.control} name="confirmPassword" />
+        <TextInput control={form.control} label="Name" name="name" />
+        <TextInput control={form.control} label="Email" name="email" />
+        <TextInput control={form.control} label="Password" name="password" />
+        <TextInput
+          control={form.control}
+          label="Confirm Password"
+          name="confirmPassword"
+        />
         <button type="submit">Submit</button>
       </form>
       <pre>{JSON.stringify(form.watch(), null, 2)}</pre>

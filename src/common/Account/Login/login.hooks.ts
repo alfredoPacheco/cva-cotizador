@@ -5,7 +5,7 @@ import type { LoginDto } from './login';
 export const useLoginMutation = () => {
   return useMutation({
     mutationFn: (data: LoginDto) => {
-      console.log('mutationFn', data);
+      // console.log('mutationFn', data);
       return AuthCentralService.login(data);
     }
   });

@@ -8,9 +8,12 @@ import type { LoginDto } from './login';
 import { Dialog } from '@/ui/Dialog';
 import Logo from '@/ui/Logo';
 
-interface LoginProps {}
+interface LoginProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
-const Login = ({ isOpen, onLogin, onClose }) => {
+const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
   const {
     control,
     handleSubmit,
@@ -26,7 +29,7 @@ const Login = ({ isOpen, onLogin, onClose }) => {
   useEffect(() => {
     if (isSubmitSuccessful) {
       reset();
-      onLogin();
+      onClose();
     }
   }, [isSubmitSuccessful]);
 
@@ -48,7 +51,7 @@ const Login = ({ isOpen, onLogin, onClose }) => {
 
   return (
     <Dialog fullScreen open={isOpen} onClose={onClose} hideCloseButton formOff>
-      {dialog => (
+      {() => (
         <form
           onSubmit={onSubmit}
           className="container max-w-sm flex flex-col items-center mx-auto gap-5 h-full justify-center"
