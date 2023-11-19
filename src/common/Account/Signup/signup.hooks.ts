@@ -22,6 +22,9 @@ export const useSignupLogic = ({ validateEmail = false }) => {
         const verifyUrl = new URL('/verify-email', window.location.origin);
         await account.createVerification(verifyUrl.toString());
         setEmailSent(true);
+      } else {
+        notifications.success('Account created successfully');
+        window.location.href = '/';
       }
     } catch (err) {
       console.error(err);

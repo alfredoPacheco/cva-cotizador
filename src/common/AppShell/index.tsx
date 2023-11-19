@@ -5,7 +5,17 @@ import { useDialog } from '@/ui/Dialog';
 import AppBar from '@/ui/AppBar';
 import Providers from './Providers';
 
-const AppShell = ({ children }: { children?: React.ReactNode }) => {
+interface AppShellProps {
+  children?: React.ReactNode;
+  noAuth?: boolean;
+  blank?: boolean;
+}
+
+const AppShell: React.FC<AppShellProps> = ({
+  children,
+  noAuth = false,
+  blank = false
+}) => {
   const { logout } = useAuth('App');
 
   const loginDialog = useDialog();
@@ -17,21 +27,27 @@ const AppShell = ({ children }: { children?: React.ReactNode }) => {
 
   return (
     <>
-      {loginDialog.isOpen && (
+      {!noAuth && loginDialog.isOpen && (
         <Login isOpen={loginDialog.isOpen} onClose={loginDialog.closeDialog} />
       )}
-      <AppBar logout={logout} />
+      {!blank && <AppBar logout={logout} />}
       {/* <main className="green-light text-foreground bg-background"> */}
       {/* <main className="green-light bg-background"> */}
-      <main className="app">{children}</main>
+      <main className="app h-screen">{children}</main>
     </>
   );
 };
 
-const WithProviders = ({ children }: { children?: React.ReactNode }) => {
+const WithProviders: React.FC<AppShellProps> = ({
+  children,
+  noAuth = false,
+  blank = false
+}) => {
   return (
     <Providers>
-      <AppShell>{children}</AppShell>
+      <AppShell noAuth={noAuth} blank={blank}>
+        {children}
+      </AppShell>
     </Providers>
   );
 };

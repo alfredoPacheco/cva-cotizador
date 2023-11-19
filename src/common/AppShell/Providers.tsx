@@ -6,8 +6,8 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <NextUIProvider>
       <ReactQueryProvider>
-        <Toaster />
         {children}
+        <Toaster />
       </ReactQueryProvider>
     </NextUIProvider>
   );

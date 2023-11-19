@@ -1,5 +1,8 @@
+import AppShell from '@/common/AppShell';
 import { TextInput } from '@/ui/Inputs';
 import { useSignupLogic } from './signup.hooks';
+import { Button } from '@nextui-org/react';
+import Logo from '@/ui/Logo';
 
 const Signup = () => {
   const { form, onSubmit, emailSent } = useSignupLogic({
@@ -17,22 +20,33 @@ const Signup = () => {
     );
 
   return (
-    <div>
-      Signup
-      <form onSubmit={onSubmit} className="flex flex-col p-5">
-        <TextInput control={form.control} label="Name" name="name" />
-        <TextInput control={form.control} label="Email" name="email" />
-        <TextInput control={form.control} label="Password" name="password" />
-        <TextInput
-          control={form.control}
-          label="Confirm Password"
-          name="confirmPassword"
-        />
-        <button type="submit">Submit</button>
-      </form>
+    <form
+      onSubmit={onSubmit}
+      className="container max-w-sm mx-auto flex flex-1 flex-col items-center gap-5 h-full justify-center"
+      autoComplete="off"
+    >
+      <Logo />
+      <h1 className="text-2xl">Create a new account:</h1>
+      <TextInput control={form.control} label="Name" name="name" />
+      <TextInput control={form.control} label="Email" name="email" />
+      <TextInput control={form.control} label="Password" name="password" />
+      <TextInput
+        control={form.control}
+        label="Confirm Password"
+        name="confirmPassword"
+      />
+      <Button type="submit">Signup</Button>
       <pre>{JSON.stringify(form.watch(), null, 2)}</pre>
-    </div>
+    </form>
   );
 };
 
-export default Signup;
+const WithAppShell = () => {
+  return (
+    <AppShell noAuth blank>
+      <Signup />
+    </AppShell>
+  );
+};
+
+export default WithAppShell;

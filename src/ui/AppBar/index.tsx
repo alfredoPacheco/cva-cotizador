@@ -52,7 +52,14 @@ const AppBar = ({ logout }) => {
             >
               Profile
             </DropdownItem>
-            {/* <DropdownItem key="team_settings">Team Settings</DropdownItem> */}
+            <DropdownItem
+              key="accounts"
+              onClick={() => {
+                window.location.href = '/accounts';
+              }}
+            >
+              Accounts
+            </DropdownItem>
             {/* <DropdownItem key="analytics">Analytics</DropdownItem> */}
             {/* <DropdownItem key="system">System</DropdownItem> */}
             {/* <DropdownItem key="configurations">Configurations</DropdownItem> */}
