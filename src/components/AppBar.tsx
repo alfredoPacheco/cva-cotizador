@@ -1,3 +1,4 @@
+import Logo from '@/ui/Logo';
 import {
   Dropdown,
   DropdownItem,
@@ -9,14 +10,13 @@ import {
   NavbarContent,
   User
 } from '@nextui-org/react';
-import Logo from '../images/logo.svg';
 
-const AppBar = ({ onLogout }) => {
+const AppBar = ({ logout }) => {
   return (
     <Navbar maxWidth="full">
       <NavbarBrand>
         <Link href="/">
-          <img src={Logo.src} alt="Logo" width="150" />
+          <Logo />
         </Link>
       </NavbarBrand>
       <NavbarContent as="div" justify="end">
@@ -57,7 +57,7 @@ const AppBar = ({ onLogout }) => {
             {/* <DropdownItem key="system">System</DropdownItem> */}
             {/* <DropdownItem key="configurations">Configurations</DropdownItem> */}
             {/* <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem> */}
-            <DropdownItem key="logout" color="danger" onClick={onLogout}>
+            <DropdownItem key="logout" color="danger" onClick={logout}>
               Log Out
             </DropdownItem>
           </DropdownMenu>

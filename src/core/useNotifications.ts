@@ -1,6 +1,6 @@
 import toast from 'react-hot-toast';
 
-const useNotifications = () => {
+export const useNotifications = () => {
   const success = (message: string, autoHideDuration: number | null = 1200) => {
     const handler = toast.success(message, {
       duration: autoHideDuration
@@ -60,5 +60,3 @@ const useNotifications = () => {
     message
   };
 };
-
-export default useNotifications;
