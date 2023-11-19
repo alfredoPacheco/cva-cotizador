@@ -4,7 +4,7 @@ import { useForm } from '@/core';
 import { handleErrors } from '@/core/utils';
 import { useNotifications } from '@/core/useNotifications';
 import { Dialog, useDialog } from '@/ui/Dialog';
-import Providers from '../Providers';
+import AppShell from '@/common/AppShell';
 import Avatar from '@/ui/Buckets/Avatar';
 import { type Models } from 'appwrite';
 import { EmailInput, PasswordInput, PhoneInput, TextInput } from '@/ui/Inputs';
@@ -96,16 +96,11 @@ const ProfileForm = () => {
     success('Imagen de perfil actualizada');
   };
 
-  const { isOpen, openDialog, onOpenChange, closeDialog } = useDialog();
+  const { isOpen, openDialog, closeDialog } = useDialog();
 
   return (
     <>
-      <Dialog
-        open={isOpen}
-        onClose={closeDialog}
-        onOpenChange={onOpenChange}
-        okLabel="Guardar"
-      >
+      <Dialog open={isOpen} onClose={closeDialog} okLabel="Guardar">
         {dialog => {
           dialog.onOk = async a => {
             dialog.close(getVal());
@@ -164,12 +159,12 @@ const ProfileForm = () => {
   );
 };
 
-const ProfileWithProviders = () => {
+const WithAppShell = () => {
   return (
-    <Providers>
+    <AppShell>
       <ProfileForm />
-    </Providers>
+    </AppShell>
   );
 };
 
-export default ProfileWithProviders;
+export default WithAppShell;

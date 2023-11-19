@@ -1,5 +1,8 @@
 ---
+import AppShell from '@/common/AppShell';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title={import.meta.env.PUBLIC_APP_NAME} />
+<BaseLayout title={import.meta.env.PUBLIC_APP_NAME}>
+  <AppShell client:only />
+</BaseLayout>
