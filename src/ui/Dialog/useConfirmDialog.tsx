@@ -21,7 +21,6 @@ const useConfirmDialog = (props?: ConfirmProps) => {
         id={compProps.id || id}
         open={isOpen}
         onClose={closeDialog}
-        // onOpenChange={onOpenChange}
         okLabel={compProps.okLabel || okLabel || 'OK'}
         fullScreen={false}
       >

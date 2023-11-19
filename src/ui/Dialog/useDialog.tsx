@@ -12,7 +12,6 @@ export interface useDialogReturn {
   closeDialog(dialogId?: string, feedback?: any): void;
   data: any;
   isOpen: boolean;
-//   onOpenChange(): void;
 }
 
 const useDialog = (dialogId?: string): useDialogReturn => {
@@ -53,7 +52,6 @@ const useDialog = (dialogId?: string): useDialogReturn => {
   return {
     openDialog,
     closeDialog,
-    // onOpenChange,
     data,
     isOpen
   };

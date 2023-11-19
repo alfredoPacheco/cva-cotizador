@@ -2,7 +2,7 @@ import { AuthCentralService } from '@/core/AuthCentralService';
 import useAuth from '@/core/useAuth';
 import Login from '../Account/Login';
 import { useDialog } from '@/ui/Dialog';
-import AppBar from '@/components/AppBar';
+import AppBar from '@/ui/AppBar';
 import Providers from './Providers';
 
 const AppShell = ({ children }: { children?: React.ReactNode }) => {

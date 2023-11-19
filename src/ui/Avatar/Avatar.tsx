@@ -1,4 +1,4 @@
-import AvatarDialog from '@/components/EditAvatar';
+import AvatarDialog from '@/ui/Avatar/EditAvatar';
 import { storage } from '@/core/appwriteClient';
 import { Button, Image } from '@nextui-org/react';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';

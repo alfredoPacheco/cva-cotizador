@@ -3,10 +3,11 @@ import { useForm } from 'react-hook-form';
 
 import { useLoginMutation } from './login.hooks';
 import { handleErrors } from '@/core/utils';
-import { EmailInput, PasswordInput } from '@/ui/Inputs';
+import { PasswordInput, TextInput } from '@/ui/Inputs';
 import type { LoginDto } from './login';
 import { Dialog } from '@/ui/Dialog';
 import Logo from '@/ui/Logo';
+import { Button } from '@nextui-org/react';
 
 interface LoginProps {
   isOpen: boolean;
@@ -50,20 +51,27 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
   });
 
   return (
-    <Dialog fullScreen open={isOpen} onClose={onClose} hideCloseButton formOff>
+    <Dialog
+      fullScreen
+      open={isOpen}
+      onClose={onClose}
+      hideCloseButton
+      formOff
+      actionsOff
+    >
       {() => (
         <form
           onSubmit={onSubmit}
           className="container max-w-sm flex flex-col items-center mx-auto gap-5 h-full justify-center"
         >
           <Logo width="250" height="150" />
-          <EmailInput control={control} />
+          <TextInput control={control} name="email" label="Email" />
           <PasswordInput control={control} />
           {error && <p className="text-red-500 text-center mt-5">{error}</p>}
 
-          <button color="primary" className="w-1/2 mt-5" type="submit">
+          <Button color="primary" className="w-1/2 mt-5" type="submit">
             Login
-          </button>
+          </Button>
         </form>
       )}
     </Dialog>

@@ -78,7 +78,6 @@ const AvatarDialog: React.FC<AvatarDialogProps> = ({ dialog }) => {
   return (
     <Dialog
       open={dialog.isOpen}
-      onOpenChange={dialog.onOpenChange}
       onClose={dialog.closeDialog}
       size="xl"
       hideCloseButton

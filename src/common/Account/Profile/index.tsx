@@ -1,7 +1,7 @@
 import { Button } from '@nextui-org/react';
 import { Dialog } from '@/ui/Dialog';
 import AppShell from '@/common/AppShell';
-import Avatar from '@/ui/Buckets/Avatar';
+import Avatar from '@/ui/Avatar/Avatar';
 import { EmailInput, PasswordInput, PhoneInput, TextInput } from '@/ui/Inputs';
 import { useProfileLogic } from './profile.hooks';
 
