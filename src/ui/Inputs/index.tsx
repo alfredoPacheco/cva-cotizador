@@ -206,7 +206,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   return (
     <TextInput
       {...props}
-      type="email"
+      type="tel"
       label={label}
       name={name}
       endContent={

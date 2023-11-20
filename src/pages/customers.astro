@@ -1,0 +1,8 @@
+---
+import CustomerList from '@/components/customer/CustomerList';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout title={import.meta.env.PUBLIC_APP_NAME}>
+  <CustomerList client:only="react" />
+</BaseLayout>
