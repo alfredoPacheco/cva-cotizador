@@ -8,7 +8,8 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: defaultQueryFn,
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
+      retry: false
     },
     mutations: {
       retry: false

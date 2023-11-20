@@ -34,10 +34,10 @@ Sample `200` Response:
 ## ⚙️ Configuration
 
 | Setting           | Value         |
-|-------------------|---------------|
-| Runtime           | Node (20.0)   |
-| Entrypoint        | `src/main.js` |
-| Build Commands    | `npm install` |
+| ----------------- | ------------- |
+| Runtime           | Bun (1.0)     |
+| Entrypoint        | `src/main.ts` |
+| Build Commands    | `bun install` |
 | Permissions       | `any`         |
 | Timeout (Seconds) | 15            |
 

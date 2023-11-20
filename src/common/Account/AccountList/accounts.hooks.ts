@@ -4,6 +4,8 @@ import type { Models } from 'appwrite';
 import { useNotifications } from '@/core/useNotifications';
 import { useConfirmDialog, useDialog } from '@/ui/Dialog';
 
+const GET_ACCOUNTS = import.meta.env.PUBLIC_APPWRITE_FUNCTION_GET_ACCOUNTS;
+
 export const TableSetup = {
   columns: [
     { name: 'ID', uid: '$id', sortable: true },
@@ -23,7 +25,7 @@ export const TableSetup = {
 
 const getAccounts = async () => {
   const resp = await functions.createExecution(
-    'accounts',
+    GET_ACCOUNTS,
     '',
     false,
     '/',
