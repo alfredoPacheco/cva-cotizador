@@ -1,7 +1,15 @@
 import AppShell from '@/common/AppShell';
+import { useCustomerList } from './customer.hooks';
+import Container from '@/ui/Container';
 
 const CustomerList = () => {
-  return <div>CustomerList</div>;
+  const { data } = useCustomerList();
+  return (
+    <Container>
+      CustomerList
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </Container>
+  );
 };
 
 const WithAppShell = () => {
