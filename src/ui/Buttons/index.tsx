@@ -1,4 +1,8 @@
-import { Button, Link as LinkNextUI } from '@nextui-org/react';
+import {
+  Button,
+  Link as LinkNextUI,
+  type HTMLNextUIProps
+} from '@nextui-org/react';
 import { PiPlusCircle, PiPlusCircleBold } from 'react-icons/pi';
 
 export const PrimaryButton = props => {
@@ -23,7 +27,8 @@ export const Link = props => {
   );
 };
 
-export const TextButton = props => {
+interface TextButtonProps extends HTMLNextUIProps<'button'> {}
+export const TextButton: React.FC<TextButtonProps> = props => {
   const { children } = props;
   return (
     <Button
@@ -40,5 +45,23 @@ export const TextButton = props => {
     >
       {children}
     </Button>
+  );
+};
+
+interface FormButtonProps extends HTMLNextUIProps<'button'> {
+  startContent?: React.ReactNode;
+  endContent?: React.ReactNode;
+  onPress?: (e: any) => void;
+}
+export const FormButton: React.FC<FormButtonProps> = props => {
+  return (
+    <Button
+      color="primary"
+      variant="light"
+      className="py-4 px-2 font-bold rounded-xl text-left"
+      type="button"
+      size="md"
+      {...props}
+    />
   );
 };

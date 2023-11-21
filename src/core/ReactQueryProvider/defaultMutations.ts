@@ -4,7 +4,7 @@ import { ID, databases } from '../appwriteClient';
 const DATABASE_ID = import.meta.env.PUBLIC_APPWRITE_DATABASE!;
 
 export interface BaseDto {
-  id: string;
+  $id: string;
 }
 export interface CreateMutation<BaseDto> {
   collectionId: string;
@@ -58,7 +58,7 @@ export function defaultUpdateMutation<T extends BaseDto>(
 ) {
   return {
     mutationFn: async (data: T) => {
-      const { id, ...rest } = data;
+      const { $id: id, ...rest } = data;
       return await databases.updateDocument(
         DATABASE_ID,
         collectionId,
@@ -75,7 +75,7 @@ export function defaultUpdateMutation<T extends BaseDto>(
       const previousData = queryClient.getQueryData(queryKey) as T[];
 
       const updatedData = previousData.map((item: T) => {
-        if (item.id === data.id) {
+        if (item.$id === data.$id) {
           return data;
         }
         return item;
@@ -106,7 +106,7 @@ export function defaultDeleteMutation<T extends BaseDto>(
 ) {
   return {
     mutationFn: async (data: T) => {
-      const { id, ...rest } = data;
+      const { $id: id, ...rest } = data;
       return await databases.deleteDocument(DATABASE_ID, collectionId, id);
     },
     onMutate: async (data: T) => {
@@ -118,7 +118,7 @@ export function defaultDeleteMutation<T extends BaseDto>(
       const previousData = queryClient.getQueryData(queryKey) as T[];
 
       const filteredData = previousData.filter(
-        (item: T) => item.id !== data.id
+        (item: T) => item.$id !== data.$id
       );
 
       // Optimistically update to the new value

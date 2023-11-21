@@ -1,14 +1,13 @@
 import { account } from '@/core/appwriteClient';
-import { Chip, Input, type InputProps } from '@nextui-org/react';
+import { Chip, Input, Textarea, type InputProps } from '@nextui-org/react';
 import { useMutation } from '@tanstack/react-query';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Controller, type Control } from 'react-hook-form';
 import { PiEyeBold, PiEyeClosedBold } from 'react-icons/pi';
 import { GoSearch } from 'react-icons/go';
 import useConfirmDialog from '../Dialog/useConfirmDialog';
 import { useNotifications } from '@/core/useNotifications';
 import { handleErrors } from '@/core/utils';
-import { SearchIcon } from '../NextuiTable/SearchIcon';
 
 interface TextInputProps extends InputProps {
   control: Control<any>;
@@ -25,6 +24,7 @@ interface TextInputProps extends InputProps {
   customMessage?: string;
   focus?: boolean;
   big?: boolean;
+  rows?: number;
   // type?:
   //   | 'text'
   //   | 'search'
@@ -62,6 +62,8 @@ export const TextInput: React.FC<TextInputProps> = ({
   required = false,
   big = false,
   h,
+  rows = 0,
+  variant = 'bordered',
   ...props
   // label,
   // placeholder,
@@ -78,6 +80,8 @@ export const TextInput: React.FC<TextInputProps> = ({
   //   inputWrapper.push('h-' + h);
   // }
 
+  const InputComponent = rows > 0 ? Textarea : Input;
+
   return (
     <Controller
       control={control}
@@ -86,15 +90,16 @@ export const TextInput: React.FC<TextInputProps> = ({
         field: { onChange, onBlur, value },
         fieldState: { error }
       }) => (
-        <div className="w-full" style={{ maxWidth: w }}>
-          <Input
+        <div className="w-full p-0" style={{ maxWidth: w }}>
+          <InputComponent
             {...props}
+            rows={rows || 1}
+            minRows={rows || 1}
             placeholder={props.placeholder}
             onBlur={onBlur}
             onChange={onChange}
             type={type}
-            variant="bordered"
-            classNames={props.classNames}
+            variant={variant}
             color={color}
             value={value || ''}
             label={props.label}
@@ -298,5 +303,26 @@ export const SearchInput: React.FC<TextInputProps> = props => {
         </span>
       }
     />
+  );
+};
+
+export const FormLabel = ({ children }) => {
+  return (
+    <label className="text-default-600 text-sm font-semibold">{children}</label>
+  );
+};
+
+interface FieldProps {
+  label: string;
+  children: React.ReactNode;
+  className?: string | undefined;
+}
+
+export const Field: React.FC<FieldProps> = props => {
+  return (
+    <div className={'flex flex-col ' + props.className}>
+      <FormLabel>{props.label}</FormLabel>
+      {props.children}
+    </div>
   );
 };

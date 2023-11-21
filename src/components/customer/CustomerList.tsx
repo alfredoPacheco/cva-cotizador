@@ -5,7 +5,9 @@ import Title from '@/ui/Title';
 import { TextButton } from '@/ui/Buttons';
 import { SearchInput } from '@/ui/Inputs';
 import { Accordion, AccordionItem, Button } from '@nextui-org/react';
-import { PiMinus, PiPlus } from 'react-icons/pi';
+import { PiPlus } from 'react-icons/pi';
+import { RxDividerVertical } from 'react-icons/rx';
+import CustomerForm from './CustomerForm';
 
 const CustomerList = () => {
   const { query, form } = useCustomerList();
@@ -22,30 +24,22 @@ const CustomerList = () => {
       <Accordion variant="light" showDivider={false}>
         {query.data?.documents.map(item => (
           <AccordionItem
-            key={item.id}
+            key={item.$id}
             aria-label={item.name}
-            disableIndicatorAnimation
             indicator={props => (
               <span className="text-white text-lg">
-                {props.isOpen ? <PiMinus /> : <PiPlus />}
+                {props.isOpen ? <RxDividerVertical /> : <PiPlus />}
               </span>
             )}
-            // hideIndicator
-            title={
-              <div className="w-full -z-10 h-20 relative">
-                <div className="z-10 bg-primary rounded-xl h-20 text-white px-8 text-2xl font-extrabold flex items-center absolute -right-12 -left-4">
-                  {item.name}
-                </div>
-              </div>
-            }
-            // className="bg-primary"
-            // classNames={{
-            //   title: 'bg-primary',
-            //   heading: 'bg-primary',
-            //   base: 'bg-primary'
-            // }}
+            classNames={{
+              base: 'border-1 border-default-200 rounded-xl mt-5',
+              title: 'bg-primary text-white text-2xl font-bold',
+              heading: 'bg-primary rounded-xl px-6 py-2',
+              content: 'p-6'
+            }}
+            title={item.name}
           >
-            el contenido
+            <CustomerForm id={item.$id} />
           </AccordionItem>
         ))}
       </Accordion>
