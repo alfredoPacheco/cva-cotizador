@@ -16,7 +16,12 @@ import Container from '../Container';
 const AppBar = ({ logout }) => {
   return (
     <Container gap={0}>
-      <Navbar maxWidth="full" className="bg-transparent h-32 ">
+      <Navbar
+        maxWidth="full"
+        className="bg-transparent h-32"
+        isBlurred={false}
+        isBordered
+      >
         <NavbarBrand>
           <Link href="/">
             <Logo width={120} />
@@ -82,7 +87,7 @@ const AppBar = ({ logout }) => {
           </Dropdown>
         </NavbarContent>
       </Navbar>
-      <Divider />
+      {/* <Divider /> */}
     </Container>
   );
 };

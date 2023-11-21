@@ -11,11 +11,16 @@ import { useForm } from 'react-hook-form';
 const QUERY_KEY = 'customers';
 const COLLECTION_ID = 'customers';
 
+type listResponse = {
+  documents: CustomerDto[];
+  total: number;
+};
+
 export const useCustomerList = () => {
   const form = useForm();
 
   console.log('useCustomerList');
-  const query = useQuery<CustomerDto[]>({
+  const query = useQuery<listResponse>({
     queryKey: [QUERY_KEY, { type: 'list' } as QueryType]
   });
 
