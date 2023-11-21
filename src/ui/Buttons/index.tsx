@@ -29,8 +29,9 @@ export const TextButton = props => {
     <Button
       color="primary"
       variant="light"
-      className="p-8 text-xl font-bold rounded-xl"
+      className="py-4 px-1 text-xl font-bold rounded-xl text-left"
       type="button"
+      disableRipple
       startContent={
         <span className="text-4xl">
           <PiPlusCircle />

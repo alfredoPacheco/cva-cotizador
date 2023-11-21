@@ -15,7 +15,7 @@ const CustomerList = () => {
       <Title mt={10} mb={10} divider>
         Clientes
       </Title>
-      <div className="flex flex-row justify-between">
+      <div className="flex flex-row justify-between items-center -ml-2 mt-5">
         <TextButton>Crear nuevo cliente</TextButton>
         <SearchInput control={form.control} name="search" />
       </div>
@@ -38,26 +38,6 @@ const CustomerList = () => {
                 </div>
               </div>
             }
-            // className="bg-primary"
-            // classNames={{
-            //   title: 'bg-primary',
-            //   heading: 'bg-primary',
-            //   base: 'bg-primary'
-            // }}
-          >
-            el contenido
-          </AccordionItem>
-        ))}
-      </Accordion>
-
-      <Accordion variant="bordered" showDivider={false}>
-        {query.data?.documents.map(item => (
-          <AccordionItem
-            key={item.id}
-            aria-label={item.name}
-            // hideIndicator
-            title={item.name}
-
             // className="bg-primary"
             // classNames={{
             //   title: 'bg-primary',

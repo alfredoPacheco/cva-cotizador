@@ -51,10 +51,10 @@ const AppBar = ({ logout }) => {
               />
               {/* </Button> */}
             </DropdownTrigger>
-            <DropdownMenu aria-label="App Menu" variant="faded">
+            <DropdownMenu aria-label="App Menu" variant="bordered">
               <DropdownItem
                 key="customers"
-                onClick={() => {
+                onPress={() => {
                   window.location.href = '/customers';
                 }}
               >
@@ -62,7 +62,7 @@ const AppBar = ({ logout }) => {
               </DropdownItem>
               <DropdownItem
                 key="profile"
-                onClick={() => {
+                onPress={() => {
                   window.location.href = '/profile';
                 }}
               >
@@ -70,7 +70,7 @@ const AppBar = ({ logout }) => {
               </DropdownItem>
               <DropdownItem
                 key="accounts"
-                onClick={() => {
+                onPress={() => {
                   window.location.href = '/accounts';
                 }}
               >
@@ -80,7 +80,7 @@ const AppBar = ({ logout }) => {
               {/* <DropdownItem key="system">System</DropdownItem> */}
               {/* <DropdownItem key="configurations">Configurations</DropdownItem> */}
               {/* <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem> */}
-              <DropdownItem key="logout" color="danger" onClick={logout}>
+              <DropdownItem key="logout" color="danger" onPress={logout}>
                 Log Out
               </DropdownItem>
             </DropdownMenu>
