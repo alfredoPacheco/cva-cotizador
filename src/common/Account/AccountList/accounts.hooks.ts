@@ -44,7 +44,7 @@ export const useAccountsQuery = () => {
 export const useAccountsLogic = () => {
   const { success, error } = useNotifications();
   const confirmDialog = useConfirmDialog();
-  const { isOpen, openDialog, closeDialog } = useDialog();
+  const { isOpen, open, close } = useDialog();
 
   const query = useAccountsQuery();
 

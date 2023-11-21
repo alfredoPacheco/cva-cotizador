@@ -7,14 +7,15 @@ import {
   ModalHeader
 } from '@nextui-org/react';
 import { Component } from 'react';
+import Title from '../Title';
 
 export interface DialogProps {
   id?: string;
   okLabel?: string | boolean;
   title?: string;
-  open?: boolean;
+  isOpen?: boolean;
   hideCloseButton?: boolean;
-  onClose?(...params: any[]): void;
+  close?(...params: any[]): void;
   fullScreen?: boolean;
   size?:
     | 'xs'
@@ -53,7 +54,7 @@ export class DialogWidget extends Component<DialogProps> {
     this.close = this.close.bind(this);
   }
 
-  onOk = async (action: string = 'ok') => {
+  onOk = async (action: string = 'ok'): Promise<any> => {
     this.close(action);
   }; //To be defined on children
 
@@ -78,17 +79,17 @@ export class DialogWidget extends Component<DialogProps> {
   // we need "...a" so typescript does not complain when we pass arguments in calls.
   close(...a) {
     const args = Array.prototype.slice.call(arguments);
-    const { onClose, id, esc } = this.props;
+    const { close, id, esc } = this.props;
 
     if (!esc && a[1] === 'backdropClick') return;
-    if (onClose) onClose(id, ...args);
+    if (close) close(id, ...args);
   }
 
   render() {
     const {
       okLabel,
       title,
-      open,
+      isOpen: open,
       hideCloseButton = false,
       //   maxWidth = 'sm',
       fullScreen,
@@ -124,7 +125,7 @@ export class DialogWidget extends Component<DialogProps> {
             <>
               {title && (
                 <ModalHeader className="flex flex-col gap-1">
-                  {title}
+                  <Title>{title}</Title>
                 </ModalHeader>
               )}
 

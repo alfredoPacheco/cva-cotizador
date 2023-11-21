@@ -3,6 +3,7 @@ interface ListQueryType {
   limit: number;
   page: number;
   params?: any;
+  queries?: string[];
 }
 
 interface SingleQueryType {

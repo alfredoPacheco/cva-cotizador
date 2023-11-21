@@ -57,8 +57,8 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
   return (
     <Dialog
       fullScreen
-      open={isOpen}
-      onClose={onClose}
+      isOpen={isOpen}
+      close={onClose}
       hideCloseButton
       formOff
       actionsOff

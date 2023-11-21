@@ -7,20 +7,25 @@ interface DialogPromise {
   args: any;
 }
 
+interface DialogProps {
+  onOk?(action: string): Promise<any>;
+}
 export interface useDialogReturn {
-  openDialog(d?: any): Promise<DialogPromise>;
-  closeDialog(dialogId?: string, feedback?: any): void;
+  open(d?: any): Promise<DialogPromise>;
+  close(dialogId?: string, feedback?: any): void;
   data: any;
   isOpen: boolean;
+  onOk?(action: string): Promise<any>;
 }
 
-const useDialog = (dialogId?: string): useDialogReturn => {
+const useDialog = (dialogProps?: DialogProps): useDialogReturn => {
+  const { onOk } = dialogProps || {};
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [data, setData] = useState();
   const resolveRef = useRef<any>();
   const rejectRef = useRef<any>();
 
-  const openDialog = useCallback((d?: any) => {
+  const open = useCallback((d?: any) => {
     setData(d);
     onOpen();
     return new Promise<DialogPromise>((resolve, reject) => {
@@ -29,7 +34,7 @@ const useDialog = (dialogId?: string): useDialogReturn => {
     });
   }, []);
 
-  const closeDialog = useCallback(function (
+  const close = useCallback(function (
     dialogId: string,
     feedback: any = 'cancel'
   ) {
@@ -50,10 +55,11 @@ const useDialog = (dialogId?: string): useDialogReturn => {
   []);
 
   return {
-    openDialog,
-    closeDialog,
+    open,
+    close,
     data,
-    isOpen
+    isOpen,
+    onOk
   };
 };
 

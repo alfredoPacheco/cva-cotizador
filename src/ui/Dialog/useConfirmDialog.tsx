@@ -12,22 +12,22 @@ interface ConfirmProps {
 const useConfirmDialog = (props?: ConfirmProps) => {
   const { message, id = 'confirm', okLabel: okLabel } = props || {};
   const dialog = useDialog();
-  const { openDialog, data, closeDialog, isOpen } = dialog;
+  const { open, data, close, isOpen } = dialog;
   const [callback, setCallback] = useState<any>();
 
   return {
     Confirm: (compProps: ConfirmProps) => (
       <Dialog
         id={compProps.id || id}
-        open={isOpen}
-        onClose={closeDialog}
+        isOpen={isOpen}
+        close={close}
         okLabel={compProps.okLabel || okLabel || 'OK'}
         fullScreen={false}
       >
         {dialog => {
           dialog.onOk = async () => {
             if (callback) await callback();
-            return closeDialog(id, 'ok');
+            return close(id, 'ok');
           };
           return (
             compProps.children ||
@@ -38,7 +38,7 @@ const useConfirmDialog = (props?: ConfirmProps) => {
     ),
     openConfirm: (d, waitForCallback?) => {
       setCallback(() => waitForCallback);
-      return openDialog(d);
+      return open(d);
     },
     IsConfirmOpen: isOpen,
     ...dialog

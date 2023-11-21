@@ -5,6 +5,12 @@ import {
 } from '@nextui-org/react';
 import { PiPlusCircle, PiPlusCircleBold } from 'react-icons/pi';
 
+interface ButtonProps extends HTMLNextUIProps<'button'> {
+  startContent?: React.ReactNode;
+  endContent?: React.ReactNode;
+  onPress?: (e: any) => void;
+}
+
 export const PrimaryButton = props => {
   const { children } = props;
   return (
@@ -27,11 +33,12 @@ export const Link = props => {
   );
 };
 
-interface TextButtonProps extends HTMLNextUIProps<'button'> {}
+interface TextButtonProps extends ButtonProps {}
 export const TextButton: React.FC<TextButtonProps> = props => {
   const { children } = props;
   return (
     <Button
+      {...props}
       color="primary"
       variant="light"
       className="py-4 px-1 text-xl font-bold rounded-xl text-left"
@@ -48,11 +55,7 @@ export const TextButton: React.FC<TextButtonProps> = props => {
   );
 };
 
-interface FormButtonProps extends HTMLNextUIProps<'button'> {
-  startContent?: React.ReactNode;
-  endContent?: React.ReactNode;
-  onPress?: (e: any) => void;
-}
+interface FormButtonProps extends ButtonProps {}
 export const FormButton: React.FC<FormButtonProps> = props => {
   return (
     <Button

@@ -7,6 +7,7 @@ import {
 } from '@/core/ReactQueryProvider/defaultMutations';
 import type { CustomerDto } from './customer';
 import { useForm } from 'react-hook-form';
+import { Query } from 'appwrite';
 
 const QUERY_KEY = 'customers';
 const COLLECTION_ID = 'customers';
@@ -19,23 +20,31 @@ type listResponse = {
 export const useCustomerList = () => {
   const filtersForm = useForm(); // This form is to handle search and filters over list
 
-  console.log('useCustomerList');
   const query = useQuery<listResponse>({
-    queryKey: [QUERY_KEY, { type: 'list' } as QueryType]
+    queryKey: [
+      QUERY_KEY,
+      { type: 'list', queries: [Query.orderDesc('$id')] } as QueryType
+    ]
   });
 
   return { query, filtersForm };
 };
 
-export const useCustomerSingle = (id: string) => {
+export const useCustomerSingle = (id: string, enabled = true) => {
   return useQuery<CustomerDto>({
-    queryKey: [QUERY_KEY, { type: 'single', id } as QueryType]
+    queryKey: [QUERY_KEY, { type: 'single', id } as QueryType],
+    enabled
   });
 };
 
 export const useCustomerCreate = () => {
   return useMutation({
-    ...defaultCreateMutation([QUERY_KEY], COLLECTION_ID, useQueryClient())
+    ...defaultCreateMutation({
+      queryKey: [QUERY_KEY],
+      collectionId: COLLECTION_ID,
+      queryClient: useQueryClient(),
+      appendMode: 'prepend'
+    })
   });
 };
 

@@ -9,7 +9,7 @@ const AccountList = () => {
   return (
     <>
       <confirmDialog.Confirm />
-      {/* <Dialog open={isOpen} onClose={closeDialog} okLabel="Guardar">
+      {/* <Dialog isOpen={isOpen} close={close} okLabel="Guardar">
         {dialog => {
           return <div className="flex flex-col gap-5">Un dialogo</div>;
         }}

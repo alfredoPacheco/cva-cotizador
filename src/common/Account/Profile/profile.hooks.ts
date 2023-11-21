@@ -30,7 +30,7 @@ export const useProfileLogic = () => {
   const askForPasswordDialog = useDialog();
 
   const askForPassword = async () => {
-    const dialogResponse = await askForPasswordDialog.openDialog('');
+    const dialogResponse = await askForPasswordDialog.open('');
     return dialogResponse.feedback.password;
   };
 

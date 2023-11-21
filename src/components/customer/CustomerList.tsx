@@ -8,17 +8,22 @@ import { Accordion, AccordionItem } from '@nextui-org/react';
 import { PiPlus } from 'react-icons/pi';
 import { RxDividerVertical } from 'react-icons/rx';
 import CustomerForm from './CustomerForm';
+import { Dialog, useDialog } from '@/ui/Dialog';
 
 const CustomerList = () => {
   const { query, filtersForm } = useCustomerList();
+  const dialog = useDialog();
 
   return (
     <Container>
+      <Dialog {...dialog} formOff okLabel="Guardar" title="Cliente">
+        {d => <CustomerForm id="new" dialog={d} />}
+      </Dialog>
       <Title mt={10} mb={10} divider>
         Clientes
       </Title>
       <div className="flex flex-row justify-between items-center -ml-1 mt-5">
-        <TextButton>Crear nuevo cliente</TextButton>
+        <TextButton onPress={dialog.open}>Crear nuevo cliente</TextButton>
         <SearchInput control={filtersForm.control} name="search" />
       </div>
       <Accordion variant="light" showDivider={false}>

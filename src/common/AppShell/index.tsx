@@ -21,14 +21,14 @@ const AppShell: React.FC<AppShellProps> = ({
   const loginDialog = useDialog();
 
   AuthCentralService.useAuthSuscription({
-    openLogin: loginDialog.openDialog,
-    closeLogin: loginDialog.closeDialog
+    openLogin: loginDialog.open,
+    closeLogin: loginDialog.close
   });
 
   return (
     <>
       {!noAuth && loginDialog.isOpen && (
-        <Login isOpen={loginDialog.isOpen} onClose={loginDialog.closeDialog} />
+        <Login isOpen={loginDialog.isOpen} onClose={loginDialog.close} />
       )}
       {!blank && <AppBar logout={logout} />}
       {/* <main className="green-light text-foreground bg-background"> */}

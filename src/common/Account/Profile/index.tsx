@@ -15,8 +15,8 @@ const ProfileForm = () => {
   return (
     <>
       <Dialog
-        open={askForPasswordDialog.isOpen}
-        onClose={askForPasswordDialog.closeDialog}
+        isOpen={askForPasswordDialog.isOpen}
+        close={askForPasswordDialog.close}
         okLabel="Guardar"
       >
         {dialog => {

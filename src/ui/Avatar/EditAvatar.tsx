@@ -77,8 +77,8 @@ interface AvatarDialogProps {
 const AvatarDialog: React.FC<AvatarDialogProps> = ({ dialog }) => {
   return (
     <Dialog
-      open={dialog.isOpen}
-      onClose={dialog.closeDialog}
+      isOpen={dialog.isOpen}
+      close={dialog.close}
       size="xl"
       hideCloseButton
       actions={(d, _, okDisabled) => (

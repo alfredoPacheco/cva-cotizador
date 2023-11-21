@@ -98,7 +98,7 @@ const Avatar: React.FC<AvatarProps> = ({
 
       if (directUpload && !uploading) uploadFiles(filesToUpload);
 
-      avatarDialog.openDialog(filesToUpload[0]).then(res => {
+      avatarDialog.open(filesToUpload[0]).then(res => {
         console.log('feedback', res);
         const croppedFile = res.feedback;
         croppedFile.isForUpload = true;

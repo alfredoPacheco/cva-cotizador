@@ -37,16 +37,25 @@ export const defaultQueryFn: QueryFunction = async ({
   const limit = get(queryType, 'limit', 1000);
   const page = get(queryType, 'page', 1);
 
-  const queries: string[] = [];
-  queries.push(Query.limit(limit));
-  queries.push(Query.offset((page - 1) * limit));
+  const allQueries: string[] = [];
+  const queries = get(queryType, 'queries', []);
+  allQueries.push(...queries);
+
+  allQueries.push(Query.limit(limit));
+  allQueries.push(Query.offset((page - 1) * limit));
 
   const params = get(queryType, 'params', {});
   Object.keys(params).forEach(key => {
-    queries.push(Query.equal(key, params[key]));
+    allQueries.push(Query.equal(key, params[key]));
   });
 
-  const res = await databases.listDocuments(DATABASE_ID, collectionId, queries);
+  console.log('allQueries', allQueries);
+
+  const res = await databases.listDocuments(
+    DATABASE_ID,
+    collectionId,
+    allQueries
+  );
 
   return res;
 };

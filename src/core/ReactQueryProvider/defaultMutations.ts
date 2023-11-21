@@ -1,4 +1,4 @@
-import type { QueryClient } from '@tanstack/react-query';
+import type { QueryClient, QueryKey } from '@tanstack/react-query';
 import { ID, databases } from '../appwriteClient';
 import omit from 'lodash/omit';
 
@@ -12,11 +12,18 @@ export interface CreateMutation<BaseDto> {
   data: BaseDto;
 }
 
-export function defaultCreateMutation<T extends BaseDto>(
+interface defaultCreateMutationProps {
+  queryKey: QueryKey;
+  collectionId: string;
+  queryClient: QueryClient;
+  appendMode?: 'append' | 'prepend';
+}
+export function defaultCreateMutation<T extends BaseDto>({
   queryKey,
-  collectionId: string,
-  queryClient: QueryClient
-) {
+  collectionId,
+  queryClient,
+  appendMode = 'append'
+}: defaultCreateMutationProps) {
   return {
     mutationFn: async (data: T) => {
       return await databases.createDocument(
@@ -32,10 +39,19 @@ export function defaultCreateMutation<T extends BaseDto>(
       await queryClient.cancelQueries({ queryKey });
 
       // Snapshot the previous value
-      const previousData = queryClient.getQueryData(queryKey);
+      const previousData = queryClient?.getQueryData(queryKey);
 
       // Optimistically update to the new value
-      queryClient.setQueryData(queryKey, (old: any) => [...old, data]);
+      if (previousData) {
+        if (appendMode === 'append') {
+          queryClient.setQueryData(queryKey, (old: any) => [...old, data]);
+        }
+        if (appendMode === 'prepend') {
+          queryClient.setQueryData(queryKey, (old: any) => [data, ...old]);
+        }
+      } else {
+        queryClient.setQueryData(queryKey, [data]);
+      }
 
       // Return a context object with the snapshotted value
       return { previousData };
@@ -113,8 +129,7 @@ export function defaultDeleteMutation<T extends BaseDto>(
   queryClient: QueryClient
 ) {
   return {
-    mutationFn: async (data: T) => {
-      const { $id: id, ...rest } = data;
+    mutationFn: async (id: string) => {
       return await databases.deleteDocument(DATABASE_ID, collectionId, id);
     },
     onMutate: async (data: T) => {
@@ -125,7 +140,7 @@ export function defaultDeleteMutation<T extends BaseDto>(
       // Snapshot the previous value
       const previousData = queryClient.getQueryData(queryKey) as T[];
 
-      const filteredData = previousData.filter(
+      const filteredData = previousData?.filter(
         (item: T) => item.$id !== data.$id
       );
 
