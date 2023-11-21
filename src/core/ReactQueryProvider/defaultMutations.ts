@@ -1,0 +1,140 @@
+import type { QueryClient } from '@tanstack/react-query';
+import { ID, databases } from '../appwriteClient';
+
+const DATABASE_ID = import.meta.env.PUBLIC_APPWRITE_DATABASE!;
+
+export interface BaseDto {
+  id: string;
+}
+export interface CreateMutation<BaseDto> {
+  collectionId: string;
+  data: BaseDto;
+}
+
+export function defaultCreateMutation<T extends BaseDto>(
+  queryKey,
+  collectionId: string,
+  queryClient: QueryClient
+) {
+  return {
+    mutationFn: async (data: T) => {
+      return await databases.createDocument(
+        DATABASE_ID,
+        collectionId,
+        ID.unique(),
+        data
+      );
+    },
+    onMutate: async (data: T) => {
+      // Cancel any outgoing refetches
+      // (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({ queryKey });
+
+      // Snapshot the previous value
+      const previousData = queryClient.getQueryData(queryKey);
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(queryKey, (old: any) => [...old, data]);
+
+      // Return a context object with the snapshotted value
+      return { previousData };
+    },
+    // If the mutation fails,
+    // use the context returned from onMutate to roll back
+    onError: (err, newData, context) => {
+      queryClient.setQueryData(queryKey, context.previousData);
+    },
+    // Always refetch after error or success:
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
+    }
+  };
+}
+
+export function defaultUpdateMutation<T extends BaseDto>(
+  queryKey,
+  collectionId: string,
+  queryClient: QueryClient
+) {
+  return {
+    mutationFn: async (data: T) => {
+      const { id, ...rest } = data;
+      return await databases.updateDocument(
+        DATABASE_ID,
+        collectionId,
+        id,
+        rest
+      );
+    },
+    onMutate: async (data: T) => {
+      // Cancel any outgoing refetches
+      // (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({ queryKey });
+
+      // Snapshot the previous value
+      const previousData = queryClient.getQueryData(queryKey) as T[];
+
+      const updatedData = previousData.map((item: T) => {
+        if (item.id === data.id) {
+          return data;
+        }
+        return item;
+      });
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(queryKey, updatedData);
+
+      // Return a context object with the snapshotted value
+      return { previousData };
+    },
+    // If the mutation fails,
+    // use the context returned from onMutate to roll back
+    onError: (err, newData, context) => {
+      queryClient.setQueryData(queryKey, context.previousData);
+    },
+    // Always refetch after error or success:
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
+    }
+  };
+}
+
+export function defaultDeleteMutation<T extends BaseDto>(
+  queryKey,
+  collectionId: string,
+  queryClient: QueryClient
+) {
+  return {
+    mutationFn: async (data: T) => {
+      const { id, ...rest } = data;
+      return await databases.deleteDocument(DATABASE_ID, collectionId, id);
+    },
+    onMutate: async (data: T) => {
+      // Cancel any outgoing refetches
+      // (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({ queryKey });
+
+      // Snapshot the previous value
+      const previousData = queryClient.getQueryData(queryKey) as T[];
+
+      const filteredData = previousData.filter(
+        (item: T) => item.id !== data.id
+      );
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(queryKey, filteredData);
+
+      // Return a context object with the snapshotted value
+      return { previousData };
+    },
+    // If the mutation fails,
+    // use the context returned from onMutate to roll back
+    onError: (err, newData, context) => {
+      queryClient.setQueryData(queryKey, context.previousData);
+    },
+    // Always refetch after error or success:
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
+    }
+  };
+}

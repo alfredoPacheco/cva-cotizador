@@ -1,9 +1,10 @@
 import { type QueryFunction } from '@tanstack/react-query';
-import { isString } from 'lodash';
 import get from 'lodash/get';
 import { databases } from '../appwriteClient';
 import { Query } from 'appwrite';
-import type { QueryKey } from './queryKeys';
+import type { QueryType } from './queryKeys';
+
+const DATABASE_ID = import.meta.env.PUBLIC_APPWRITE_DATABASE!;
 
 export const defaultQueryFn: QueryFunction = async ({
   queryKey,
@@ -15,11 +16,16 @@ export const defaultQueryFn: QueryFunction = async ({
     return { documents: [] };
   }
 
-  const queryType = get(queryKey, '[1]') as QueryKey;
+  const secondElement = get(queryKey, '[1]');
+  if (!secondElement) {
+    return { documents: [] };
+  }
+
+  const queryType = secondElement as QueryType;
 
   if (queryType.type === 'single') {
     const res = await databases.getDocument(
-      process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
+      DATABASE_ID,
       collectionId,
       queryType.id
     );
@@ -27,26 +33,20 @@ export const defaultQueryFn: QueryFunction = async ({
     return res;
   }
 
-  if (queryType.type === 'list') {
-    const limit = get(queryType, 'limit', 1000);
-    const page = get(queryType, 'page', 1);
+  // QueryType is list:
+  const limit = get(queryType, 'limit', 1000);
+  const page = get(queryType, 'page', 1);
 
-    const queries: string[] = [];
-    queries.push(Query.limit(limit));
-    queries.push(Query.offset((page - 1) * limit));
+  const queries: string[] = [];
+  queries.push(Query.limit(limit));
+  queries.push(Query.offset((page - 1) * limit));
 
-    const params = get(queryType, 'params', {});
-    Object.keys(params).forEach(key => {
-      const value = params[key];
-      queries.push(Query.equal(key, value));
-    });
+  const params = get(queryType, 'params', {});
+  Object.keys(params).forEach(key => {
+    queries.push(Query.equal(key, params[key]));
+  });
 
-    const res = await databases.listDocuments(
-      process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-      collectionId,
-      queries
-    );
+  const res = await databases.listDocuments(DATABASE_ID, collectionId, queries);
 
-    return res;
-  }
+  return res;
 };
