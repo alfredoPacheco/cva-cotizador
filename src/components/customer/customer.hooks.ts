@@ -6,15 +6,20 @@ import {
   defaultDeleteMutation
 } from '@/core/ReactQueryProvider/defaultMutations';
 import type { CustomerDto } from './customer';
+import { useForm } from 'react-hook-form';
 
 const QUERY_KEY = 'customers';
 const COLLECTION_ID = 'customers';
 
 export const useCustomerList = () => {
+  const form = useForm();
+
   console.log('useCustomerList');
-  return useQuery<CustomerDto[]>({
+  const query = useQuery<CustomerDto[]>({
     queryKey: [QUERY_KEY, { type: 'list' } as QueryType]
   });
+
+  return { query, form };
 };
 
 export const useCustomerSingle = (id: string) => {

@@ -4,9 +4,11 @@ import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Controller, type Control } from 'react-hook-form';
 import { PiEyeBold, PiEyeClosedBold } from 'react-icons/pi';
+import { GoSearch } from 'react-icons/go';
 import useConfirmDialog from '../Dialog/useConfirmDialog';
 import { useNotifications } from '@/core/useNotifications';
 import { handleErrors } from '@/core/utils';
+import { SearchIcon } from '../NextuiTable/SearchIcon';
 
 interface TextInputProps extends InputProps {
   control: Control<any>;
@@ -18,8 +20,11 @@ interface TextInputProps extends InputProps {
   // disabled?: boolean;
   mt?: number;
   mb?: number;
+  h?: number;
+  w?: number | string;
   customMessage?: string;
   focus?: boolean;
+  big?: boolean;
   // type?:
   //   | 'text'
   //   | 'search'
@@ -53,8 +58,10 @@ export const TextInput: React.FC<TextInputProps> = ({
   focus,
   color = 'default',
   type = 'text',
-  width = '100%',
+  w = '100%',
   required = false,
+  big = false,
+  h,
   ...props
   // label,
   // placeholder,
@@ -62,6 +69,15 @@ export const TextInput: React.FC<TextInputProps> = ({
   // endContent,
 }) => {
   //   const theme = useTheme();
+
+  // const inputWrapper = [];
+  // if (big) {
+  //   inputWrapper.push('px-5', 'h-20', 'rounded-xl');
+  // }
+  // if (h) {
+  //   inputWrapper.push('h-' + h);
+  // }
+
   return (
     <Controller
       control={control}
@@ -70,7 +86,7 @@ export const TextInput: React.FC<TextInputProps> = ({
         field: { onChange, onBlur, value },
         fieldState: { error }
       }) => (
-        <>
+        <div className="w-full" style={{ maxWidth: w }}>
           <Input
             {...props}
             placeholder={props.placeholder}
@@ -78,9 +94,7 @@ export const TextInput: React.FC<TextInputProps> = ({
             onChange={onChange}
             type={type}
             variant="bordered"
-            classNames={{
-              inputWrapper: ['px-5', 'h-20', 'rounded-xl']
-            }}
+            classNames={props.classNames}
             color={color}
             value={value || ''}
             label={props.label}
@@ -95,7 +109,7 @@ export const TextInput: React.FC<TextInputProps> = ({
             //     <TextInputPaper.Icon icon={right} {...rightProps} />
             //   ) : null
             // }
-            width={width}
+            width="100%"
             style={{
               //   backgroundColor: theme.colors.tertiary,
               marginTop: mt,
@@ -104,7 +118,7 @@ export const TextInput: React.FC<TextInputProps> = ({
             errorMessage={customMessage || error?.message}
             endContent={props.endContent}
           />
-        </>
+        </div>
       )}
       name={name}
     />
@@ -266,6 +280,23 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({
         </button>
       }
       type={isVisible ? 'text' : 'password'}
+    />
+  );
+};
+
+export const SearchInput: React.FC<TextInputProps> = props => {
+  return (
+    <TextInput
+      {...props}
+      type="search"
+      placeholder="Buscar"
+      w={200}
+      classNames={{ inputWrapper: ['h-14', 'rounded-xl', 'px-4'] }}
+      endContent={
+        <span className="text-xl text-default-400 pointer-events-none">
+          <GoSearch />
+        </span>
+      }
     />
   );
 };
