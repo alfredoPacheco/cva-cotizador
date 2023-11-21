@@ -17,14 +17,15 @@ type listResponse = {
   total: number;
 };
 
-export const useCustomerList = () => {
+export const useCustomerList = (enabled = true) => {
   const filtersForm = useForm(); // This form is to handle search and filters over list
 
   const query = useQuery<listResponse>({
     queryKey: [
       QUERY_KEY,
       { type: 'list', queries: [Query.orderDesc('$id')] } as QueryType
-    ]
+    ],
+    enabled
   });
 
   return { query, filtersForm };

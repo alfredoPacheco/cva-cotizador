@@ -11,8 +11,8 @@ import CustomerForm from './CustomerForm';
 import { Dialog, useDialog } from '@/ui/Dialog';
 
 const CustomerList = () => {
-  const { query, filtersForm } = useCustomerList();
   const dialog = useDialog();
+  const { query, filtersForm } = useCustomerList(!dialog.isOpen);
 
   return (
     <Container>
