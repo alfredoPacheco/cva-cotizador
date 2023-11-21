@@ -17,14 +17,14 @@ type listResponse = {
 };
 
 export const useCustomerList = () => {
-  const form = useForm();
+  const filtersForm = useForm(); // This form is to handle search and filters over list
 
   console.log('useCustomerList');
   const query = useQuery<listResponse>({
     queryKey: [QUERY_KEY, { type: 'list' } as QueryType]
   });
 
-  return { query, form };
+  return { query, filtersForm };
 };
 
 export const useCustomerSingle = (id: string) => {

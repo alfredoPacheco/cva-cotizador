@@ -4,22 +4,22 @@ import Container from '@/ui/Container';
 import Title from '@/ui/Title';
 import { TextButton } from '@/ui/Buttons';
 import { SearchInput } from '@/ui/Inputs';
-import { Accordion, AccordionItem, Button } from '@nextui-org/react';
+import { Accordion, AccordionItem } from '@nextui-org/react';
 import { PiPlus } from 'react-icons/pi';
 import { RxDividerVertical } from 'react-icons/rx';
 import CustomerForm from './CustomerForm';
 
 const CustomerList = () => {
-  const { query, form } = useCustomerList();
+  const { query, filtersForm } = useCustomerList();
 
   return (
     <Container>
       <Title mt={10} mb={10} divider>
         Clientes
       </Title>
-      <div className="flex flex-row justify-between items-center -ml-2 mt-5">
+      <div className="flex flex-row justify-between items-center -ml-1 mt-5">
         <TextButton>Crear nuevo cliente</TextButton>
-        <SearchInput control={form.control} name="search" />
+        <SearchInput control={filtersForm.control} name="search" />
       </div>
       <Accordion variant="light" showDivider={false}>
         {query.data?.documents.map(item => (

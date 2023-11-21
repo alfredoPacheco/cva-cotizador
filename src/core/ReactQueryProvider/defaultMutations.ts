@@ -1,5 +1,6 @@
 import type { QueryClient } from '@tanstack/react-query';
 import { ID, databases } from '../appwriteClient';
+import omit from 'lodash/omit';
 
 const DATABASE_ID = import.meta.env.PUBLIC_APPWRITE_DATABASE!;
 
@@ -58,12 +59,19 @@ export function defaultUpdateMutation<T extends BaseDto>(
 ) {
   return {
     mutationFn: async (data: T) => {
-      const { $id: id, ...rest } = data;
+      const payload = omit(data, [
+        '$id',
+        '$collectionId',
+        '$createdAt',
+        '$databaseId',
+        '$permissions',
+        '$updatedAt'
+      ]);
       return await databases.updateDocument(
         DATABASE_ID,
         collectionId,
-        id,
-        rest
+        data.$id,
+        payload
       );
     },
     onMutate: async (data: T) => {
@@ -74,7 +82,7 @@ export function defaultUpdateMutation<T extends BaseDto>(
       // Snapshot the previous value
       const previousData = queryClient.getQueryData(queryKey) as T[];
 
-      const updatedData = previousData.map((item: T) => {
+      const updatedData = previousData?.map((item: T) => {
         if (item.$id === data.$id) {
           return data;
         }
