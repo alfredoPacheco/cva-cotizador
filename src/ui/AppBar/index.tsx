@@ -13,14 +13,14 @@ import {
 
 const AppBar = ({ logout }) => {
   return (
-    <Navbar maxWidth="full">
+    <Navbar maxWidth="full" className="bg-transparent h-28 ">
       <NavbarBrand>
         <Link href="/">
-          <Logo />
+          <Logo width={120} />
         </Link>
       </NavbarBrand>
       <NavbarContent as="div" justify="end">
-        <Dropdown placement="bottom-end">
+        <Dropdown placement="bottom-end" className="bg-default-100">
           <DropdownTrigger>
             {/* <Button
               disableRipple
@@ -30,20 +30,20 @@ const AppBar = ({ logout }) => {
             > */}
             <User
               className="cursor-pointer"
-              name="Alfredo"
+              name=""
               avatarProps={{
                 name: '',
                 // isBordered: true,
                 as: 'button',
-                className: 'transition-transform'
+                className: 'transition-transform',
                 // color: 'secondary',
-                // size: 'sm'
+                size: 'lg'
                 // src: 'https://i.pravatar.cc/150?u=a042581f4e29026704d'
               }}
             />
             {/* </Button> */}
           </DropdownTrigger>
-          <DropdownMenu aria-label="Profile Actions" variant="flat">
+          <DropdownMenu aria-label="Profile Actions" variant="faded">
             <DropdownItem
               key="profile"
               onClick={() => {

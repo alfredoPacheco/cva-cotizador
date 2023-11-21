@@ -1,5 +1,5 @@
 const Title = ({ children }) => {
-  return <h1 className="text-3xl font-bold">{children}</h1>;
+  return <h1 className="text-7xl font-bold text-primary">{children}</h1>;
 };
 
 export default Title;

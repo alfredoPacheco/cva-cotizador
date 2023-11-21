@@ -77,6 +77,10 @@ export const TextInput: React.FC<TextInputProps> = ({
             onBlur={onBlur}
             onChange={onChange}
             type={type}
+            variant="bordered"
+            classNames={{
+              inputWrapper: ['px-5', 'h-20', 'rounded-xl']
+            }}
             color={color}
             value={value || ''}
             label={props.label}

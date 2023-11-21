@@ -33,7 +33,7 @@ const AppShell: React.FC<AppShellProps> = ({
       {!blank && <AppBar logout={logout} />}
       {/* <main className="green-light text-foreground bg-background"> */}
       {/* <main className="green-light bg-background"> */}
-      <main className="app h-screen">{children}</main>
+      <main className="green-light h-screen">{children}</main>
     </>
   );
 };

@@ -7,7 +7,11 @@ import { PasswordInput, TextInput } from '@/ui/Inputs';
 import type { LoginDto } from './login';
 import { Dialog } from '@/ui/Dialog';
 import Logo from '@/ui/Logo';
-import { Button } from '@nextui-org/react';
+import { Link, PrimaryButton } from '@/ui/Buttons';
+import Title from '@/ui/Title';
+import { Divider } from '@nextui-org/react';
+import Container from '@/ui/Container';
+import Paragraph from '@/ui/Paragraph';
 
 interface LoginProps {
   isOpen: boolean;
@@ -60,19 +64,24 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
       actionsOff
     >
       {() => (
-        <form
-          onSubmit={onSubmit}
-          className="container max-w-sm flex flex-col items-center mx-auto gap-5 h-full justify-center"
-        >
-          <Logo width="250" height="150" />
-          <TextInput control={control} name="email" label="Email" />
-          <PasswordInput control={control} />
-          {error && <p className="text-red-500 text-center mt-5">{error}</p>}
+        <Container>
+          <Logo />
+          <Divider />
 
-          <Button color="primary" className="w-1/2 mt-5" type="submit">
-            Login
-          </Button>
-        </form>
+          <form
+            onSubmit={onSubmit}
+            className="container max-w-sm flex flex-col items-center mx-auto gap-5 h-full mt-10"
+          >
+            <Title>Cotizador</Title>
+            <Paragraph>Ingresa con tu acceso autorizado</Paragraph>
+            <TextInput control={control} name="email" label="Email" />
+            <PasswordInput control={control} />
+            {error && <p className="text-red-500 text-center mt-5">{error}</p>}
+
+            <PrimaryButton>Entrar</PrimaryButton>
+            <Link>¿Olvidaste tu acceso?</Link>
+          </form>
+        </Container>
       )}
     </Dialog>
   );
