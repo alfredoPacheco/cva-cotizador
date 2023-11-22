@@ -10,9 +10,25 @@ import { RxDividerVertical } from 'react-icons/rx';
 import CustomerForm from './CustomerForm';
 import { Dialog, useDialog } from '@/ui/Dialog';
 
+const searchLocally = (query: string) => (item: any) => {
+  if (!query || query.trim() === '') return true;
+  return Object.keys(item).some(key => {
+    if (typeof item[key] === 'string') {
+      return item[key].toLowerCase().includes(query.toLowerCase());
+    }
+    return false;
+  });
+};
+
 const CustomerList = () => {
   const dialog = useDialog();
-  const { query, filtersForm } = useCustomerList(!dialog.isOpen);
+  const { query, filtersForm, debouncedSearch } = useCustomerList(
+    !dialog.isOpen
+  );
+
+  const filteredData = query.data?.documents.filter(
+    searchLocally(debouncedSearch)
+  );
 
   return (
     <Container>
@@ -27,7 +43,7 @@ const CustomerList = () => {
         <SearchInput control={filtersForm.control} name="search" />
       </div>
       <Accordion variant="light" showDivider={false}>
-        {query.data?.documents.map(item => (
+        {filteredData?.map(item => (
           <AccordionItem
             key={item.$id}
             aria-label={item.name}
@@ -48,7 +64,7 @@ const CustomerList = () => {
           </AccordionItem>
         ))}
       </Accordion>
-      <pre>{JSON.stringify(query.data, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(query.data, null, 2)}</pre> */}
     </Container>
   );
 };

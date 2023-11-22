@@ -4,5 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title={import.meta.env.PUBLIC_APP_NAME}>
-  <AppShell client:only="react" />
+  <AppShell client:only="react">
+    <div class="text-center mt-20">Home</div>
+  </AppShell>
 </BaseLayout>

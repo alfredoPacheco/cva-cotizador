@@ -41,7 +41,7 @@ const ProfileForm = () => {
       </Dialog>
 
       <form
-        className="container max-w-sm mx-auto flex flex-col items-center gap-5 h-full justify-center"
+        className="container max-w-sm mx-auto flex flex-col items-center gap-5 justify-center mt-20"
         onSubmit={onSubmit}
         autoComplete="off"
       >

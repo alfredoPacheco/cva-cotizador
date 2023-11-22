@@ -8,6 +8,9 @@ import {
 import type { CustomerDto } from './customer';
 import { useForm } from 'react-hook-form';
 import { Query } from 'appwrite';
+import { useEffect, useState } from 'react';
+import { useDebounce } from '@/core';
+import { omit } from 'lodash';
 
 const QUERY_KEY = 'customers';
 const COLLECTION_ID = 'customers';
@@ -17,18 +20,60 @@ type listResponse = {
   total: number;
 };
 
+function getSearchQuery(searchValue: string, sample: any) {
+  const result = [];
+  if (!searchValue || searchValue.trim() === '') return result;
+
+  // const sample: T = {} as T;
+  const entity = omit(sample, [
+    '$id',
+    '$collectionId',
+    '$createdAt',
+    '$databaseId',
+    '$permissions',
+    '$updatedAt'
+  ]);
+  // console.log('sample', sample);
+  // console.log('entity', entity);
+  Object.keys(entity).forEach(prop => {
+    if (typeof sample[prop] === 'string') {
+      result.push(Query.search(prop, searchValue));
+    }
+  });
+  return result;
+}
+
 export const useCustomerList = (enabled = true) => {
   const filtersForm = useForm(); // This form is to handle search and filters over list
+
+  const debouncedSearch = useDebounce(filtersForm.watch('search'), 100);
+  const [searchQuery, setSearchQuery] = useState<Query[]>([]);
+
+  useEffect(() => {
+    const newSearch = getSearchQuery(debouncedSearch, {
+      name: ''
+      // email: '',
+      // phone: '',
+      // address: '',
+      // businessName: '',
+      // taxRegime: ''
+    });
+    console.log('newSearch', newSearch);
+    // setSearchQuery(newSearch);
+  }, [debouncedSearch]);
 
   const query = useQuery<listResponse>({
     queryKey: [
       QUERY_KEY,
-      { type: 'list', queries: [Query.orderDesc('$id')] } as QueryType
+      {
+        type: 'list',
+        queries: [Query.orderDesc('$id'), ...searchQuery]
+      } as QueryType
     ],
     enabled
   });
 
-  return { query, filtersForm };
+  return { query, filtersForm, debouncedSearch };
 };
 
 export const useCustomerSingle = (id: string, enabled = true) => {
