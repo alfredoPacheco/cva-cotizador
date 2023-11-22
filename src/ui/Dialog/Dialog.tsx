@@ -116,7 +116,8 @@ export class DialogWidget extends Component<DialogProps> {
       <Modal
         isOpen={open}
         size={fullScreen ? 'full' : size || 'md'}
-        hideCloseButton={hideCloseButton}
+        hideCloseButton
+        // hideCloseButton={hideCloseButton}
         isKeyboardDismissDisabled={!esc}
         className="green-light"
       >
