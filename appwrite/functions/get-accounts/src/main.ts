@@ -16,7 +16,6 @@ export default async ({ req, res, log, error }: any) => {
     log('GET users');
     const users = new Users(client);
     const result = await users.list();
-    log('GET users success');
     result.users = result.users.map(filterSensitiveData);
     return res.json(result);
   }
