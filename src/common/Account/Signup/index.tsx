@@ -36,7 +36,7 @@ const Signup = () => {
         name="confirmPassword"
       />
       <Button type="submit">Signup</Button>
-      <pre>{JSON.stringify(form.watch(), null, 2)}</pre>
+      {/* <pre>{JSON.stringify(form.watch(), null, 2)}</pre> */}
     </form>
   );
 };

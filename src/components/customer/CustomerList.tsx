@@ -35,7 +35,7 @@ const CustomerList = () => {
       <Dialog {...dialog} formOff okLabel="Guardar" title="Cliente">
         {d => <CustomerForm id="new" dialog={d} />}
       </Dialog>
-      <Title mt={10} mb={10} divider>
+      <Title mt={40} mb={40} divider>
         Clientes
       </Title>
       <div className="flex flex-row justify-between items-center -ml-1 mt-5">
@@ -65,6 +65,7 @@ const CustomerList = () => {
         ))}
       </Accordion>
       {/* <pre>{JSON.stringify(query.data, null, 2)}</pre> */}
+      <div style={{ minHeight: 300 }} />
     </Container>
   );
 };
