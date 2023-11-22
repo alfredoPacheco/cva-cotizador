@@ -46,6 +46,7 @@ const useDialog = (dialogProps?: DialogProps): useDialogReturn => {
     if (typeof feedback == 'object' && feedback.key === 'Escape') {
       feedback = 'cancel';
     }
+
     if (feedback && feedback !== 'cancel') {
       resolveRef.current({ dialogId, feedback, args });
     } else {

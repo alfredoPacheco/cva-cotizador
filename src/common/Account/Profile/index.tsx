@@ -1,11 +1,11 @@
 import { Button } from '@nextui-org/react';
 import { Dialog } from '@/ui/Dialog';
 import AppShell from '@/common/AppShell';
-import Avatar from '@/ui/Avatar/Avatar';
+import Avatar from '@/ui/Avatar';
 import { EmailInput, PasswordInput, PhoneInput, TextInput } from '@/ui/Inputs';
 import { useProfileLogic } from './profile.hooks';
 
-const ProfileForm = () => {
+const Profile = () => {
   const { form, onSubmit, askForPasswordDialog, onAvatarChange } =
     useProfileLogic();
   const {
@@ -53,18 +53,18 @@ const ProfileForm = () => {
           label="Nombre"
           name="name"
           control={form.control}
-          color={dirtyFields.name ? 'warning' : 'default'}
+          color={dirtyFields.name ? 'warning' : undefined}
         />
         <EmailInput
           required
           control={form.control}
-          color={dirtyFields.email ? 'warning' : 'default'}
+          color={dirtyFields.email ? 'warning' : undefined}
           emailVerification={getValues('emailVerification')}
         />
         <PhoneInput
           label="Teléfono"
           control={form.control}
-          color={dirtyFields.phone ? 'warning' : 'default'}
+          color={dirtyFields.phone ? 'warning' : undefined}
           requiresVerification={false}
           phoneVerification={getValues('phoneVerification')}
         />
@@ -80,7 +80,7 @@ const ProfileForm = () => {
 const WithAppShell = () => {
   return (
     <AppShell>
-      <ProfileForm />
+      <Profile />
     </AppShell>
   );
 };

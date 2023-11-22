@@ -20,7 +20,7 @@ interface IAttachment extends File {
 
 const BUCKET_ID = import.meta.env.PUBLIC_APPWRITE_STORAGE_AVATARS;
 
-async function fetchAvatar(fileId) {
+async function fetchAvatar(fileId?: string) {
   if (!fileId) return null;
   const f = await storage.getFilePreview(BUCKET_ID, fileId);
   // console.log('f', f);

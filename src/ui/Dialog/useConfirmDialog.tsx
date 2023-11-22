@@ -10,7 +10,7 @@ interface ConfirmProps {
 }
 
 const useConfirmDialog = (props?: ConfirmProps) => {
-  const { message, id = 'confirm', okLabel: okLabel } = props || {};
+  const { message, id = 'confirm', okLabel } = props || {};
   const dialog = useDialog();
   const { open, data, close, isOpen } = dialog;
   const [callback, setCallback] = useState<any>();
@@ -36,7 +36,7 @@ const useConfirmDialog = (props?: ConfirmProps) => {
         }}
       </Dialog>
     ),
-    openConfirm: (d, waitForCallback?) => {
+    openConfirm: (d: any, waitForCallback?: () => Promise<any>) => {
       setCallback(() => waitForCallback);
       return open(d);
     },

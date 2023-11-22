@@ -31,7 +31,7 @@ export const useProfileLogic = () => {
 
   const askForPassword = async () => {
     const dialogResponse = await askForPasswordDialog.open('');
-    return dialogResponse.feedback.password;
+    return dialogResponse?.feedback?.password;
   };
 
   useEffect(() => {
@@ -66,7 +66,7 @@ export const useProfileLogic = () => {
       }
 
       // await reset
-    } catch (e) {
+    } catch (e: any) {
       if (e?.feedback === 'cancel') {
         console.log(e);
         return;
@@ -77,7 +77,7 @@ export const useProfileLogic = () => {
     }
   });
 
-  const onAvatarChange = async fileId => {
+  const onAvatarChange = async (fileId: string) => {
     const prefs = getValues('prefs') || {};
     prefs.avatar = fileId;
     await account.updatePrefs(prefs);

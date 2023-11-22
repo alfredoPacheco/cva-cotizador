@@ -39,12 +39,11 @@ export interface DialogProps {
   notifications?: {
     error: (msg: string, ms?: number) => void;
   };
-  //   modalProps: {};
   [key: string]: any;
 }
 
 export class DialogWidget extends Component<DialogProps> {
-  i18n: {};
+  i18n: any = {};
   state = {
     okDisabled: false
   };
@@ -58,7 +57,7 @@ export class DialogWidget extends Component<DialogProps> {
     this.close(action);
   }; //To be defined on children
 
-  _onOk = (action: string) => async e => {
+  _onOk = (action: string) => async () => {
     try {
       this.setState({ okDisabled: true });
       await this.onOk(action);
@@ -68,16 +67,16 @@ export class DialogWidget extends Component<DialogProps> {
     } finally {
       setTimeout(() => {
         this.setState({ okDisabled: false });
-      }, 1000);
+      }, 1500);
     }
   };
 
-  setI18n = i18n => {
+  setI18n = (i18n: any) => {
     this.i18n = i18n;
   };
 
   // we need "...a" so typescript does not complain when we pass arguments in calls.
-  close(...a) {
+  close(...a: any[]) {
     const args = Array.prototype.slice.call(arguments);
     const { close, id, esc } = this.props;
 
@@ -89,9 +88,9 @@ export class DialogWidget extends Component<DialogProps> {
     const {
       okLabel,
       title,
-      isOpen: open,
-      hideCloseButton = false,
+      isOpen,
       //   maxWidth = 'sm',
+      hideCloseButton = false,
       fullScreen,
       size,
       actionsOff,
@@ -109,12 +108,12 @@ export class DialogWidget extends Component<DialogProps> {
 
     const onFormSubmit = (e: React.FormEvent) => {
       e.preventDefault();
-      this._onOk('save')(e);
+      this._onOk('save')();
     };
 
     return (
       <Modal
-        isOpen={open}
+        isOpen={isOpen}
         size={fullScreen ? 'full' : size || 'md'}
         hideCloseButton
         // hideCloseButton={hideCloseButton}

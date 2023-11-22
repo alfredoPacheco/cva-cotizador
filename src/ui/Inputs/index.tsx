@@ -155,7 +155,7 @@ export const EmailInput: React.FC<EmailInputProps> = ({
       await verifyEmailMutation.mutateAsync();
       setEmailSent(true);
       success('Email de verificación enviado');
-    } catch (e) {
+    } catch (e: any) {
       if (e?.feedback === 'cancel') {
         return;
       }
@@ -219,7 +219,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
       await verifyPhoneMutation.mutateAsync();
       setSmsSent(true);
       success('SMS de verificación enviado');
-    } catch (e) {
+    } catch (e: any) {
       if (e?.feedback === 'cancel') {
         return;
       }

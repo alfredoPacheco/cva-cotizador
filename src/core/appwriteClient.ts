@@ -5,8 +5,8 @@ client
   .setEndpoint(import.meta.env.PUBLIC_APPWRITE_ENDPOINT)
   .setProject(import.meta.env.PUBLIC_APPWRITE_PROJECT);
 
-const account = new Account(client);
 const databases = new Databases(client);
+const account = new Account(client);
 const storage = new Storage(client);
 const functions = new Functions(client);
 

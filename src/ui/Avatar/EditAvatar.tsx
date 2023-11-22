@@ -28,7 +28,7 @@ interface EditAvatarPops {
 }
 
 const EditAvatar: React.FC<EditAvatarPops> = ({ dialog, data }) => {
-  const cropperRef = useRef<CustomCropperRef>();
+  const cropperRef = useRef<CustomCropperRef>(null);
   const [image, setImage] = useState<string>();
 
   useEffect(() => {
@@ -43,9 +43,9 @@ const EditAvatar: React.FC<EditAvatarPops> = ({ dialog, data }) => {
 
   dialog.onOk = async action => {
     if (action == 'save') {
-      const canvas = cropperRef.current.getCanvas();
+      const canvas = cropperRef.current!.getCanvas();
       if (canvas == null) return;
-      canvas.toBlob(blob => {
+      canvas.toBlob((blob: any) => {
         let file = new File([blob], data.name, { type: 'image/png' });
         dialog.close(file);
       }, 'image/png');
