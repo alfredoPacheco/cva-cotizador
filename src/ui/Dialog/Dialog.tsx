@@ -32,7 +32,7 @@ export interface DialogProps {
   //   maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
   //   dividersOff?: boolean;
   //   fixed?: boolean;
-  actions?(dialog: DialogWidget, opener?: any, okDisabled?: boolean): any;
+  actions?(dialog: DialogWidget, okDisabled?: boolean): any;
   esc?: boolean;
   children(dialog: DialogWidget): any;
   formOff?: boolean;
@@ -139,7 +139,7 @@ export class DialogWidget extends Component<DialogProps> {
                   </form>
                 )}
 
-                {(actions && actions(this, opener, okDisabled)) ||
+                {(actions && actions(this, okDisabled)) ||
                   (!actionsOff && (
                     <div className="flex flex-row gap-3 items-baseline justify-end">
                       <Button

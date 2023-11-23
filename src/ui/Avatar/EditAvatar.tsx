@@ -81,7 +81,7 @@ const AvatarDialog: React.FC<AvatarDialogProps> = ({ dialog }) => {
       close={dialog.close}
       size="xl"
       hideCloseButton
-      actions={(d, _, okDisabled) => (
+      actions={(d, okDisabled) => (
         <div className="flex flex-row gap-3 items-baseline justify-end">
           <Button onPress={() => d.close('cancel')} color="default">
             Cerrar
