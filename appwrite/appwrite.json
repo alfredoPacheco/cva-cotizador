@@ -3,10 +3,10 @@
   "projectName": "cotizador",
   "functions": [
     {
-      "$id": "655b8302aad1f1862cf8",
-      "name": "get-accounts",
+      "$id": "655fe252510485330882",
+      "name": "users",
       "runtime": "bun-1.0",
-      "execute": [],
+      "execute": ["any"],
       "events": [],
       "schedule": "",
       "timeout": 15,
@@ -15,7 +15,7 @@
       "entrypoint": "src/main.ts",
       "commands": "bun install",
       "ignore": ["node_modules", ".npm"],
-      "path": "functions/get-accounts"
+      "path": "functions/users"
     }
   ]
 }
