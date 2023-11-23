@@ -18,7 +18,7 @@ const AccountList = () => {
       <div
         className={`container max-w-5xl mx-auto flex flex-1 flex-col gap-5 h-full mt-24`}
       >
-        <Title>Cuentas</Title>
+        <Title>Usuarios</Title>
 
         <NextuiTable
           users={query.data?.users || []}
