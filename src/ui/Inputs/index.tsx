@@ -88,7 +88,7 @@ export const TextInput: React.FC<TextInputProps> = ({
       rules={{ ...rules, required }}
       render={({
         field: { onChange, onBlur, value },
-        fieldState: { error }
+        fieldState: { error, isDirty }
       }) => (
         <div className="w-full p-0" style={{ maxWidth: w }}>
           <InputComponent
@@ -99,8 +99,8 @@ export const TextInput: React.FC<TextInputProps> = ({
             onBlur={onBlur}
             onChange={onChange}
             type={type}
-            variant={variant}
-            color={color}
+            variant={isDirty ? 'flat' : variant}
+            color={isDirty ? 'warning' : color}
             value={value || ''}
             label={props.label}
             autoFocus={focus}
@@ -116,10 +116,11 @@ export const TextInput: React.FC<TextInputProps> = ({
             // }
             width="100%"
             style={{
-              //   backgroundColor: theme.colors.tertiary,
+              // backgroundColor: theme.colors.tertiary,
               marginTop: mt,
               marginBottom: mb
             }}
+            isInvalid={!!error}
             errorMessage={customMessage || error?.message}
             endContent={props.endContent}
           />

@@ -40,7 +40,12 @@ const AccountList = () => {
         <TextButton onPress={dialog.open}>Crear nuevo usuario</TextButton>
         <SearchInput control={filtersForm.control} name="search" />
       </div>
-      <Accordion variant="light" showDivider={false}>
+      <Accordion
+        variant="light"
+        showDivider={false}
+        // selectionMode="multiple"
+        // keepContentMounted
+      >
         {filteredData?.map(item => (
           <AccordionItem
             key={item.$id}

@@ -143,11 +143,7 @@ export function defaultDeleteMutation<T extends BaseDto>(
       if (!collectionId) throw new Error('collectionId is required');
       return await databases.deleteDocument(DATABASE_ID, collectionId, id);
     },
-    onMutate: async (data: T) => {
-      if (!data.$id) {
-        console.error('data.$id is required for optimistic updates');
-        throw new Error('data.$id is required for optimistic updates');
-      }
+    onMutate: async (id: string) => {
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey });
@@ -155,9 +151,7 @@ export function defaultDeleteMutation<T extends BaseDto>(
       // Snapshot the previous value
       const previousData = queryClient.getQueryData(queryKey) as T[];
 
-      const filteredData = previousData?.filter(
-        (item: T) => item.$id !== data.$id
-      );
+      const filteredData = previousData?.filter((item: T) => item.$id !== id);
 
       // Optimistically update to the new value
       queryClient.setQueryData(queryKey, filteredData);

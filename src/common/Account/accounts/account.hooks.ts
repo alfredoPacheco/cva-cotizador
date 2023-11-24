@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   defaultCreateMutation,
-  defaultUpdateMutation,
   defaultDeleteMutation
 } from '@/core/ReactQueryProvider/defaultMutations';
 import type { AccountDto } from './account';
@@ -9,6 +8,7 @@ import { useForm } from 'react-hook-form';
 import { useDebounce } from '@/core';
 import get from 'lodash/get';
 import { functions } from '@/core/appwriteClient';
+import omit from 'lodash/omit';
 
 const USERS_FN = import.meta.env.PUBLIC_APPWRITE_FUNCTION_USERS!;
 
@@ -51,7 +51,8 @@ export const listUsers = async (query = '') => {
 export const createUser = async data => {
   console.log('createuser: ', data);
   if (!data) throw new Error('data is required');
-  const payload = JSON.stringify(data);
+
+  const payload = JSON.stringify(omit(data, ['$id']));
 
   const resp = await functions.createExecution(
     USERS_FN,
@@ -354,8 +355,48 @@ export const useAccountCreate = () => {
   });
 };
 
+export const useAccountUpdatePassword = () => {
+  return useMutation({
+    // ...defaultUpdateMutation([QUERY_KEY], useQueryClient()),
+    mutationFn: async ({ $id, password }: any) => {
+      const resp = await updatePassword($id, password);
+      return resp;
+    }
+  });
+};
+export const useAccountUpdateName = () => {
+  return useMutation({
+    // ...defaultUpdateMutation([QUERY_KEY], useQueryClient()),
+    mutationFn: async ({ $id, name }: any) => {
+      const resp = await updateName($id, name);
+      return resp;
+    }
+  });
+};
+export const useAccountUpdatePhone = () => {
+  return useMutation({
+    // ...defaultUpdateMutation([QUERY_KEY], useQueryClient()),
+    mutationFn: async ({ $id, prefs }: any) => {
+      const resp = await updateUserPrefs($id, prefs);
+      return resp;
+    }
+  });
+};
+export const useAccountUpdateEmail = () => {
+  return useMutation({
+    // ...defaultUpdateMutation([QUERY_KEY], useQueryClient()),
+    mutationFn: async ({ $id, email }: any) => {
+      const resp = await updateEmail($id, email);
+      return resp;
+    }
+  });
+};
 export const useAccountDelete = () => {
   return useMutation({
-    ...defaultDeleteMutation([QUERY_KEY], useQueryClient())
+    ...defaultDeleteMutation([QUERY_KEY], useQueryClient()),
+    mutationFn: async (id: string) => {
+      const resp = await deleteUser(id);
+      return resp;
+    }
   });
 };

@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 export const useNotifications = () => {
   const success = (
     message: string,
-    autoHideDuration: number | undefined = 1200
+    autoHideDuration: number | undefined = 2000
   ) => {
     toast.success(message, { duration: autoHideDuration });
   };
