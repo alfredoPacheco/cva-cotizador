@@ -5,6 +5,7 @@ import type { ProfileDto } from './profile.dto';
 import { account } from '@/core/appwriteClient';
 import { handleErrors } from '@/core/utils';
 import { useDialog } from '@/ui/Dialog';
+import { authCentralState } from '@/core/AuthCentralService';
 
 const getAccount = async () => {
   const acc = await account.get();
@@ -82,6 +83,10 @@ export const useProfileLogic = () => {
     prefs.avatar = fileId;
     await account.updatePrefs(prefs);
     setValue('prefs.avatar', fileId);
+    authCentralState.account.value = {
+      ...authCentralState.account.value,
+      prefs
+    };
     success('Imagen de perfil actualizada');
   };
 

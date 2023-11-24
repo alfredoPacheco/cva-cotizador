@@ -3,8 +3,58 @@ import { AuthService } from './AuthService';
 import isEqual from 'lodash/isEqual';
 import omit from 'lodash/omit';
 import { type Models } from 'appwrite';
-import { account } from './appwriteClient.ts';
+import { account, storage } from './appwriteClient.ts';
 import { useEffect } from 'react';
+import { effect, signal } from '@preact/signals-react';
+import { get } from 'lodash';
+
+const getAccount = async () => {
+  const acc = await account.get();
+  const prefs = await account.getPrefs();
+  acc.prefs = prefs;
+  return acc;
+};
+
+const BUCKET_ID = import.meta.env.PUBLIC_APPWRITE_STORAGE_AVATARS;
+
+function getAvatarUrl(fileId?: string) {
+  if (!fileId) return null;
+  const f = storage.getFilePreview(BUCKET_ID, fileId);
+  // console.log('f', f);
+  return f;
+}
+
+function createAuthCentralState() {
+  const auth = signal<Models.Session>(null);
+  const account = signal<Models.User<Models.Preferences>>(null);
+  const avatarHref = signal<string>(null);
+  return { auth, account, avatarHref };
+}
+
+export const authCentralState = createAuthCentralState();
+
+effect(() => {
+  if (authCentralState.auth.value) {
+    getAccount()
+      .then(acc => {
+        authCentralState.account.value = acc;
+      })
+      .catch(() => {
+        authCentralState.account.value = null;
+      });
+  } else {
+    authCentralState.account.value = null;
+  }
+});
+
+effect(() => {
+  const fileId = get(authCentralState.account.value, 'prefs.avatar');
+  if (fileId) {
+    authCentralState.avatarHref.value = getAvatarUrl(fileId).href;
+  } else {
+    authCentralState.avatarHref.value = null;
+  }
+});
 
 const authChanged = (auth?: Models.Session, nextAuth?: Models.Session) => {
   if (
@@ -28,6 +78,7 @@ export class AuthCentralService {
   static setAuth(value?: Models.Session, quietly = false) {
     if (authChanged(AuthCentralService.auth, value)) {
       AuthCentralService.auth = value;
+      authCentralState.auth.value = AuthCentralService.auth;
       if (!quietly)
         AuthCentralService.OnAuthChange.next(AuthCentralService.auth);
       AuthCentralService.store(AuthCentralService.auth);

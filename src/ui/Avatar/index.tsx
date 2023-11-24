@@ -7,6 +7,8 @@ import { ID } from 'appwrite';
 import { useCallback, useRef, useState } from 'react';
 import Dropzone from 'react-dropzone';
 
+const BUCKET_ID = import.meta.env.PUBLIC_APPWRITE_STORAGE_AVATARS;
+
 interface AvatarProps {
   fileId?: string;
   directUpload?: boolean;
@@ -20,11 +22,9 @@ interface IAttachment extends File {
   isForUpload?: boolean;
 }
 
-const BUCKET_ID = import.meta.env.PUBLIC_APPWRITE_STORAGE_AVATARS;
-
-async function fetchAvatar(fileId?: string) {
+function getAvatarUrl(fileId?: string) {
   if (!fileId) return null;
-  const f = await storage.getFilePreview(BUCKET_ID, fileId);
+  const f = storage.getFilePreview(BUCKET_ID, fileId);
   // console.log('f', f);
   return f;
 }
@@ -44,7 +44,7 @@ const Avatar: React.FC<AvatarProps> = ({
 
   const { data, isLoading } = useQuery({
     queryKey: ['avatar', fileId],
-    queryFn: () => fetchAvatar(fileId),
+    queryFn: () => getAvatarUrl(fileId),
     enabled: !!fileId && !avatarDialog.isOpen,
     retry: false,
     placeholderData: keepPreviousData
@@ -159,8 +159,9 @@ const Avatar: React.FC<AvatarProps> = ({
             <Button
               className="p-0 rounded-full border-1 border-default-300"
               variant="light"
-              style={{ width, height }}
+              style={{ width, height, minHeight: 0, minWidth: 0 }}
               onPress={openFileDialog}
+              disableRipple={readOnly}
               // onPress={() => !readOnly && directRemoveFile(firstOne)}
             >
               <Image src={data?.href} width="150" height="150" />

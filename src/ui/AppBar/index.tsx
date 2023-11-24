@@ -1,6 +1,5 @@
 import Logo from '@/ui/Logo';
 import {
-  Divider,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -12,6 +11,7 @@ import {
   User
 } from '@nextui-org/react';
 import Container from '../Container';
+import { authCentralState } from '@/core/AuthCentralService';
 
 const AppBar = ({ logout }) => {
   return (
@@ -45,7 +45,8 @@ const AppBar = ({ logout }) => {
                   as: 'button',
                   className: 'transition-transform',
                   // color: 'secondary',
-                  size: 'lg'
+                  size: 'lg',
+                  src: authCentralState.avatarHref.value
                   // src: 'https://i.pravatar.cc/150?u=a042581f4e29026704d'
                 }}
               />
