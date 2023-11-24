@@ -23,6 +23,15 @@ const parseResponse = (resp: any) => {
   } catch {
     response = resp;
   }
+  if (response?.status === 'failed') {
+    throw new Error('Function error');
+  }
+  if (response?.error) {
+    if (response.error.response) {
+      throw response.error.response;
+    }
+    throw response.error;
+  }
   console.log('response: ', response);
   return response;
 };
@@ -42,9 +51,11 @@ export const listUsers = async (query = '') => {
 export const createUser = async data => {
   console.log('createuser: ', data);
   if (!data) throw new Error('data is required');
+  const payload = JSON.stringify(data);
+
   const resp = await functions.createExecution(
     USERS_FN,
-    JSON.stringify(data),
+    payload,
     false,
     '/',
     'POST'
@@ -340,12 +351,6 @@ export const useAccountCreate = () => {
       const resp = await createUser(data);
       return resp;
     }
-  });
-};
-
-export const useAccountUpdate = () => {
-  return useMutation({
-    ...defaultUpdateMutation([QUERY_KEY], useQueryClient())
   });
 };
 

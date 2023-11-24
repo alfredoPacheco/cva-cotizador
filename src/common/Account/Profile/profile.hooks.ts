@@ -52,21 +52,16 @@ export const useProfileLogic = () => {
       if (dirtyFields.email) {
         await account.updateEmail(data.email, password);
         success('Email actualizado');
-        // cleanDirtyField('email');
       }
       if (dirtyFields.phone) {
         await account.updatePhone(data.phone, password);
         success('Teléfono actualizado');
-        // cleanDirtyField('phone');
       }
 
       if (dirtyFields.name) {
         await account.updateName(data.name);
         success('Nombre actualizado');
-        // cleanDirtyField('name');
       }
-
-      // await reset
     } catch (e: any) {
       if (e?.feedback === 'cancel') {
         console.log(e);

@@ -157,7 +157,9 @@ const Avatar: React.FC<AvatarProps> = ({
               </Button>
             ) : ( */}
             <Button
-              className="p-0 rounded-full border-1 border-default-300"
+              className={`p-0 rounded-full ${
+                data?.href ? '' : 'border-1 border-default-300'
+              }`}
               variant="light"
               style={{ width, height, minHeight: 0, minWidth: 0 }}
               onPress={openFileDialog}

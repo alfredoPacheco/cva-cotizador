@@ -35,6 +35,10 @@ export function defaultCreateMutation<T extends BaseDto>({
       );
     },
     onMutate: async (data: T) => {
+      if (!data.$id) {
+        console.error('data.$id is required for optimistic updates');
+        throw new Error('data.$id is required for optimistic updates');
+      }
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey });
@@ -93,6 +97,10 @@ export function defaultUpdateMutation<T extends BaseDto>(
       );
     },
     onMutate: async (data: T) => {
+      if (!data.$id) {
+        console.error('data.$id is required for optimistic updates');
+        throw new Error('data.$id is required for optimistic updates');
+      }
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey });
@@ -136,6 +144,10 @@ export function defaultDeleteMutation<T extends BaseDto>(
       return await databases.deleteDocument(DATABASE_ID, collectionId, id);
     },
     onMutate: async (data: T) => {
+      if (!data.$id) {
+        console.error('data.$id is required for optimistic updates');
+        throw new Error('data.$id is required for optimistic updates');
+      }
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey });

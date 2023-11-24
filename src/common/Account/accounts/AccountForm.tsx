@@ -1,11 +1,13 @@
 import { Field, PasswordInput, TextInput } from '@/ui/Inputs';
 import { useForm } from 'react-hook-form';
 import {
+  updateEmail,
+  updateName,
+  updatePhone,
   updateUserPrefs,
   useAccountCreate,
   useAccountDelete,
-  useAccountSingle,
-  useAccountUpdate
+  useAccountSingle
 } from './account.hooks';
 import type { AccountDto } from './account';
 import { FormButton } from '@/ui/Buttons';
@@ -43,21 +45,39 @@ const AccountForm: React.FC<AccountFormProps> = ({ id, dialog }) => {
 
   const { data } = useAccountSingle(id, id !== 'new');
 
-  const { control, handleSubmit, getValues, setValue, watch } =
-    useForm<AccountDto>({
-      values: data
-    });
+  const {
+    control,
+    handleSubmit,
+    getValues,
+    setValue,
+    watch,
+    formState: { isValid, dirtyFields }
+  } = useForm<AccountDto>({
+    values: data
+  });
 
   const createAccount = useAccountCreate();
-  const saveAccount = useAccountUpdate();
   const removeAccount = useAccountDelete();
 
-  const onSubmit = handleSubmit(async data => {
+  const onSubmit = handleSubmit(async (data: AccountDto) => {
     try {
-      await saveAccount.mutateAsync(data);
-      success('Registro actualizado.');
-    } catch (err) {
-      handleErrors(err, error);
+      if (!isValid) return;
+
+      if (dirtyFields.email) {
+        await updateEmail(id, data.email);
+        success('Email actualizado');
+      }
+      if (dirtyFields.phone) {
+        await updatePhone(id, data.phone);
+        success('Teléfono actualizado');
+      }
+
+      if (dirtyFields.name) {
+        await updateName(id, data.name);
+        success('Nombre actualizado');
+      }
+    } catch (e: any) {
+      handleErrors(e, error);
     }
   });
 
@@ -96,21 +116,16 @@ const AccountForm: React.FC<AccountFormProps> = ({ id, dialog }) => {
 
   return (
     <form className="flex flex-col gap-5" onSubmit={onSubmit}>
-      <Avatar
-        fileId={watch('prefs.avatar')}
-        width={80}
-        height={80}
-        onChange={onAvatarChange}
-      />
+      <div className="self-center">
+        <Avatar
+          fileId={watch('prefs.avatar')}
+          width={80}
+          height={80}
+          onChange={onAvatarChange}
+        />
+      </div>
       <FormField control={control} name="name" label="Nombre" />
       <FormField control={control} name="email" label="Email" />
-      {/* <FormField control={control} name="businessName" label="Razón social" />
-      <FormField
-        control={control}
-        name="address"
-        label="Domicilio Fiscal"
-        rows={1}
-      /> */}
       <FormField control={control} name="phone" label="Teléfono" />
       <Field label="Contraseña">
         <PasswordInput control={control} name="password" variant="underlined" />
