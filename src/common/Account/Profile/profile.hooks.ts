@@ -81,7 +81,7 @@ export const useProfileLogic = () => {
     const prefs = getValues('prefs') || {};
     prefs.avatar = fileId;
     await account.updatePrefs(prefs);
-    setValue('prefs', prefs);
+    setValue('prefs.avatar', fileId);
     success('Imagen de perfil actualizada');
   };
 

@@ -12,6 +12,8 @@ interface AvatarProps {
   directUpload?: boolean;
   readOnly?: boolean;
   onChange(fileId: string, file: IAttachment): void;
+  width?: number;
+  height?: number;
 }
 
 interface IAttachment extends File {
@@ -31,10 +33,14 @@ const Avatar: React.FC<AvatarProps> = ({
   fileId,
   directUpload,
   readOnly,
-  onChange
+  onChange,
+  width = 150,
+  height = 150
 }) => {
   const el = useRef<any>();
   const avatarDialog = useDialog();
+
+  console.log('fileId', fileId);
 
   const { data, isLoading } = useQuery({
     queryKey: ['avatar', fileId],
@@ -151,9 +157,9 @@ const Avatar: React.FC<AvatarProps> = ({
               </Button>
             ) : ( */}
             <Button
-              className="p-0"
+              className="p-0 rounded-full border-1 border-default-300"
               variant="light"
-              style={{ width: 150, height: 150 }}
+              style={{ width, height }}
               onPress={openFileDialog}
               // onPress={() => !readOnly && directRemoveFile(firstOne)}
             >

@@ -14,7 +14,7 @@ export interface CreateMutation<BaseDto> {
 
 interface defaultCreateMutationProps {
   queryKey: QueryKey;
-  collectionId: string;
+  collectionId?: string;
   queryClient: QueryClient;
   appendMode?: 'append' | 'prepend';
 }
@@ -26,6 +26,7 @@ export function defaultCreateMutation<T extends BaseDto>({
 }: defaultCreateMutationProps) {
   return {
     mutationFn: async (data: T) => {
+      if (!collectionId) throw new Error('collectionId is required');
       return await databases.createDocument(
         DATABASE_ID,
         collectionId,
@@ -70,11 +71,12 @@ export function defaultCreateMutation<T extends BaseDto>({
 
 export function defaultUpdateMutation<T extends BaseDto>(
   queryKey,
-  collectionId: string,
-  queryClient: QueryClient
+  queryClient: QueryClient,
+  collectionId?: string
 ) {
   return {
     mutationFn: async (data: T) => {
+      if (!collectionId) throw new Error('collectionId is required');
       const payload = omit(data, [
         '$id',
         '$collectionId',
@@ -125,11 +127,12 @@ export function defaultUpdateMutation<T extends BaseDto>(
 
 export function defaultDeleteMutation<T extends BaseDto>(
   queryKey,
-  collectionId: string,
-  queryClient: QueryClient
+  queryClient: QueryClient,
+  collectionId?: string
 ) {
   return {
     mutationFn: async (id: string) => {
+      if (!collectionId) throw new Error('collectionId is required');
       return await databases.deleteDocument(DATABASE_ID, collectionId, id);
     },
     onMutate: async (data: T) => {

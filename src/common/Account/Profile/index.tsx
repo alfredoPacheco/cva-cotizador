@@ -10,6 +10,7 @@ const Profile = () => {
     useProfileLogic();
   const {
     getValues,
+    watch,
     formState: { dirtyFields, isValid }
   } = form;
   return (
@@ -47,7 +48,7 @@ const Profile = () => {
       >
         <h1 className="text-4xl">Profile</h1>
 
-        <Avatar fileId={getValues('prefs.avatar')} onChange={onAvatarChange} />
+        <Avatar fileId={watch('prefs.avatar')} onChange={onAvatarChange} />
 
         <TextInput
           label="Nombre"

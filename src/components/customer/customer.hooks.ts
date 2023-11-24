@@ -21,7 +21,7 @@ type listResponse = {
 };
 
 function getSearchQuery(searchValue: string, sample: any) {
-  const result = [];
+  const result: string[] = [];
   if (!searchValue || searchValue.trim() === '') return result;
 
   // const sample: T = {} as T;
@@ -96,12 +96,12 @@ export const useCustomerCreate = () => {
 
 export const useCustomerUpdate = () => {
   return useMutation({
-    ...defaultUpdateMutation([QUERY_KEY], COLLECTION_ID, useQueryClient())
+    ...defaultUpdateMutation([QUERY_KEY], useQueryClient(), COLLECTION_ID)
   });
 };
 
 export const useCustomerDelete = () => {
   return useMutation({
-    ...defaultDeleteMutation([QUERY_KEY], COLLECTION_ID, useQueryClient())
+    ...defaultDeleteMutation([QUERY_KEY], useQueryClient(), COLLECTION_ID)
   });
 };
