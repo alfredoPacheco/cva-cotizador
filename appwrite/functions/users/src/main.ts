@@ -1,5 +1,10 @@
 import { Client, Users, ID } from 'node-appwrite';
 
+const filterSensitiveData = user => {
+  const { hash, hashOptions, password, ...filteredUser } = user;
+  return filteredUser;
+};
+
 // This is your Appwrite function
 // It's executed each time we get a request
 export default async ({ req, res, log, error }: any) => {
@@ -30,7 +35,7 @@ export default async ({ req, res, log, error }: any) => {
       if (req.path === '/') {
         log('listUsers');
         const result = await users.list();
-        // result.users = result.users.map(filterSensitiveData);
+        result.users = result.users.map(filterSensitiveData);
         return res.json(result);
       }
 
@@ -104,8 +109,8 @@ export default async ({ req, res, log, error }: any) => {
 
       log('getUser');
       const result = await users.get(userId);
-      // const response = filterSensitiveData(result);
-      return res.json(result);
+      const response = filterSensitiveData(result);
+      return res.json(response);
     }
     log('here');
     log(req.method);
