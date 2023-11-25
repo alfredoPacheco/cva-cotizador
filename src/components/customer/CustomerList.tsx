@@ -26,9 +26,7 @@ const CustomerList = () => {
     !dialog.isOpen
   );
 
-  const filteredData = query.data?.documents.filter(
-    searchLocally(debouncedSearch)
-  );
+  const filteredData = query.data?.filter(searchLocally(debouncedSearch));
 
   return (
     <Container>
@@ -60,7 +58,7 @@ const CustomerList = () => {
             }}
             title={item.name}
           >
-            <CustomerForm id={item.$id} />
+            <CustomerForm id={item.$id} item={item} />
           </AccordionItem>
         ))}
       </Accordion>

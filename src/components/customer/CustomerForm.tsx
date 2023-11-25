@@ -34,18 +34,20 @@ const FormField = ({ label, name, control, rows = 0, ...props }) => {
 interface CustomerFormProps {
   id: string;
   dialog?: DialogWidget;
+  item?: CustomerDto;
 }
 
-const CustomerForm: React.FC<CustomerFormProps> = ({ id, dialog }) => {
+const CustomerForm: React.FC<CustomerFormProps> = ({ id, dialog, item }) => {
   const { success, error } = useNotifications();
-  const { data } = useCustomerSingle(id, id !== 'new');
+  const { data } = useCustomerSingle(id);
   const { control, handleSubmit, getValues } = useForm<CustomerDto>({
     values: data
   });
   const createCustomer = useCustomerCreate();
   const saveCustomer = useCustomerUpdate();
   const removeCustomer = useCustomerDelete();
-  const onSubmit = handleSubmit(async data => {
+
+  const onSubmit = handleSubmit(async (data: CustomerDto) => {
     try {
       await saveCustomer.mutateAsync(data);
       success('Registro actualizado.');
@@ -53,7 +55,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ id, dialog }) => {
       handleErrors(err, error);
     }
   });
-  const onRemove = (id: string) => async () => {
+  const onRemove = async () => {
     try {
       if (confirm('¿Estás seguro de eliminar este registro?') === false) return;
       await removeCustomer.mutateAsync(id);
@@ -95,7 +97,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ id, dialog }) => {
           <Field label="Cotizaciones">Aquí iran las cotizaciones</Field>
           <div className="flex flex-row justify-between items-center">
             <FormButton
-              onPress={onRemove(data?.$id)}
+              onPress={onRemove}
               startContent={
                 <span className="text-lg">
                   <PiTrashBold />

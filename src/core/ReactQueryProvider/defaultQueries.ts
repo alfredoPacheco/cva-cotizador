@@ -17,13 +17,10 @@ export const defaultQueryFn: QueryFunction = async ({
   }
 
   const secondElement = get(queryKey, '[1]');
-  if (!secondElement) {
-    return { documents: [] };
-  }
 
   const queryType = secondElement as QueryType;
 
-  if (queryType.type === 'single') {
+  if (queryType?.type === 'single') {
     const res = await databases.getDocument(
       DATABASE_ID,
       collectionId,
@@ -57,5 +54,5 @@ export const defaultQueryFn: QueryFunction = async ({
     allQueries
   );
 
-  return res;
+  return res?.documents || [];
 };

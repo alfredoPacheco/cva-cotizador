@@ -29,6 +29,7 @@
     "framer-motion": "^10.16.4",
     "joi": "^17.11.0",
     "lodash": "^4.17.21",
+    "meilisearch": "^0.36.0",
     "react": "^18.2.0",
     "react-advanced-cropper": "^0.19.3",
     "react-dom": "^18.2.0",

@@ -47,31 +47,29 @@ export const useCustomerList = (enabled = true) => {
   const filtersForm = useForm(); // This form is to handle search and filters over list
 
   const debouncedSearch = useDebounce(filtersForm.watch('search'), 100);
-  const [searchQuery, setSearchQuery] = useState<Query[]>([]);
+  // const [searchQuery, setSearchQuery] = useState<Query[]>([]);
 
-  useEffect(() => {
-    const newSearch = getSearchQuery(debouncedSearch, {
-      name: ''
-      // email: '',
-      // phone: '',
-      // address: '',
-      // businessName: '',
-      // taxRegime: ''
-    });
-    console.log('newSearch', newSearch);
-    // setSearchQuery(newSearch);
-  }, [debouncedSearch]);
+  // useEffect(() => {
+  //   const newSearch = getSearchQuery(debouncedSearch, {
+  //     name: ''
+  //     // email: '',
+  //     // phone: '',
+  //     // address: '',
+  //     // businessName: '',
+  //     // taxRegime: ''
+  //   });
+  //   console.log('newSearch', newSearch);
+  //   // setSearchQuery(newSearch);
+  // }, [debouncedSearch]);
 
-  const query = useQuery<listResponse>({
-    queryKey: [
-      QUERY_KEY,
-      {
-        type: 'list',
-        queries: [Query.orderDesc('$id'), ...searchQuery]
-      } as QueryType
-    ],
+  const query = useQuery<CustomerDto[]>({
+    queryKey: [QUERY_KEY],
     enabled
   });
+
+  useEffect(() => {
+    query.refetch();
+  }, [debouncedSearch]);
 
   return { query, filtersForm, debouncedSearch };
 };
