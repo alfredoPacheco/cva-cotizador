@@ -92,7 +92,7 @@ export const TextInput: React.FC<TextInputProps> = ({
       }) => (
         <div className="w-full p-0" style={{ maxWidth: w }}>
           <InputComponent
-            {...props}
+            // {...props}
             rows={rows || 1}
             minRows={rows || 1}
             placeholder={props.placeholder}
@@ -205,7 +205,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   ...props
 }) => {
   const [smsSent, setSmsSent] = useState(false);
-  const { Confirm, openConfirm } = useConfirmDialog();
+  const { openConfirm } = useConfirmDialog();
   const { success, error } = useNotifications();
 
   const verifyPhoneMutation = useMutation({
@@ -307,9 +307,11 @@ export const SearchInput: React.FC<TextInputProps> = props => {
   );
 };
 
-export const FormLabel = ({ children }) => {
+export const FormLabel = ({ children, size }) => {
   return (
-    <label className="text-default-600 text-sm font-semibold">{children}</label>
+    <label className={`text-default-600 text-${size} font-semibold`}>
+      {children}
+    </label>
   );
 };
 
@@ -317,13 +319,36 @@ interface FieldProps {
   label: string;
   children: React.ReactNode;
   className?: string | undefined;
+  size?: string;
+  style?: React.CSSProperties;
 }
 
 export const Field: React.FC<FieldProps> = props => {
   return (
-    <div className={'flex flex-col ' + props.className}>
-      <FormLabel>{props.label}</FormLabel>
+    <div className={'flex flex-col ' + props.className} style={props.style}>
+      <FormLabel size={props.size}>{props.label}</FormLabel>
       {props.children}
     </div>
+  );
+};
+
+export const ReadonlyField = ({
+  control,
+  name,
+  w = '100%',
+  required = false,
+  fontSize = 'sm'
+}) => {
+  return (
+    <Controller
+      control={control}
+      rules={{ required }}
+      render={({ field: { value } }) => (
+        <div className="w-full p-0" style={{ maxWidth: w }}>
+          <p className={`text-${fontSize} min-h-unit-5`}>{value}</p>
+        </div>
+      )}
+      name={name}
+    />
   );
 };

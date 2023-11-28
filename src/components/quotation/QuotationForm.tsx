@@ -1,4 +1,6 @@
-import { Field, TextInput } from '@/ui/Inputs';
+import { Field, ReadonlyField, TextInput } from '@/ui/Inputs';
+import { Autocomplete, AutocompleteItem } from '@nextui-org/autocomplete';
+import { Divider } from '@nextui-org/react';
 import { useForm } from 'react-hook-form';
 import {
   useQuotationCreate,
@@ -13,6 +15,8 @@ import { PiTrashBold } from 'react-icons/pi';
 import { useNotifications } from '@/core/useNotifications';
 import { handleErrors } from '@/core/utils';
 import type { DialogWidget } from '@/ui/Dialog';
+import { useCustomerList } from '../customer/customer.hooks';
+import { Avatar } from '@nextui-org/react';
 
 const FormField = ({ label, name, control, rows = 0, ...props }) => {
   return (
@@ -31,6 +35,25 @@ const FormField = ({ label, name, control, rows = 0, ...props }) => {
   );
 };
 
+const ReadonlyFormField = ({
+  label,
+  name,
+  control,
+  labelSize = 'sm',
+  prefix = '',
+  minWidth = 30,
+  ...props
+}) => {
+  return (
+    <Field label={label} size={labelSize} style={{ minWidth }}>
+      <div className={`flex flex-row items-center text-${props.fontSize}`}>
+        {prefix}
+        <ReadonlyField control={control} name={name} {...props} />
+      </div>
+    </Field>
+  );
+};
+
 interface QuotationFormProps {
   id: string;
   dialog?: DialogWidget;
@@ -42,6 +65,13 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
   const { control, handleSubmit, getValues } = useForm<QuotationDto>({
     values: data
   });
+
+  const {
+    query: { data: customers }
+  } = useCustomerList();
+
+  console.log('customers', customers);
+
   const createQuotation = useQuotationCreate();
   const saveQuotation = useQuotationUpdate();
   const removeQuotation = useQuotationDelete();
@@ -80,44 +110,103 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
   }
   return (
     <form className="flex flex-col gap-5" onSubmit={onSubmit}>
-      <FormField control={control} name="name" label="Nombre" />
-      <FormField control={control} name="businessName" label="Razón social" />
+      <div className="flex flex-row justify-between">
+        <ReadonlyFormField
+          control={control}
+          name="createdBy"
+          label="Realizado pr:"
+          readOnly
+        />
+        <Field label="Cliente">
+          <Autocomplete
+            defaultItems={[]}
+            items={customers || []}
+            variant="bordered"
+            aria-label="Cliente"
+            // label="Cliente"
+            placeholder="Select a user"
+            labelPlacement="inside"
+            className="max-w-xs"
+          >
+            {item => (
+              <AutocompleteItem key={item.$id} textValue={item.name}>
+                <div className="flex gap-2 items-center">
+                  {/* <Avatar
+                    alt={item.name}
+                    className="flex-shrink-0"
+                    size="sm"
+                    // src={item.avatar}
+                  /> */}
+                  <div className="flex flex-col">
+                    <span className="text-small">{item.name}</span>
+                    <span className="text-tiny text-default-400">
+                      {item.email}
+                    </span>
+                  </div>
+                </div>
+              </AutocompleteItem>
+            )}
+          </Autocomplete>
+        </Field>
+        <div
+          className="flex flex-grow flex-row items-center justify-center"
+          style={{ maxWidth: 200 }}
+        >
+          <FormButton onPress={onRemove}>Borrar</FormButton>
+          <Divider orientation="vertical" className="h-5" />
+          <FormButton type="submit">Guardar</FormButton>
+        </div>
+      </div>
+      <FormField control={control} name="scope" label="Alcance del trabajo" />
+      <FormField control={control} name="exclusions" label="Exclusiones" />
       <FormField
         control={control}
-        name="address"
-        label="Domicilio Fiscal"
+        name="observations"
+        label="Observaciones"
         rows={1}
       />
-      <FormField control={control} name="email" label="Email" />
-      <FormField control={control} name="phone" label="Teléfono" />
-      <FormField control={control} name="taxRegime" label="Régimen Fiscal" />
-      {id !== 'new' && (
-        <>
-          <Field label="Cotizaciones">Aquí iran las cotizaciones</Field>
-          <div className="flex flex-row justify-between items-center">
-            <FormButton
-              onPress={onRemove}
-              startContent={
-                <span className="text-lg">
-                  <PiTrashBold />
-                </span>
-              }
-            >
-              Borrar
-            </FormButton>
-            <FormButton
-              type="submit"
-              endContent={
-                <span className="text-lg">
-                  <GiSaveArrow />
-                </span>
-              }
-            >
-              Guardar
-            </FormButton>
-          </div>
-        </>
-      )}
+      <FormField
+        control={control}
+        name="paymentConditions"
+        label="Condiciones de pago"
+      />
+
+      <FormField control={control} name="capacitation" label="Capacitación" />
+
+      <div className="flex flex-row justify-between bg-default-200 rounded-lg p-8">
+        <div className="flex flex-col gap-2">
+          <ReadonlyFormField
+            control={control}
+            name="subtotal"
+            label="Subtotal"
+            labelSize="2xl"
+            fontSize="2xl"
+            prefix="$"
+          />
+        </div>
+        <Divider orientation="vertical" className="h-14" />
+        <div className="flex flex-col gap-2">
+          <ReadonlyFormField
+            control={control}
+            name="iva"
+            label="Subtotal"
+            labelSize="2xl"
+            fontSize="2xl"
+            prefix="$"
+          />
+        </div>
+        <Divider orientation="vertical" className="h-14" />
+        <div className="flex flex-col gap-2">
+          <ReadonlyFormField
+            control={control}
+            name="total"
+            label="Subtotal"
+            labelSize="2xl"
+            fontSize="2xl"
+            prefix="$"
+          />
+        </div>
+      </div>
     </form>
   );
 };
