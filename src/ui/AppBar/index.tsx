@@ -54,6 +54,14 @@ const AppBar = ({ logout }) => {
             </DropdownTrigger>
             <DropdownMenu aria-label="App Menu" variant="bordered">
               <DropdownItem
+                key="quotations"
+                onPress={() => {
+                  window.location.href = '/quotations';
+                }}
+              >
+                Cotizaciones
+              </DropdownItem>
+              <DropdownItem
                 key="customers"
                 onPress={() => {
                   window.location.href = '/customers';

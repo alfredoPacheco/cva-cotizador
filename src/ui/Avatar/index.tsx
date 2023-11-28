@@ -40,8 +40,6 @@ const Avatar: React.FC<AvatarProps> = ({
   const el = useRef<any>();
   const avatarDialog = useDialog();
 
-  console.log('fileId', fileId);
-
   const { data, isLoading } = useQuery({
     queryKey: ['avatar', fileId],
     queryFn: () => getAvatarUrl(fileId),

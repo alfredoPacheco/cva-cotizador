@@ -5,20 +5,15 @@ import {
   defaultUpdateMutation,
   defaultDeleteMutation
 } from '@/core/ReactQueryProvider/defaultMutations';
-import type { CustomerDto } from './customer';
+import type { QuotationDto } from './quotation';
 import { useForm } from 'react-hook-form';
 import { Query } from 'appwrite';
 import { useEffect, useState } from 'react';
 import { useDebounce } from '@/core';
 import { omit } from 'lodash';
 
-const QUERY_KEY = 'customers';
-const COLLECTION_ID = 'customers';
-
-type listResponse = {
-  documents: CustomerDto[];
-  total: number;
-};
+const QUERY_KEY = 'quotations';
+const COLLECTION_ID = 'quotations';
 
 function getSearchQuery(searchValue: string, sample: any) {
   const result: string[] = [];
@@ -43,7 +38,7 @@ function getSearchQuery(searchValue: string, sample: any) {
   return result;
 }
 
-export const useCustomerList = (enabled = true) => {
+export const useQuotationList = (enabled = true) => {
   const filtersForm = useForm(); // This form is to handle search and filters over list
 
   const debouncedSearch = useDebounce(filtersForm.watch('search'), 100);
@@ -62,7 +57,7 @@ export const useCustomerList = (enabled = true) => {
   //   // setSearchQuery(newSearch);
   // }, [debouncedSearch]);
 
-  const query = useQuery<CustomerDto[]>({
+  const query = useQuery<QuotationDto[]>({
     queryKey: [QUERY_KEY],
     enabled
   });
@@ -74,14 +69,14 @@ export const useCustomerList = (enabled = true) => {
   return { query, filtersForm, debouncedSearch };
 };
 
-export const useCustomerSingle = (id: string, enabled = true) => {
-  return useQuery<CustomerDto>({
+export const useQuotationSingle = (id: string, enabled = true) => {
+  return useQuery<QuotationDto>({
     queryKey: [QUERY_KEY, id],
     enabled
   });
 };
 
-export const useCustomerCreate = () => {
+export const useQuotationCreate = () => {
   return useMutation({
     ...defaultCreateMutation({
       queryKey: [QUERY_KEY],
@@ -92,13 +87,13 @@ export const useCustomerCreate = () => {
   });
 };
 
-export const useCustomerUpdate = () => {
+export const useQuotationUpdate = () => {
   return useMutation({
     ...defaultUpdateMutation([QUERY_KEY], useQueryClient(), COLLECTION_ID)
   });
 };
 
-export const useCustomerDelete = () => {
+export const useQuotationDelete = () => {
   return useMutation({
     ...defaultDeleteMutation([QUERY_KEY], useQueryClient(), COLLECTION_ID)
   });

@@ -1,12 +1,12 @@
 import { Field, TextInput } from '@/ui/Inputs';
 import { useForm } from 'react-hook-form';
 import {
-  useCustomerCreate,
-  useCustomerDelete,
-  useCustomerSingle,
-  useCustomerUpdate
-} from './customer.hooks';
-import type { CustomerDto } from './customer';
+  useQuotationCreate,
+  useQuotationDelete,
+  useQuotationSingle,
+  useQuotationUpdate
+} from './quotation.hooks';
+import type { QuotationDto } from './quotation';
 import { FormButton } from '@/ui/Buttons';
 import { GiSaveArrow } from 'react-icons/gi';
 import { PiTrashBold } from 'react-icons/pi';
@@ -31,24 +31,24 @@ const FormField = ({ label, name, control, rows = 0, ...props }) => {
   );
 };
 
-interface CustomerFormProps {
+interface QuotationFormProps {
   id: string;
   dialog?: DialogWidget;
 }
 
-const CustomerForm: React.FC<CustomerFormProps> = ({ id, dialog }) => {
+const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
   const { success, error } = useNotifications();
-  const { data } = useCustomerSingle(id, id !== 'new');
-  const { control, handleSubmit, getValues } = useForm<CustomerDto>({
+  const { data } = useQuotationSingle(id, id !== 'new');
+  const { control, handleSubmit, getValues } = useForm<QuotationDto>({
     values: data
   });
-  const createCustomer = useCustomerCreate();
-  const saveCustomer = useCustomerUpdate();
-  const removeCustomer = useCustomerDelete();
+  const createQuotation = useQuotationCreate();
+  const saveQuotation = useQuotationUpdate();
+  const removeQuotation = useQuotationDelete();
 
-  const onSubmit = handleSubmit(async (data: CustomerDto) => {
+  const onSubmit = handleSubmit(async (data: QuotationDto) => {
     try {
-      await saveCustomer.mutateAsync(data);
+      await saveQuotation.mutateAsync(data);
       success('Registro actualizado.');
     } catch (err) {
       handleErrors(err, error);
@@ -57,7 +57,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ id, dialog }) => {
   const onRemove = async () => {
     try {
       if (confirm('¿Estás seguro de eliminar este registro?') === false) return;
-      await removeCustomer.mutateAsync(id);
+      await removeQuotation.mutateAsync(id);
       success('Registro eliminado.');
     } catch (err) {
       handleErrors(err, error);
@@ -67,7 +67,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ id, dialog }) => {
   const onCreate = async (s: string) => {
     try {
       const data = getValues();
-      await createCustomer.mutateAsync(data);
+      await createQuotation.mutateAsync(data);
       success('Registro creado.');
       dialog?.close();
     } catch (err) {
@@ -122,4 +122,4 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ id, dialog }) => {
   );
 };
 
-export default CustomerForm;
+export default QuotationForm;

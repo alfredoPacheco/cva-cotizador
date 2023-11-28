@@ -1,0 +1,8 @@
+---
+import QuotationList from '@/components/quotation/QuotationList';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout title={import.meta.env.PUBLIC_APP_NAME}>
+  <QuotationList client:only="react" />
+</BaseLayout>

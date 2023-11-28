@@ -6,15 +6,13 @@ interface ListQueryType {
   queries?: string[];
 }
 
-interface SingleQueryType {
-  type: 'single';
-  id: string;
-}
-
-export type QueryType = ListQueryType | SingleQueryType;
-
 export enum MutationTypes {
   CREATE = 'create',
   UPDATE = 'update',
   DELETE = 'delete'
 }
+
+type ListQueryKey = [string, ListQueryType];
+type ByIdQueryKey = [string, string];
+
+export type QueryType = ListQueryKey | ByIdQueryKey;

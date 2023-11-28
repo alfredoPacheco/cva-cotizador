@@ -6,7 +6,7 @@ import type { QueryType } from './queryKeys';
 
 const DATABASE_ID = import.meta.env.PUBLIC_APPWRITE_DATABASE!;
 
-export const defaultQueryFn: QueryFunction = async ({
+export const defaultQueryFn: QueryFunction<unknown, QueryType> = async ({
   queryKey,
   meta,
   signal
@@ -16,32 +16,32 @@ export const defaultQueryFn: QueryFunction = async ({
     return { documents: [] };
   }
 
-  const secondElement = get(queryKey, '[1]');
+  const byIdQuery = queryKey[1];
 
-  const queryType = secondElement as QueryType;
-
-  if (queryType?.type === 'single') {
+  if (typeof byIdQuery === 'string') {
     const res = await databases.getDocument(
       DATABASE_ID,
       collectionId,
-      queryType.id
+      byIdQuery
     );
 
     return res;
   }
 
+  const listQuery = queryKey[1];
+
   // QueryType is list:
-  const limit = get(queryType, 'limit', 1000);
-  const page = get(queryType, 'page', 1);
+  const limit = get(listQuery, 'limit', 1000);
+  const page = get(listQuery, 'page', 1);
 
   const allQueries: string[] = [];
-  const queries = get(queryType, 'queries', []);
+  const queries = get(listQuery, 'queries', []);
   allQueries.push(...queries);
 
   allQueries.push(Query.limit(limit));
   allQueries.push(Query.offset((page - 1) * limit));
 
-  const params = get(queryType, 'params', {});
+  const params = get(listQuery, 'params', {});
   Object.keys(params).forEach(key => {
     allQueries.push(Query.equal(key, params[key]));
   });
