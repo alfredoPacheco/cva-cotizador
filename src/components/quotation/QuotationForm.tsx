@@ -17,6 +17,7 @@ import { handleErrors } from '@/core/utils';
 import type { DialogWidget } from '@/ui/Dialog';
 import { useCustomerList } from '../customer/customer.hooks';
 import { Avatar } from '@nextui-org/react';
+import QuotationItemsList from './quotationItem/QuotationItemsList';
 
 const FormField = ({ label, name, control, rows = 0, ...props }) => {
   return (
@@ -117,39 +118,9 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
           label="Realizado pr:"
           readOnly
         />
-        <Field label="Cliente">
-          <Autocomplete
-            defaultItems={[]}
-            items={customers || []}
-            variant="bordered"
-            aria-label="Cliente"
-            // label="Cliente"
-            placeholder="Select a user"
-            labelPlacement="inside"
-            className="max-w-xs"
-          >
-            {item => (
-              <AutocompleteItem key={item.$id} textValue={item.name}>
-                <div className="flex gap-2 items-center">
-                  {/* <Avatar
-                    alt={item.name}
-                    className="flex-shrink-0"
-                    size="sm"
-                    // src={item.avatar}
-                  /> */}
-                  <div className="flex flex-col">
-                    <span className="text-small">{item.name}</span>
-                    <span className="text-tiny text-default-400">
-                      {item.email}
-                    </span>
-                  </div>
-                </div>
-              </AutocompleteItem>
-            )}
-          </Autocomplete>
-        </Field>
+        <Field label="Cliente">cliente</Field>
         <div
-          className="flex flex-grow flex-row items-center justify-center"
+          className="flex flex-grow flex-row items-center justify-center gap-1"
           style={{ maxWidth: 200 }}
         >
           <FormButton onPress={onRemove}>Borrar</FormButton>
@@ -157,6 +128,8 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
           <FormButton type="submit">Guardar</FormButton>
         </div>
       </div>
+      <QuotationItemsList quotationId={id} />
+      <pre>{JSON.stringify(data, null, 1)}</pre>
       <FormField control={control} name="scope" label="Alcance del trabajo" />
       <FormField control={control} name="exclusions" label="Exclusiones" />
       <FormField

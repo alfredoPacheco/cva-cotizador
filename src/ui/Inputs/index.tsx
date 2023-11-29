@@ -1,5 +1,12 @@
 import { account } from '@/core/appwriteClient';
-import { Chip, Input, Textarea, type InputProps } from '@nextui-org/react';
+import {
+  Chip,
+  Input,
+  Textarea,
+  type InputProps,
+  Autocomplete as AutocompleteNextUI,
+  AutocompleteItem
+} from '@nextui-org/react';
 import { useMutation } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { Controller, type Control } from 'react-hook-form';
@@ -349,6 +356,64 @@ export const ReadonlyField = ({
         </div>
       )}
       name={name}
+    />
+  );
+};
+
+interface AutocompleteeProps {
+  name: string;
+  control: any;
+  items: any[];
+  ariaLabel?: string;
+  placeholder?: string;
+  children?: React.ReactNode;
+}
+export const Autocomplete: React.FC<AutocompleteeProps> = props => {
+  return (
+    <Controller
+      name={props.name}
+      control={props.control}
+      // rules={{ ...rules, required }}
+      render={({
+        field: { onChange, onBlur, value },
+        fieldState: { error, isDirty }
+      }) => (
+        <AutocompleteNextUI
+          // defaultItems={[]}
+          items={props.items || []}
+          variant="bordered"
+          aria-label={props.ariaLabel || 'Autocomplete'}
+          // label="Cliente"
+          placeholder={props.placeholder || 'Buscar'}
+          labelPlacement="inside"
+          className="max-w-xs"
+          // selectedKey={data.customer?.$id}
+          value={value}
+          selectedKey={value}
+          onSelectionChange={key => {
+            onChange(key);
+          }}
+        >
+          {item => (
+            <AutocompleteItem key={item.$id} textValue={item.name}>
+              <div className="flex gap-2 items-center">
+                {/* <Avatar
+          alt={item.name}
+          className="flex-shrink-0"
+          size="sm"
+          // src={item.avatar}
+        /> */}
+                <div className="flex flex-col">
+                  <span className="text-small">{item.name}</span>
+                  <span className="text-tiny text-default-400">
+                    {item.email}
+                  </span>
+                </div>
+              </div>
+            </AutocompleteItem>
+          )}
+        </AutocompleteNextUI>
+      )}
     />
   );
 };

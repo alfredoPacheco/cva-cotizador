@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { type QueryType } from '@/core/ReactQueryProvider/queryKeys';
 import {
   defaultCreateMutation,
   defaultUpdateMutation,
@@ -8,7 +7,7 @@ import {
 import type { CustomerDto } from './customer';
 import { useForm } from 'react-hook-form';
 import { Query } from 'appwrite';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDebounce } from '@/core';
 import { omit } from 'lodash';
 

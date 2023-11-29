@@ -62,7 +62,7 @@ const QuotationList = () => {
           </AccordionItem>
         ))}
       </Accordion>
-      <pre>{JSON.stringify(query.data, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(query.data, null, 2)}</pre> */}
       <div style={{ minHeight: 300 }} />
     </Container>
   );
