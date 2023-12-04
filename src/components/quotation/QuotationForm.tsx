@@ -115,7 +115,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
         <ReadonlyFormField
           control={control}
           name="createdBy"
-          label="Realizado pr:"
+          label="Realizado por:"
           readOnly
         />
         <Field label="Cliente">cliente</Field>
@@ -128,56 +128,58 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
           <FormButton type="submit">Guardar</FormButton>
         </div>
       </div>
-      <QuotationItemsList quotationId={id} />
-      <pre>{JSON.stringify(data, null, 1)}</pre>
-      <FormField control={control} name="scope" label="Alcance del trabajo" />
-      <FormField control={control} name="exclusions" label="Exclusiones" />
-      <FormField
-        control={control}
-        name="observations"
-        label="Observaciones"
-        rows={1}
-      />
-      <FormField
-        control={control}
-        name="paymentConditions"
-        label="Condiciones de pago"
-      />
+      <div className="bg-white -ml-8 -mr-8 p-8">
+        <QuotationItemsList quotationId={id} />
+        <pre>{JSON.stringify(data, null, 1)}</pre>
+        <FormField control={control} name="scope" label="Alcance del trabajo" />
+        <FormField control={control} name="exclusions" label="Exclusiones" />
+        <FormField
+          control={control}
+          name="observations"
+          label="Observaciones"
+          rows={1}
+        />
+        <FormField
+          control={control}
+          name="paymentConditions"
+          label="Condiciones de pago"
+        />
 
-      <FormField control={control} name="capacitation" label="Capacitación" />
+        <FormField control={control} name="capacitation" label="Capacitación" />
 
-      <div className="flex flex-row justify-between bg-default-200 rounded-lg p-8">
-        <div className="flex flex-col gap-2">
-          <ReadonlyFormField
-            control={control}
-            name="subtotal"
-            label="Subtotal"
-            labelSize="2xl"
-            fontSize="2xl"
-            prefix="$"
-          />
-        </div>
-        <Divider orientation="vertical" className="h-14" />
-        <div className="flex flex-col gap-2">
-          <ReadonlyFormField
-            control={control}
-            name="iva"
-            label="Subtotal"
-            labelSize="2xl"
-            fontSize="2xl"
-            prefix="$"
-          />
-        </div>
-        <Divider orientation="vertical" className="h-14" />
-        <div className="flex flex-col gap-2">
-          <ReadonlyFormField
-            control={control}
-            name="total"
-            label="Subtotal"
-            labelSize="2xl"
-            fontSize="2xl"
-            prefix="$"
-          />
+        <div className="flex flex-row justify-between bg-default-200 rounded-lg p-8">
+          <div className="flex flex-col gap-2 flex-1">
+            <ReadonlyFormField
+              control={control}
+              name="subtotal"
+              label="Subtotal"
+              labelSize="2xl"
+              fontSize="2xl"
+              prefix="$"
+            />
+          </div>
+          <Divider orientation="vertical" className="h-14 mx-10" />
+          <div className="flex flex-col gap-2 flex-1">
+            <ReadonlyFormField
+              control={control}
+              name="iva"
+              label="Subtotal"
+              labelSize="2xl"
+              fontSize="2xl"
+              prefix="$"
+            />
+          </div>
+          <Divider orientation="vertical" className="h-14 mx-10" />
+          <div className="flex flex-col gap-2 flex-1">
+            <ReadonlyFormField
+              control={control}
+              name="total"
+              label="Subtotal"
+              labelSize="2xl"
+              fontSize="2xl"
+              prefix="$"
+            />
+          </div>
         </div>
       </div>
     </form>

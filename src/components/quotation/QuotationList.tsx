@@ -51,7 +51,7 @@ const QuotationList = () => {
               </span>
             )}
             classNames={{
-              base: 'border-1 border-default-200 rounded-xl mt-5',
+              base: 'border-1 border-default-200 rounded-xl mt-5 bg-default-200',
               title: 'bg-primary text-white text-2xl font-bold',
               heading: 'bg-primary rounded-xl px-6 py-2',
               content: 'p-6'
