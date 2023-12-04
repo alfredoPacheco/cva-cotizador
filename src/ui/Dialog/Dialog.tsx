@@ -39,6 +39,7 @@ export interface DialogProps {
   notifications?: {
     error: (msg: string, ms?: number) => void;
   };
+  transparent?: boolean;
   [key: string]: any;
 }
 
@@ -101,6 +102,7 @@ export class DialogWidget extends Component<DialogProps> {
       esc,
       //   dividersOff,
       formOff,
+      transparent,
       ...rest
     } = this.props;
 
@@ -120,7 +122,7 @@ export class DialogWidget extends Component<DialogProps> {
         isKeyboardDismissDisabled={!esc}
         className="green-light"
       >
-        <ModalContent>
+        <ModalContent className={transparent ? 'bg-transparent' : 'initial'}>
           {() => (
             <>
               {title && (

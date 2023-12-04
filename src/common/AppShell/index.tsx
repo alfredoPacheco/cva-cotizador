@@ -4,6 +4,9 @@ import Login from '../Account/Login';
 import { useDialog } from '@/ui/Dialog';
 import AppBar from '@/ui/AppBar';
 import Providers from './Providers';
+import { useIsFetching } from '@tanstack/react-query';
+import { useGlobalLoader } from '@/ui/GlobalLoader';
+import { useEffect } from 'react';
 
 interface AppShellProps {
   children?: React.ReactNode;
@@ -24,6 +27,13 @@ const AppShell: React.FC<AppShellProps> = ({
     openLogin: loginDialog.open,
     closeLogin: loginDialog.close
   });
+
+  const isFetching = useIsFetching();
+  const { setLoading } = useGlobalLoader();
+
+  useEffect(() => {
+    setLoading(isFetching > 0);
+  }, [isFetching, setLoading]);
 
   return (
     <>
