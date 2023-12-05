@@ -7,9 +7,10 @@ import {
 import type { QuotationDto } from './quotation';
 import { useForm } from 'react-hook-form';
 import { Query } from 'appwrite';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDebounce } from '@/core';
 import { omit } from 'lodash';
+import type { ListQueryType } from '@/core/ReactQueryProvider/queryKeys';
 
 const QUERY_KEY = 'quotations';
 const COLLECTION_ID = 'quotations';
@@ -57,7 +58,10 @@ export const useQuotationList = (enabled = true) => {
   // }, [debouncedSearch]);
 
   const query = useQuery<QuotationDto[]>({
-    queryKey: [QUERY_KEY],
+    queryKey: [
+      QUERY_KEY,
+      { queries: [Query.select(['$id', 'title'])] } as ListQueryType
+    ],
     enabled
   });
 

@@ -33,13 +33,16 @@ const QuotationList = () => {
       <Dialog {...dialog} formOff okLabel="Guardar" title="Cotización">
         {d => <QuotationForm id="new" dialog={d} />}
       </Dialog>
+
       <Title mt={40} mb={40} divider>
         Cotizaciones
       </Title>
+
       <div className="flex flex-row justify-between items-center -ml-1 mt-5">
         <TextButton onPress={dialog.open}>Crear nueva cotización</TextButton>
         <SearchInput control={filtersForm.control} name="search" />
       </div>
+
       <Accordion variant="light" showDivider={false}>
         {filteredData?.map(item => (
           <AccordionItem
@@ -57,11 +60,13 @@ const QuotationList = () => {
               content: 'p-6'
             }}
             title={item.title}
+            onKeyDown={e => e.stopPropagation()}
           >
             <QuotationForm id={item.$id} />
           </AccordionItem>
         ))}
       </Accordion>
+
       {/* <pre>{JSON.stringify(query.data, null, 2)}</pre> */}
       <div style={{ minHeight: 300 }} />
     </Container>

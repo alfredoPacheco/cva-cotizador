@@ -7,16 +7,12 @@ const DATABASE_ID = import.meta.env.PUBLIC_APPWRITE_DATABASE!;
 export interface BaseDto {
   $id: string;
 }
-export interface CreateMutation<BaseDto> {
-  collectionId: string;
-  data: BaseDto;
-}
 
 interface defaultCreateMutationProps {
   queryKey: QueryKey;
   collectionId?: string;
   queryClient: QueryClient;
-  appendMode?: 'append' | 'prepend';
+  appendMode?: 'none' | 'append' | 'prepend';
 }
 export function defaultCreateMutation<T extends BaseDto>({
   queryKey,
@@ -27,11 +23,19 @@ export function defaultCreateMutation<T extends BaseDto>({
   return {
     mutationFn: async (data: T) => {
       if (!collectionId) throw new Error('collectionId is required');
+      const payload = omit(data, [
+        '$id',
+        '$collectionId',
+        '$createdAt',
+        '$databaseId',
+        '$permissions',
+        '$updatedAt'
+      ]);
       return await databases.createDocument(
         DATABASE_ID,
         collectionId,
         ID.unique(),
-        data
+        payload
       );
     },
     onMutate: async (data: T) => {

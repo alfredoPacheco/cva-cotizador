@@ -15,6 +15,7 @@ import { GoSearch } from 'react-icons/go';
 import useConfirmDialog from '../Dialog/useConfirmDialog';
 import { useNotifications } from '@/core/useNotifications';
 import { handleErrors } from '@/core/utils';
+import Tiptap from '../Tiptap';
 
 interface TextInputProps extends InputProps {
   control: Control<any>;
@@ -100,7 +101,7 @@ export const TextInput: React.FC<TextInputProps> = ({
         <div className="w-full p-0" style={{ maxWidth: w }}>
           <InputComponent
             // {...props}
-            rows={rows || 1}
+            // rows={rows || 1}
             minRows={rows || 1}
             placeholder={props.placeholder}
             onBlur={onBlur}
@@ -314,6 +315,77 @@ export const SearchInput: React.FC<TextInputProps> = props => {
   );
 };
 
+export const FormTextInput: React.FC<TextInputProps> = ({
+  control,
+  name,
+  rules = {},
+  mt = 0,
+  mb = 0,
+  customMessage = '',
+  focus = false,
+  color = 'default',
+  type = 'text',
+  w = '100%',
+  required = false,
+  ...props
+}) => {
+  return (
+    <Controller
+      control={control}
+      rules={{ ...rules, required }}
+      render={({
+        field: { onChange, onBlur, value },
+        fieldState: { error, isDirty }
+      }) => (
+        <div className="w-full p-0" style={{ maxWidth: w }}>
+          <Input
+            // {...props}
+            className="h-2"
+            size="sm"
+            classNames={{
+              // base: 'h-2 border-1 border-red-500',
+              inputWrapper: 'h-8 min-h-5'
+              // mainWrapper: 'h-2',
+              // innerWrapper: 'h-2 !p-0',
+              // input: 'h-2'
+            }}
+            placeholder={props.placeholder}
+            onBlur={onBlur}
+            onChange={onChange}
+            type={type}
+            variant={isDirty ? 'flat' : 'bordered'}
+            color={isDirty ? 'warning' : color}
+            value={value || ''}
+            label={props.label}
+            autoFocus={focus}
+            autoCapitalize="none"
+            isRequired={required}
+            // dense={dense}
+            readOnly={props.readOnly}
+            disabled={props.disabled}
+            // left={left ? <TextInputPaper.Icon icon={left} /> : null}
+            // right={
+            //   right ? (
+            //     <TextInputPaper.Icon icon={right} {...rightProps} />
+            //   ) : null
+            // }
+            width="100%"
+            style={{
+              // backgroundColor: theme.colors.tertiary,
+              marginTop: mt,
+              marginBottom: mb
+            }}
+            isInvalid={!!error}
+            errorMessage={customMessage || error?.message}
+            endContent={props.endContent}
+          />
+        </div>
+      )}
+      name={name}
+    />
+  );
+};
+
 export const FormLabel = ({ children, size }) => {
   return (
     <label className={`text-default-600 text-${size} font-semibold`}>
@@ -332,7 +404,10 @@ interface FieldProps {
 
 export const Field: React.FC<FieldProps> = props => {
   return (
-    <div className={'flex flex-col ' + props.className} style={props.style}>
+    <div
+      className={'flex flex-col ' + (props.className || '')}
+      style={props.style}
+    >
       <FormLabel size={props.size}>{props.label}</FormLabel>
       {props.children}
     </div>
@@ -414,6 +489,32 @@ export const Autocomplete: React.FC<AutocompleteeProps> = props => {
           )}
         </AutocompleteNextUI>
       )}
+    />
+  );
+};
+
+export const RichTextEditor = ({ control, name }) => {
+  return (
+    <Controller
+      control={control}
+      render={({
+        field: { onChange, onBlur, value },
+        fieldState: { error, isDirty }
+      }) => <Tiptap value={value} onChange={onChange} />}
+      name={name}
+    />
+  );
+};
+
+export const TextArea = ({ control, name }) => {
+  return (
+    <Controller
+      control={control}
+      render={({
+        field: { onChange, onBlur, value },
+        fieldState: { error, isDirty }
+      }) => <Textarea value={value} onChange={onChange} />}
+      name={name}
     />
   );
 };

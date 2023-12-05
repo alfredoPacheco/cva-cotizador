@@ -22,6 +22,13 @@
     "@tanstack/react-query": "^5.0.5",
     "@tanstack/react-query-devtools": "^5.1.0",
     "@tanstack/react-table": "^8.10.7",
+    "@tiptap/extension-image": "^2.1.13",
+    "@tiptap/extension-link": "^2.1.13",
+    "@tiptap/extension-text-align": "^2.1.13",
+    "@tiptap/extension-underline": "^2.1.13",
+    "@tiptap/pm": "^2.1.13",
+    "@tiptap/react": "^2.1.13",
+    "@tiptap/starter-kit": "^2.1.13",
     "@types/react": "^18.2.31",
     "@types/react-dom": "^18.2.14",
     "appwrite": "^13.0.0",
@@ -44,6 +51,7 @@
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.0.5",
+    "@types/lodash": "^4.14.202",
     "bun-types": "^1.0.7",
     "sass": "^1.69.4"
   }

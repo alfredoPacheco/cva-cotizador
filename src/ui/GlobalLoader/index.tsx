@@ -28,6 +28,7 @@ export const GlobalLoaderProvider = ({ children }) => {
   useEffect(() => {
     if (!loading) {
       setLoaderDebounced(false);
+      return;
     }
     const handler = setTimeout(() => {
       setLoaderDebounced(loading);

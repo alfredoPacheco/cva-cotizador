@@ -34,20 +34,6 @@ function createAuthCentralState() {
 export const authCentralState = createAuthCentralState();
 
 effect(() => {
-  if (authCentralState.auth.value) {
-    getAccount()
-      .then(acc => {
-        authCentralState.account.value = acc;
-      })
-      .catch(() => {
-        authCentralState.account.value = null;
-      });
-  } else {
-    authCentralState.account.value = null;
-  }
-});
-
-effect(() => {
   const fileId = get(authCentralState.account.value, 'prefs.avatar');
   if (fileId) {
     authCentralState.avatarHref.value = getAvatarUrl(fileId).href;
@@ -199,3 +185,18 @@ export class AuthCentralService {
     }, []);
   };
 }
+
+effect(() => {
+  if (authCentralState.auth.value) {
+    getAccount()
+      .then(acc => {
+        authCentralState.account.value = acc;
+      })
+      .catch(() => {
+        authCentralState.account.value = null;
+        AuthCentralService.RequestLogin();
+      });
+  } else {
+    authCentralState.account.value = null;
+  }
+});

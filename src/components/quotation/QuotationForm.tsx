@@ -1,5 +1,4 @@
 import { Field, ReadonlyField, TextInput } from '@/ui/Inputs';
-import { Autocomplete, AutocompleteItem } from '@nextui-org/autocomplete';
 import { Divider } from '@nextui-org/react';
 import { useForm } from 'react-hook-form';
 import {
@@ -10,27 +9,20 @@ import {
 } from './quotation.hooks';
 import type { QuotationDto } from './quotation';
 import { FormButton } from '@/ui/Buttons';
-import { GiSaveArrow } from 'react-icons/gi';
-import { PiTrashBold } from 'react-icons/pi';
 import { useNotifications } from '@/core/useNotifications';
 import { handleErrors } from '@/core/utils';
 import type { DialogWidget } from '@/ui/Dialog';
-import { useCustomerList } from '../customer/customer.hooks';
-import { Avatar } from '@nextui-org/react';
 import QuotationItemsList from './quotationItem/QuotationItemsList';
 
-const FormField = ({ label, name, control, rows = 0, ...props }) => {
+const FormField = ({ label, name, control, rows = 2, ...props }) => {
   return (
     <Field label={label}>
       <TextInput
         control={control}
         name={name}
-        variant="underlined"
         rows={rows}
-        classNames={{
-          inputWrapper: ['!px-0']
-        }}
         {...props}
+        variant="underlined"
       />
     </Field>
   );
@@ -62,16 +54,24 @@ interface QuotationFormProps {
 
 const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
   const { success, error } = useNotifications();
-  const { data } = useQuotationSingle(id, id !== 'new');
-  const { control, handleSubmit, getValues } = useForm<QuotationDto>({
+  const { data, refetch } = useQuotationSingle(id, id !== 'new');
+  const form = useForm<QuotationDto>({
     values: data
   });
 
   const {
-    query: { data: customers }
-  } = useCustomerList();
+    control,
+    handleSubmit,
+    getValues,
+    watch,
+    formState: { isValid, isDirty }
+  } = form;
 
-  console.log('customers', customers);
+  // const {
+  //   query: { data: customers }
+  // } = useCustomerList();
+
+  // console.log('customers', customers);
 
   const createQuotation = useQuotationCreate();
   const saveQuotation = useQuotationUpdate();
@@ -79,15 +79,35 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
 
   const onSubmit = handleSubmit(async (data: QuotationDto) => {
     try {
-      await saveQuotation.mutateAsync(data);
+      // console.log({ isValid, isDirty });
+      // console.log('dirtyFields', form.formState.dirtyFields);
+      // console.log('data', data);
+      // return;
+      if (!isValid) return console.log('not valid');
+      if (!isDirty) return console.log('not dirty');
+
+      // generate payload from dirty fields:
+      const payload = Object.keys(data).reduce((prev, current) => {
+        if (form.formState.dirtyFields[current]) {
+          prev[current] = data[current];
+        }
+        return prev;
+      }, {} as any);
+      payload.$id = data.$id;
+      console.log('payload to be saved', payload);
+      await saveQuotation.mutateAsync(payload);
+
+      await refetch();
+
       success('Registro actualizado.');
     } catch (err) {
       handleErrors(err, error);
     }
   });
+
   const onRemove = async () => {
     try {
-      if (confirm('¿Estás seguro de eliminar este registro?') === false) return;
+      if (confirm('¿Seguro de eliminar este registro?') === false) return;
       await removeQuotation.mutateAsync(id);
       success('Registro eliminado.');
     } catch (err) {
@@ -109,6 +129,9 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
   if (dialog) {
     dialog.onOk = onCreate;
   }
+
+  const items = watch('items');
+
   return (
     <form className="flex flex-col gap-5" onSubmit={onSubmit}>
       <div className="flex flex-row justify-between">
@@ -128,9 +151,11 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
           <FormButton type="submit">Guardar</FormButton>
         </div>
       </div>
-      <div className="bg-white -ml-8 -mr-8 p-8">
-        <QuotationItemsList quotationId={id} />
-        <pre>{JSON.stringify(data, null, 1)}</pre>
+      <div className="bg-white -ml-6 -mr-6 p-8">
+        <QuotationItemsList form={form} items={items} />
+
+        {/* <pre>{JSON.stringify(items, null, 1)}</pre> */}
+
         <FormField control={control} name="scope" label="Alcance del trabajo" />
         <FormField control={control} name="exclusions" label="Exclusiones" />
         <FormField

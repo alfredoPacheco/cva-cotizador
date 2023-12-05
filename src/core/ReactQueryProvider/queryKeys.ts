@@ -1,4 +1,4 @@
-interface ListQueryType {
+export interface ListQueryType {
   type: 'list';
   limit: number;
   page: number;
