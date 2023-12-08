@@ -171,7 +171,7 @@ export const isArrayEqual = (x: Array<any>, y: Array<any>) => {
 
 export const formatDate = (
   date: number | Date | string | undefined,
-  fmt = 'd/MMM/yy'
+  fmt = 'd/MM/YYYY'
 ): string => {
   if (date) return dayjs(date).format(fmt).toLowerCase();
   return '';

@@ -46,8 +46,6 @@ export const defaultQueryFn: QueryFunction<unknown, QueryType> = async ({
     allQueries.push(Query.equal(key, params[key]));
   });
 
-  console.log('allQueries', allQueries);
-
   const res = await databases.listDocuments(
     DATABASE_ID,
     collectionId,

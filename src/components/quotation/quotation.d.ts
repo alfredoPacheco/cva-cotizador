@@ -3,8 +3,10 @@ import type { CustomerDto } from '../customer/customer';
 
 export interface QuotationDto extends BaseDto {
   $id: string;
+  quotationNumber: string;
   title: string;
   sentAt?: Datetime;
+  validUntil?: Datetime;
   sentBy?: string;
   createdBy?: string;
   updatedBy?: string;

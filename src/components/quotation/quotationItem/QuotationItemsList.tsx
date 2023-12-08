@@ -21,6 +21,13 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({ form, items }) => {
     form.setValue('items', [...items, added]);
   };
 
+  const handleRemoveItem = async (index: number) => {
+    form.setValue(
+      'items',
+      items.filter((_, i) => i !== index)
+    );
+  };
+
   return (
     <div
       className="flex flex-col justify-center gap-2"
@@ -33,10 +40,11 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({ form, items }) => {
           item={item}
           index={index}
           sequence={index + 1}
+          handleRemoveItem={handleRemoveItem}
         />
       ))}
 
-      <div className="my-5 flex flex-col justify-center">
+      <div className="my-0 flex flex-col justify-center">
         <FormButton onPress={handleAddItem}>Agregar Partida</FormButton>
       </div>
     </div>

@@ -60,7 +60,17 @@ export const useQuotationList = (enabled = true) => {
   const query = useQuery<QuotationDto[]>({
     queryKey: [
       QUERY_KEY,
-      { queries: [Query.select(['$id', 'title'])] } as ListQueryType
+      {
+        queries: [
+          Query.select([
+            '$id',
+            'title',
+            'quotationNumber',
+            'sentAt',
+            'validUntil'
+          ])
+        ]
+      } as ListQueryType
     ],
     enabled
   });

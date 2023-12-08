@@ -10,23 +10,33 @@ interface QutationItemFormProps {
   sequence: number;
   form: any;
   index: number;
+  handleRemoveItem;
 }
 const QuotationItemForm: React.FC<QutationItemFormProps> = ({
   item,
   sequence,
   form,
-  index
+  index,
+  handleRemoveItem
 }) => {
   const deleteMutation = useQuotationItemDelete();
 
+  const onRemoveItem = async () => {
+    if (confirm('¿Estás seguro de eliminar esta partida?')) {
+      if (item.$id === 'new') {
+        await deleteMutation.mutate(item.$id);
+        return;
+      }
+      handleRemoveItem(index);
+    }
+  };
+
   return (
-    <div className="flex flex-col gap-7 rounded-lg border p-5">
-      <div className="flex flex-row justify-start -ml-2">
-        <FormButton onPress={() => deleteMutation.mutate(item.$id)}>
-          Remover Partida
-        </FormButton>
+    <div className="flex flex-col gap-4 rounded-lg border p-5 pt-1">
+      <div className="flex flex-row justify-start -ml-2 -mb-4">
+        <FormButton onPress={onRemoveItem}>Remover Partida</FormButton>
       </div>
-      <div className="flex flex-row justify-between gap-5">
+      <div className="flex flex-col sm:flex-row justify-between gap-5">
         <Field label="Partida">{sequence}</Field>
 
         <Divider orientation="vertical" className="h-15" />

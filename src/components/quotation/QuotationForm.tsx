@@ -133,7 +133,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
   const items = watch('items');
 
   return (
-    <form className="flex flex-col gap-5" onSubmit={onSubmit}>
+    <form className="flex flex-col gap-2" onSubmit={onSubmit}>
       <div className="flex flex-row justify-between">
         <ReadonlyFormField
           control={control}
@@ -151,7 +151,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
           <FormButton type="submit">Guardar</FormButton>
         </div>
       </div>
-      <div className="bg-white -ml-6 -mr-6 p-8">
+      <div className="bg-white -ml-6 -mr-6 p-8 -mb-6 rounded-b-lg border-default-200 border-b-1 flex flex-col gap-2">
         <QuotationItemsList form={form} items={items} />
 
         {/* <pre>{JSON.stringify(items, null, 1)}</pre> */}
@@ -172,7 +172,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
 
         <FormField control={control} name="capacitation" label="Capacitación" />
 
-        <div className="flex flex-row justify-between bg-default-200 rounded-lg p-8">
+        <div className="flex flex-row justify-between bg-default-200 rounded-lg p-8 mt-4">
           <div className="flex flex-col gap-2 flex-1">
             <ReadonlyFormField
               control={control}
@@ -188,7 +188,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
             <ReadonlyFormField
               control={control}
               name="iva"
-              label="Subtotal"
+              label="IVA 16%"
               labelSize="2xl"
               fontSize="2xl"
               prefix="$"
@@ -199,7 +199,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
             <ReadonlyFormField
               control={control}
               name="total"
-              label="Subtotal"
+              label="Total"
               labelSize="2xl"
               fontSize="2xl"
               prefix="$"

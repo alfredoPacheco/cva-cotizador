@@ -4,11 +4,14 @@ import Container from '@/ui/Container';
 import Title from '@/ui/Title';
 import { TextButton } from '@/ui/Buttons';
 import { SearchInput } from '@/ui/Inputs';
-import { Accordion, AccordionItem } from '@nextui-org/react';
+import { Accordion, AccordionItem, Divider } from '@nextui-org/react';
 import { PiPlus } from 'react-icons/pi';
 import { RxDividerVertical } from 'react-icons/rx';
 import QuotationForm from './QuotationForm';
 import { Dialog, useDialog } from '@/ui/Dialog';
+import type { QuotationDto } from './quotation';
+import { formatDate } from '@/core/utils';
+import QuotationCreateForm from './QuotationCreateForm';
 
 const searchLocally = (query: string) => (item: any) => {
   if (!query || query.trim() === '') return true;
@@ -20,6 +23,34 @@ const searchLocally = (query: string) => (item: any) => {
   });
 };
 
+const ItemTitle = ({ item }: { item: QuotationDto }) => (
+  <div className="flex flex-col">
+    <div className="flex flex-row justify-start items-center gap-2">
+      <span className="text-xs font-normal">
+        <span className="font-bold">Cotización: </span>
+        {item.quotationNumber}
+      </span>
+
+      <Divider orientation="vertical" className="h-6 bg-white" />
+
+      <span className="text-xs font-normal">
+        <span className="font-bold">Fecha: </span>
+        {formatDate(item.sentAt || new Date())}
+      </span>
+
+      <Divider orientation="vertical" className="h-6 bg-white" />
+
+      <span className="text-xs font-normal">
+        <span className="font-bold">Vigencia: </span>
+        {formatDate(item.validUntil || new Date())}
+      </span>
+    </div>
+    <div className="flex flex-row justify-start items-center">
+      <span className="font-bold text-xl">{item.title}</span>
+    </div>
+  </div>
+);
+
 const QuotationList = () => {
   const dialog = useDialog();
   const { query, filtersForm, debouncedSearch } = useQuotationList(
@@ -30,8 +61,8 @@ const QuotationList = () => {
 
   return (
     <Container>
-      <Dialog {...dialog} formOff okLabel="Guardar" title="Cotización">
-        {d => <QuotationForm id="new" dialog={d} />}
+      <Dialog {...dialog} formOff okLabel="Crear" title="Cotización">
+        {d => <QuotationCreateForm id="new" dialog={d} />}
       </Dialog>
 
       <Title mt={40} mb={40} divider>
@@ -55,11 +86,11 @@ const QuotationList = () => {
             )}
             classNames={{
               base: 'border-1 border-default-200 rounded-xl mt-5 bg-default-200',
-              title: 'bg-primary text-white text-2xl font-bold',
-              heading: 'bg-primary rounded-xl px-6 py-2',
+              title: 'bg-primary text-white',
+              heading: 'bg-primary rounded-xl px-6 py-0',
               content: 'p-6'
             }}
-            title={item.title}
+            title={<ItemTitle item={item} />}
             onKeyDown={e => e.stopPropagation()}
           >
             <QuotationForm id={item.$id} />
