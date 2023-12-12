@@ -31,6 +31,431 @@
       "commands": "npm install",
       "ignore": ["node_modules", ".npm"],
       "path": "functions/customers-search"
+    },
+    {
+      "$id": "6573a60708a1e22959c5",
+      "name": "tvc",
+      "runtime": "bun-1.0",
+      "execute": [],
+      "events": [],
+      "schedule": "",
+      "timeout": 900,
+      "enabled": true,
+      "logging": true,
+      "entrypoint": "src/main.ts",
+      "commands": "bun install",
+      "ignore": ["node_modules", ".npm"],
+      "path": "functions/tvc"
+    }
+  ],
+  "databases": [
+    {
+      "$id": "tvc",
+      "name": "tvc",
+      "$createdAt": "2023-12-08T22:36:46.141+00:00",
+      "$updatedAt": "2023-12-08T22:36:46.141+00:00",
+      "enabled": true
+    }
+  ],
+  "collections": [
+    {
+      "$id": "products",
+      "$permissions": [],
+      "databaseId": "tvc",
+      "name": "products",
+      "enabled": true,
+      "documentSecurity": false,
+      "attributes": [
+        {
+          "key": "tvcModel",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "tvcId",
+          "type": "integer",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": 0,
+          "max": 9223372036854775807,
+          "default": null
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 500,
+          "default": null
+        },
+        {
+          "key": "type",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 100,
+          "default": null
+        },
+        {
+          "key": "brand",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
+          "default": null
+        },
+        {
+          "key": "brandId",
+          "type": "integer",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": 0,
+          "max": 9223372036854775807,
+          "default": null
+        },
+        {
+          "key": "categoryId",
+          "type": "integer",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": 0,
+          "max": 9223372036854775807,
+          "default": null
+        },
+        {
+          "key": "category",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
+          "default": null
+        },
+        {
+          "key": "satKey",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 100,
+          "default": null
+        },
+        {
+          "key": "productFlowType",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 100,
+          "default": null
+        },
+        {
+          "key": "stageId",
+          "type": "integer",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": -9223372036854775808,
+          "max": 9223372036854775807,
+          "default": null
+        },
+        {
+          "key": "stageName",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 100,
+          "default": null
+        },
+        {
+          "key": "listPrice",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 100,
+          "default": null
+        },
+        {
+          "key": "distributorPrice",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 100,
+          "default": null
+        },
+        {
+          "key": "mediaMainImage",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 300,
+          "default": null
+        },
+        {
+          "key": "mediaGallery",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": true,
+          "size": 400,
+          "default": null
+        },
+        {
+          "key": "mediaVideos",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": true,
+          "size": 400,
+          "default": null
+        },
+        {
+          "key": "mediaDocuments",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": true,
+          "size": 400,
+          "default": null
+        },
+        {
+          "key": "piecesPerBox",
+          "type": "integer",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": -9223372036854775808,
+          "max": 9223372036854775807,
+          "default": null
+        },
+        {
+          "key": "pieceHeight",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "pieceLength",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "pieceWidth",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "pieceWeight",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "boxHeight",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "boxLength",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "boxWidth",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "boxWeight",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "breadcrumb",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 400,
+          "default": null
+        },
+        {
+          "key": "breadcrumbTree",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 700,
+          "default": null
+        },
+        {
+          "key": "overviews",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 500000,
+          "default": null
+        },
+        {
+          "key": "raw",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 2000000,
+          "default": null
+        },
+        {
+          "key": "providerModel",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 500,
+          "default": null
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "$id": "exchangeRates",
+      "$permissions": [],
+      "databaseId": "tvc",
+      "name": "exchangeRates",
+      "enabled": true,
+      "documentSecurity": false,
+      "attributes": [
+        {
+          "key": "value",
+          "type": "double",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": -1.7976931348623157e308,
+          "max": 1.7976931348623157e308,
+          "default": null
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "$id": "inventory",
+      "$permissions": [],
+      "databaseId": "tvc",
+      "name": "inventory",
+      "enabled": true,
+      "documentSecurity": false,
+      "attributes": [
+        {
+          "key": "name",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
+          "default": null
+        },
+        {
+          "key": "quantity",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "warehouseId",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        }
+      ],
+      "indexes": []
     }
   ]
 }
