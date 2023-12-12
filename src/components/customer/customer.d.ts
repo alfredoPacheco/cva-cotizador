@@ -8,9 +8,4 @@ export interface CustomerDto extends BaseDto {
   address?: string;
   taxRegime?: string;
   businessName?: string;
-  // city: string;
-  // state: string;
-  // zip: string;
-  // country: string;
-  // notes: string;
 }

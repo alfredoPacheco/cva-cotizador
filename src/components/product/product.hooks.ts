@@ -4,15 +4,18 @@ import {
   defaultUpdateMutation,
   defaultDeleteMutation
 } from '@/core/ReactQueryProvider/defaultMutations';
-import type { CustomerDto } from './customer';
+import type { ProductDto } from './product';
 import { useForm } from 'react-hook-form';
 import { Query } from 'appwrite';
 import { useEffect } from 'react';
 import { useDebounce } from '@/core';
 import { omit } from 'lodash';
+import type { ListQueryType } from '@/core/ReactQueryProvider/queryKeys';
 
-const QUERY_KEY = 'customers';
-const COLLECTION_ID = 'customers';
+const QUERY_KEY = 'products';
+const COLLECTION_ID = 'products';
+
+const DATABASE_ID = import.meta.env.PUBLIC_APPWRITE_DATABASE_TVC!;
 
 function getSearchQuery(searchValue: string, sample: any) {
   const result: string[] = [];
@@ -37,7 +40,7 @@ function getSearchQuery(searchValue: string, sample: any) {
   return result;
 }
 
-export const useCustomerList = (enabled = true) => {
+export const useProductList = (enabled = true) => {
   const filtersForm = useForm(); // This form is to handle search and filters over list
 
   const debouncedSearch = useDebounce(filtersForm.watch('search'), 100);
@@ -56,26 +59,43 @@ export const useCustomerList = (enabled = true) => {
   //   // setSearchQuery(newSearch);
   // }, [debouncedSearch]);
 
-  const query = useQuery<CustomerDto[]>({
-    queryKey: [QUERY_KEY],
-    enabled
+  const query = useQuery<ProductDto[]>({
+    queryKey: [
+      QUERY_KEY,
+      {
+        queries: [
+          Query.select([
+            '$id',
+            'brand',
+            'listPrice',
+            'distributorPrice',
+            'name',
+            'mediaMainImage'
+          ])
+        ]
+      } as ListQueryType
+    ],
+    enabled,
+    meta: {
+      DATABASE_ID
+    }
   });
 
-  useEffect(() => {
-    query.refetch();
-  }, [debouncedSearch]);
+  // useEffect(() => {
+  //   query.refetch();
+  // }, [debouncedSearch]);
 
   return { query, filtersForm, debouncedSearch };
 };
 
-export const useCustomerSingle = (id: string, enabled = true) => {
-  return useQuery<CustomerDto>({
+export const useProductSingle = (id: string, enabled = true) => {
+  return useQuery<ProductDto>({
     queryKey: [QUERY_KEY, id],
     enabled
   });
 };
 
-export const useCustomerCreate = () => {
+export const useProductCreate = () => {
   return useMutation({
     ...defaultCreateMutation({
       queryKey: [QUERY_KEY],
@@ -86,13 +106,13 @@ export const useCustomerCreate = () => {
   });
 };
 
-export const useCustomerUpdate = () => {
+export const useProductUpdate = () => {
   return useMutation({
     ...defaultUpdateMutation([QUERY_KEY], useQueryClient(), COLLECTION_ID)
   });
 };
 
-export const useCustomerDelete = () => {
+export const useProductDelete = () => {
   return useMutation({
     ...defaultDeleteMutation([QUERY_KEY], useQueryClient(), COLLECTION_ID)
   });

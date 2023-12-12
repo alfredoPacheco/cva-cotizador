@@ -31,7 +31,7 @@ const useAuth = (
     const subscription = AuthCentralService.OnAuthChange.subscribe(
       (newAuth?: Models.Session) => {
         forceUpdate();
-        console.log('auth change called from', calledFrom, { auth, newAuth });
+        // console.log('auth change called from', calledFrom, { auth, newAuth });
       }
     );
     return () => {

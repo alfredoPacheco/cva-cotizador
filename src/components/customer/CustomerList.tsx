@@ -58,7 +58,7 @@ const CustomerList = () => {
             }}
             title={item.name}
           >
-            <CustomerForm id={item.$id} item={item} />
+            <CustomerForm id={item.$id} />
           </AccordionItem>
         ))}
       </Accordion>

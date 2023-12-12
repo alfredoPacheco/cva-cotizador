@@ -409,7 +409,7 @@ export const Field: React.FC<FieldProps> = props => {
       style={props.style}
     >
       <FormLabel size={props.size}>{props.label}</FormLabel>
-      {props.children}
+      <div className="flex flex-row">{props.children}</div>
     </div>
   );
 };
@@ -513,7 +513,7 @@ export const TextArea = ({ control, name }) => {
       render={({
         field: { onChange, onBlur, value },
         fieldState: { error, isDirty }
-      }) => <Textarea value={value} onChange={onChange} />}
+      }) => <Textarea value={value || ''} onChange={onChange} />}
       name={name}
     />
   );

@@ -4,13 +4,15 @@ import { databases } from '../appwriteClient';
 import { Query } from 'appwrite';
 import type { QueryType } from './queryKeys';
 
-const DATABASE_ID = import.meta.env.PUBLIC_APPWRITE_DATABASE!;
+const DEFAULT_DATABASE_ID = import.meta.env.PUBLIC_APPWRITE_DATABASE!;
 
 export const defaultQueryFn: QueryFunction<unknown, QueryType> = async ({
   queryKey,
   meta,
   signal
 }) => {
+  const DATABASE_ID = get(meta, 'DATABASE_ID', DEFAULT_DATABASE_ID);
+
   const collectionId = get(queryKey, '[0]');
   if (!collectionId) {
     return { documents: [] };
