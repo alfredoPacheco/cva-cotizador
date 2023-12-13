@@ -114,6 +114,13 @@ export const ProductList: React.FC<ProductListProps> = ({ dialog }) => {
       </div>
 
       <div className="flex flex-wrap gap-1 sm:gap-5 h-[500px] overflow-scroll sm:p-5 content-between place-content-center border-b-2 border-default-100">
+        {filterSelected && items?.length === 0 && (
+          <div className="flex flex-col justify-center items-center gap-2 h-full">
+            <p className="text-default text-2xl">
+              No hay productos seleccionados
+            </p>
+          </div>
+        )}
         {items?.map(item => (
           <Card
             key={item.$id}
@@ -170,13 +177,15 @@ export const ProductList: React.FC<ProductListProps> = ({ dialog }) => {
           </Card>
         ))}
       </div>
-      <div className="flex flex-row justify-center items-center gap-2">
-        <Pagination
-          total={pages}
-          initialPage={page}
-          page={filterSelected ? 1 : page}
-          onChange={handlePageChange}
-        />
+      <div className="flex flex-row justify-center items-center gap-2 h-10">
+        {pages > 0 && (
+          <Pagination
+            total={pages}
+            initialPage={page}
+            page={filterSelected ? 1 : page}
+            onChange={handlePageChange}
+          />
+        )}
       </div>
 
       {/* <pre>{JSON.stringify(query.data, null, 2)}</pre> */}
