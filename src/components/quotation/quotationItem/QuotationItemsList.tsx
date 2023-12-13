@@ -6,6 +6,7 @@ import type { QuotationDto } from '../quotation';
 import { Dialog, useDialog } from '@/ui/Dialog';
 import { ProductList } from '@/components/product/ProductList';
 import type { TVCProductDto } from '@/components/product/product';
+import uniqueId from 'lodash/uniqueId';
 
 interface QuotationItemsProps {
   form: UseFormReturn<QuotationDto>;
@@ -13,13 +14,9 @@ interface QuotationItemsProps {
 }
 const QuotationItems: React.FC<QuotationItemsProps> = ({ form, items }) => {
   const handleAddItem = async () => {
-    const lastSequenceNumber = items.reduce(
-      (prev, current) => Math.max(prev, current.sequence),
-      0
-    );
     const added = {
       // $id: 'new',
-      sequence: lastSequenceNumber + 1
+      sequence: uniqueId()
     };
     form.setValue('items', [...items, added]);
   };
@@ -52,18 +49,13 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({ form, items }) => {
     const dialogFeddback: any = await dialogProducts.open().catch(err => {});
     // console.log('dialogFeddback', dialogFeddback);
     if ((dialogFeddback.feedback = 'ok')) {
-      const lastSequenceNumber = items.reduce(
-        (prev, current) => Math.max(prev, current.sequence),
-        0
-      );
-
       const [selectedItems, quantities] = dialogFeddback.args;
       // adapt TVCProductDto to QuotationItemDto
       const added = selectedItems.map(
         (item: TVCProductDto) =>
           ({
             // $id: 'new',
-            sequence: lastSequenceNumber + 1,
+            sequence: uniqueId(),
             model: item.tvcModel,
             quantity: quantities[item.$id],
             unitPrice: Number(item.listPrice),

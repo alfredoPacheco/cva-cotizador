@@ -113,13 +113,13 @@ export const ProductList: React.FC<ProductListProps> = ({ dialog }) => {
         )}
       </div>
 
-      <div className="flex flex-wrap gap-5 h-[600px] overflow-scroll sm:p-5 content-between place-content-start border-b-2 border-default-100">
+      <div className="flex flex-wrap gap-1 sm:gap-5 h-[500px] overflow-scroll sm:p-5 content-between place-content-center border-b-2 border-default-100">
         {items?.map(item => (
           <Card
             key={item.$id}
             isFooterBlurred
             // isBlurred
-            className="h-[280px] flex-grow w-[200px] max-w-[250px]"
+            className="h-[280px] flex-grow w-1/3 sm:w-[208px] max-w-[208px]"
             // isPressable
             // onPress={() => console.log('item pressed')}
           >

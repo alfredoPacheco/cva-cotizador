@@ -3,7 +3,7 @@ import type { QuotationDto } from '../quotation';
 
 export interface QuotationItemDto extends BaseDto {
   $id: string;
-  sequence: number;
+  sequence: number | string; // We use string before the item is saved
   model?: string;
   quantity?: number;
   unitPrice?: number;
