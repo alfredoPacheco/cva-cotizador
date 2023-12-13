@@ -50,7 +50,7 @@ export const ProductList: React.FC<ProductListProps> = ({ dialog }) => {
 
   const [filterSelected, setFilterSelected] = useState(false);
   const [page, setPage] = useState(1);
-  const [pageSize] = useState(10);
+  const [pageSize] = useState(12);
 
   const filteredItems = useMemo(() => {
     if (filterSelected) {
@@ -79,6 +79,21 @@ export const ProductList: React.FC<ProductListProps> = ({ dialog }) => {
     setPage(page);
   };
 
+  dialog.onOk = async () => {
+    const values = form.getValues();
+    const selection = Object.keys(values).reduce((prev, current) => {
+      if (values[current] > 0) {
+        prev[current] = values[current];
+      }
+      return prev;
+    }, {} as any);
+
+    const selectedIds = Object.keys(selection);
+    const items = query.data?.filter(item => selectedIds.includes(item.$id));
+
+    dialog.close('ok', items, selection);
+  };
+
   return (
     <Container maxWidth="5xl">
       {/* <Dialog {...dialog} formOff okLabel="Guardar" title="Producto">
@@ -98,13 +113,13 @@ export const ProductList: React.FC<ProductListProps> = ({ dialog }) => {
         )}
       </div>
 
-      <div className="flex flex-wrap gap-5 h-[600px] overflow-scroll p-5 justify-start border-b-2 border-default-100">
+      <div className="flex flex-wrap gap-5 h-[600px] overflow-scroll sm:p-5 content-between place-content-start border-b-2 border-default-100">
         {items?.map(item => (
           <Card
             key={item.$id}
             isFooterBlurred
             // isBlurred
-            className="h-[280px] flex-grow w-[200px] max-w-[220px]"
+            className="h-[280px] flex-grow w-[200px] max-w-[250px]"
             // isPressable
             // onPress={() => console.log('item pressed')}
           >
