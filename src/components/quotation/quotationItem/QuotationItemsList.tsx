@@ -59,7 +59,9 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({ form, items }) => {
             model: item.tvcModel,
             quantity: quantities[item.$id],
             unitPrice: Number(item.listPrice),
-            description: item.name
+            description: item.name,
+            providerId: item.$id,
+            provider: 'tvc'
           } as QuotationItemDto)
       );
 

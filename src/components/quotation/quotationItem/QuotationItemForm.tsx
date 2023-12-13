@@ -5,6 +5,7 @@ import { formatCurrency } from '@/core/utils';
 import { FormButton } from '@/ui/Buttons';
 import type { UseFormReturn } from 'react-hook-form';
 import type { QuotationDto } from '../quotation';
+import QuotationItemImages from './QuotationItemImages';
 
 interface QutationItemFormProps {
   item: QuotationItemDto;
@@ -85,7 +86,9 @@ const QuotationItemForm: React.FC<QutationItemFormProps> = ({
         <TextArea control={form.control} name={`items[${index}].description`} />
       </Field>
 
-      <Field label="Imagen(es)">Imagenes aquí</Field>
+      <Field label="Imagen(es)">
+        <QuotationItemImages item={item} />
+      </Field>
     </div>
   );
 };

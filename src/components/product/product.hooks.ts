@@ -7,10 +7,10 @@ import {
 import type { TVCProductDto } from './product';
 import { useForm } from 'react-hook-form';
 import { Query } from 'appwrite';
-import { useEffect } from 'react';
 import { useDebounce } from '@/core';
-import { omit } from 'lodash';
+import { get, omit } from 'lodash';
 import type { ListQueryType } from '@/core/ReactQueryProvider/queryKeys';
+import { databases } from '@/core/appwriteClient';
 
 const QUERY_KEY = 'products';
 const COLLECTION_ID = 'products';
@@ -95,6 +95,43 @@ export const useProductList = (enabled = true) => {
 export const useProductSingle = (id: string, enabled = true) => {
   return useQuery<TVCProductDto>({
     queryKey: [QUERY_KEY, id],
+    enabled
+  });
+};
+
+export const useProductImages = (id: string, enabled = true) => {
+  return useQuery<string[]>({
+    queryKey: [QUERY_KEY, id, 'images'],
+    queryFn: async () => {
+      const res = await databases.listDocuments(DATABASE_ID, COLLECTION_ID, [
+        Query.equal('$id', id),
+        Query.select([
+          '$id',
+          'name',
+          'tvcModel',
+          'listPrice',
+          'distributorPrice',
+          'brand',
+          'mediaMainImage',
+          'category',
+          'providerModel',
+          'mediaGallery'
+        ])
+      ]);
+
+      const result = [];
+      const firstItem = get(res.documents, '[0]');
+
+      const mainImage = get(firstItem, 'mediaMainImage');
+      if (mainImage) result.push(mainImage);
+
+      const images = get(firstItem, 'mediaGallery', []);
+      result.push(...images);
+
+      // console.log('useProductImages result', result);
+
+      return result;
+    },
     enabled
   });
 };
