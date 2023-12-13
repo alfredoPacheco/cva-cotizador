@@ -38,7 +38,12 @@ const QuotationItemForm: React.FC<QutationItemFormProps> = ({
 
   return (
     <div className="flex flex-col gap-4 rounded-lg border p-5 pt-1">
-      <Dialog {...dialogProducts} title="Productos" size="5xl">
+      <Dialog
+        {...dialogProducts}
+        title="Productos"
+        size="5xl"
+        okLabel="Agregar a cotización"
+      >
         {dialog => <ProductList />}
       </Dialog>
       <div className="flex flex-row justify-start -ml-2 -mb-4">
