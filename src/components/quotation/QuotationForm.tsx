@@ -13,6 +13,7 @@ import { useNotifications } from '@/core/useNotifications';
 import { handleErrors } from '@/core/utils';
 import type { DialogWidget } from '@/ui/Dialog';
 import QuotationItemsList from './quotationItem/QuotationItemsList';
+import { useQuotationItemDelete } from './quotationItem/quotationItem.hooks';
 
 const FormField = ({ label, name, control, rows = 2, ...props }) => {
   return (
@@ -76,13 +77,22 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
   const createQuotation = useQuotationCreate();
   const saveQuotation = useQuotationUpdate();
   const removeQuotation = useQuotationDelete();
+  const deleteItemMutation = useQuotationItemDelete();
 
   const onSubmit = handleSubmit(async (data: QuotationDto) => {
     try {
+      // console.log('data', data);
       // console.log({ isValid, isDirty });
       // console.log('dirtyFields', form.formState.dirtyFields);
-      // console.log('data', data);
       // return;
+      const removedItemsIds = form.getValues('__removedItemsIds');
+      if (removedItemsIds?.length) {
+        removedItemsIds.forEach(async id => {
+          await deleteItemMutation.mutateAsync(id);
+        });
+        form.setValue('__removedItemsIds', []);
+      }
+
       if (!isValid) return console.log('not valid');
       if (!isDirty) return console.log('not dirty');
 
@@ -97,7 +107,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
       console.log('payload to be saved', payload);
       await saveQuotation.mutateAsync(payload);
 
-      await refetch();
+      // await refetch();
 
       success('Registro actualizado.');
     } catch (err) {
@@ -131,6 +141,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
   }
 
   const items = watch('items');
+  // console.log('watched items', items);
 
   return (
     <form className="flex flex-col gap-2" onSubmit={onSubmit}>

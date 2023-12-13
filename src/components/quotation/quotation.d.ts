@@ -20,4 +20,5 @@ export interface QuotationDto extends BaseDto {
   total?: number;
   customer?: CustomerDto;
   items?: QuotationItemDto[];
+  __removedItemsIds?: string[];
 }

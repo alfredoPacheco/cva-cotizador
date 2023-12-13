@@ -25,9 +25,24 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({ form, items }) => {
   };
 
   const handleRemoveItem = async (index: number) => {
+    const items = form.getValues('items');
+    const itemToRemove = items[index];
+    if (itemToRemove.$id && itemToRemove.$id !== 'new') {
+      const removedItemsIds = form.getValues('__removedItemsIds') || [];
+      form.setValue('__removedItemsIds', [
+        ...removedItemsIds,
+        itemToRemove.$id
+      ]);
+    }
+
+    console.log('items', items);
+
     form.setValue(
       'items',
-      items.filter((_, i) => i !== index)
+      items.filter(
+        (item: QuotationItemDto) => item.sequence !== itemToRemove.sequence
+      ),
+      { shouldDirty: true }
     );
   };
 
@@ -47,7 +62,7 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({ form, items }) => {
       const added = selectedItems.map(
         (item: TVCProductDto) =>
           ({
-            $id: 'new',
+            // $id: 'new',
             sequence: lastSequenceNumber + 1,
             model: item.tvcModel,
             quantity: quantities[item.$id],
@@ -56,7 +71,9 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({ form, items }) => {
           } as QuotationItemDto)
       );
 
-      form.setValue('items', [...items, ...added]);
+      form.setValue('items', [...items, ...added], {
+        shouldDirty: true
+      });
     }
   };
 
@@ -73,10 +90,10 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({ form, items }) => {
       {items?.map((item, index) => (
         <QuotationItemForm
           form={form}
-          key={index}
+          key={item.sequence}
           item={item}
           index={index}
-          sequence={index + 1}
+          partida={index + 1}
           handleRemoveItem={handleRemoveItem}
         />
       ))}
