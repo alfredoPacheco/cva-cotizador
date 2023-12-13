@@ -7,6 +7,8 @@ import { Button, Card, CardFooter, Image, Pagination } from '@nextui-org/react';
 import ProductForm from './ProductForm';
 import { Dialog, useDialog } from '@/ui/Dialog';
 import { useEffect, useMemo, useState } from 'react';
+import { formatCurrency } from '@/core/utils';
+import { PiLink } from 'react-icons/pi';
 
 const searchLocally = (query: string) => (item: any) => {
   if (!query || query.trim() === '') return true;
@@ -59,7 +61,7 @@ export const ProductList = () => {
         <SearchInput control={filtersForm.control} name="search" />
       </div>
 
-      <div className="flex flex-wrap gap-5 h-[450px] overflow-scroll p-5 justify-start ">
+      <div className="flex flex-wrap gap-5 h-[600px] overflow-scroll p-5 justify-start border-b-1 border-primary-100">
         {items?.map(item => (
           <Card
             key={item.$id}
@@ -82,29 +84,28 @@ export const ProductList = () => {
               className="z-0 w-full h-full object-cover"
               src={item.mediaMainImage}
             />
-            <CardFooter className="absolute bg-primary/60 bottom-0 z-10 flex-col py-1 px-2">
+            <CardFooter className="absolute bg-primary/60 bottom-0 z-10 flex-col py-1 px-2 items-stretch">
               <p className="text-tiny text-white truncate w-full">
                 {item.name}
               </p>
-              <div className="flex flex-row justify-between items-center">
-                <div className="flex flex-grow gap-2 items-center">
-                  {/* <Image
-                  alt="Breathing app icon"
-                  className="rounded-full w-10 h-11 bg-black"
-                  src="/images/breathing-app-icon.jpeg"
-                /> */}
-                  <div className="flex flex-col">
-                    <p className="text-tiny text-white truncate w-[100px]">
-                      {item.name}
-                    </p>
-                    <p className="text-tiny text-white/60">
-                      Get a good night's sleep.
-                    </p>
-                  </div>
-                </div>
-                <Button radius="full" size="sm">
-                  Get App
-                </Button>
+              <p className="text-tiny text-white/60">
+                Precio: ${formatCurrency(Number(item.listPrice))}
+              </p>
+              <div className="flex flex-row justify-between flex-1">
+                <p className="text-tiny text-white/60 flex-1">
+                  Precio de dist: $
+                  {formatCurrency(Number(item.distributorPrice))}
+                </p>
+                <a
+                  className="text-sm p-0 text-white"
+                  href={`https://tvc.mx/products/${item.$id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {/* <Button size="sm" isIconOnly className="text-sm p-0" > */}
+                  <PiLink />
+                </a>
+                {/* </Button> */}
               </div>
             </CardFooter>
           </Card>

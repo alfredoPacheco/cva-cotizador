@@ -67,7 +67,8 @@ export const getParameterByName = (name: string, url = '') => {
 export const formatCurrency = (number: number, decimals = 2) => {
   if (!isNaN(number) && number >= 0) {
     return new Intl.NumberFormat('en-US', {
-      maximumFractionDigits: decimals
+      maximumFractionDigits: decimals,
+      minimumFractionDigits: decimals
     }).format(number);
   }
   return '';

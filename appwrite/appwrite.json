@@ -38,7 +38,7 @@
       "runtime": "bun-1.0",
       "execute": [],
       "events": [],
-      "schedule": "",
+      "schedule": "0 0 * * *",
       "timeout": 900,
       "enabled": true,
       "logging": true,

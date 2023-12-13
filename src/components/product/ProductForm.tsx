@@ -6,7 +6,7 @@ import {
   useProductSingle,
   useProductUpdate
 } from './product.hooks';
-import type { ProductDto } from './product';
+import type { TVCProductDto } from './product';
 import { FormButton } from '@/ui/Buttons';
 import { GiSaveArrow } from 'react-icons/gi';
 import { PiTrashBold } from 'react-icons/pi';
@@ -39,14 +39,14 @@ interface ProductFormProps {
 const ProductForm: React.FC<ProductFormProps> = ({ id, dialog }) => {
   const { success, error } = useNotifications();
   const { data } = useProductSingle(id, id !== 'new');
-  const { control, handleSubmit, getValues } = useForm<ProductDto>({
+  const { control, handleSubmit, getValues } = useForm<TVCProductDto>({
     values: data
   });
   const createProduct = useProductCreate();
   const saveProduct = useProductUpdate();
   const removeProduct = useProductDelete();
 
-  const onSubmit = handleSubmit(async (data: ProductDto) => {
+  const onSubmit = handleSubmit(async (data: TVCProductDto) => {
     try {
       await saveProduct.mutateAsync(data);
       success('Registro actualizado.');

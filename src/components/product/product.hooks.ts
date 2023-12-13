@@ -4,7 +4,7 @@ import {
   defaultUpdateMutation,
   defaultDeleteMutation
 } from '@/core/ReactQueryProvider/defaultMutations';
-import type { ProductDto } from './product';
+import type { TVCProductDto } from './product';
 import { useForm } from 'react-hook-form';
 import { Query } from 'appwrite';
 import { useEffect } from 'react';
@@ -59,18 +59,22 @@ export const useProductList = (enabled = true) => {
   //   // setSearchQuery(newSearch);
   // }, [debouncedSearch]);
 
-  const query = useQuery<ProductDto[]>({
+  const query = useQuery<TVCProductDto[]>({
     queryKey: [
       QUERY_KEY,
       {
+        limit: 99999999,
         queries: [
           Query.select([
             '$id',
-            'brand',
+            'name',
+            'tvcModel',
             'listPrice',
             'distributorPrice',
-            'name',
-            'mediaMainImage'
+            'brand',
+            'mediaMainImage',
+            'category',
+            'providerModel'
           ])
         ]
       } as ListQueryType
@@ -89,7 +93,7 @@ export const useProductList = (enabled = true) => {
 };
 
 export const useProductSingle = (id: string, enabled = true) => {
-  return useQuery<ProductDto>({
+  return useQuery<TVCProductDto>({
     queryKey: [QUERY_KEY, id],
     enabled
   });
