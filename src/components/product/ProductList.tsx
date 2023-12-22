@@ -1,3 +1,4 @@
+import './ProductList.scss';
 import AppShell from '@/common/AppShell';
 import { useProductList } from './product.hooks';
 import Container from '@/ui/Container';
@@ -113,20 +114,21 @@ export const ProductList: React.FC<ProductListProps> = ({ dialog }) => {
         )}
       </div>
 
-      <div className="flex flex-wrap gap-1 sm:gap-5 h-[500px] overflow-scroll sm:p-5 content-between place-content-center border-b-2 border-default-100">
-        {filterSelected && items?.length === 0 && (
-          <div className="flex flex-col justify-center items-center gap-2 h-full">
-            <p className="text-default text-2xl">
-              No hay productos seleccionados
-            </p>
-          </div>
-        )}
+      {filterSelected && items?.length === 0 && (
+        <div className="flex flex-col justify-center items-center gap-2 h-full absolute border-default-100 border-1">
+          <p className="text-default text-2xl">
+            No hay productos seleccionados
+          </p>
+        </div>
+      )}
+      {/* <div className="flex flex-wrap gap-1 sm:gap-5 h-[500px] overflow-scroll sm:p-5 content-between place-content-center border-b-2 border-default-100"> */}
+      <div className="ProductsGrid gap-3 sm:gap-5 h-[600px] overflow-scroll p-4 sm:p-5 content-between place-content-center border-b-2 border-default-100">
         {items?.map(item => (
           <Card
             key={item.$id}
             isFooterBlurred
             // isBlurred
-            className="h-[280px] flex-grow w-1/3 sm:w-[208px] max-w-[208px]"
+            className="h-80 sm:h-[280px]"
             // isPressable
             // onPress={() => console.log('item pressed')}
           >
@@ -145,9 +147,9 @@ export const ProductList: React.FC<ProductListProps> = ({ dialog }) => {
                 className="z-0 w-full h-full object-cover"
                 src={item.mediaMainImage}
               />
-              <div className="absolute z-10 bottom-16 left-2">
+              {/* <div className="absolute z-10 bottom-16 left-2">
                 <ProductQuantity form={form} id={item.$id} />
-              </div>
+              </div> */}
             </CardBody>
             <CardFooter className="absolute bg-primary/60 bottom-0 z-10 flex-col py-1 px-2 items-stretch">
               <p className="text-tiny text-white truncate w-full">
