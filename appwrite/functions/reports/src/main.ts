@@ -10,18 +10,18 @@ const main = async ({ req, res, log, error }) => {
   const storage = new Storage(client);
 
   const CARBONE_URL = Bun.env['CARBONE_URL'];
-  log('CARBONE_URL', CARBONE_URL);
+  log('CARBONE_URL: ' + CARBONE_URL);
 
   const requestedReport = encodeURIComponent(
     '/cva/cotizador/cva-cotizacion.docx'
   );
-  log('requestedReport', requestedReport);
+  log('requestedReport: ' + requestedReport);
   const url = new URL(
     `/report/${requestedReport}`.replace(/([^:]\/)\/+/g, '$1'),
     CARBONE_URL
   );
   const href = url.href;
-  log('href', href);
+  log('href: ' + href);
 
   const destinationPath = './downloaded-file.pdf';
 
@@ -65,7 +65,9 @@ const main = async ({ req, res, log, error }) => {
       ID.unique(),
       InputFile.fromPath(destinationPath, 'report.pdf')
     );
-    log('report', report);
+    log('report:');
+    log(report);
+    return res.json({ ok: true });
   } catch (err) {
     error(err);
   }
@@ -73,4 +75,4 @@ const main = async ({ req, res, log, error }) => {
 
 export default main;
 
-main({ req: {}, res: {}, log: console.log, error: console.error });
+// main({ req: {}, res: {}, log: console.log, error: console.error });
