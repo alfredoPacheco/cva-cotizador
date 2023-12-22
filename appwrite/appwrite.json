@@ -46,47 +46,53 @@
       "commands": "bun install",
       "ignore": ["node_modules", ".npm"],
       "path": "functions/tvc"
+    },
+    {
+      "$id": "657a9b321fe812dc6cf9",
+      "name": "syscom",
+      "runtime": "bun-1.0",
+      "execute": [],
+      "events": [],
+      "schedule": "",
+      "timeout": 900,
+      "enabled": true,
+      "logging": true,
+      "entrypoint": "src/main.ts",
+      "commands": "bun install",
+      "ignore": ["node_modules", ".npm"],
+      "path": "functions/syscom"
     }
   ],
   "databases": [
     {
       "$id": "tvc",
       "name": "tvc",
-      "$createdAt": "2023-12-08T22:36:46.141+00:00",
-      "$updatedAt": "2023-12-08T22:36:46.141+00:00",
+      "$createdAt": "2023-12-09T04:56:29.457+00:00",
+      "$updatedAt": "2023-12-09T04:56:29.457+00:00",
+      "enabled": true
+    },
+    {
+      "$id": "quotations-db",
+      "name": "quotations-db",
+      "$createdAt": "2023-11-17T01:00:20.931+00:00",
+      "$updatedAt": "2023-11-17T01:00:20.931+00:00",
       "enabled": true
     }
   ],
   "collections": [
     {
       "$id": "products",
-      "$permissions": [],
+      "$permissions": [
+        "create(\"any\")",
+        "read(\"any\")",
+        "update(\"any\")",
+        "delete(\"any\")"
+      ],
       "databaseId": "tvc",
       "name": "products",
       "enabled": true,
       "documentSecurity": false,
       "attributes": [
-        {
-          "key": "tvcModel",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 50,
-          "default": null
-        },
-        {
-          "key": "tvcId",
-          "type": "integer",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "min": 0,
-          "max": 9223372036854775807,
-          "default": null
-        },
         {
           "key": "name",
           "type": "string",
@@ -95,6 +101,16 @@
           "required": false,
           "array": false,
           "size": 500,
+          "default": null
+        },
+        {
+          "key": "tvcModel",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
           "default": null
         },
         {
@@ -108,16 +124,6 @@
           "default": null
         },
         {
-          "key": "brand",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 200,
-          "default": null
-        },
-        {
           "key": "brandId",
           "type": "integer",
           "status": "available",
@@ -126,47 +132,6 @@
           "array": false,
           "min": 0,
           "max": 9223372036854775807,
-          "default": null
-        },
-        {
-          "key": "categoryId",
-          "type": "integer",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "min": 0,
-          "max": 9223372036854775807,
-          "default": null
-        },
-        {
-          "key": "category",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 200,
-          "default": null
-        },
-        {
-          "key": "satKey",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 100,
-          "default": null
-        },
-        {
-          "key": "productFlowType",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 100,
           "default": null
         },
         {
@@ -191,7 +156,27 @@
           "default": null
         },
         {
-          "key": "listPrice",
+          "key": "boxWeight",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "pieceHeight",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "distributorPrice",
           "type": "string",
           "status": "available",
           "error": "",
@@ -201,7 +186,17 @@
           "default": null
         },
         {
-          "key": "distributorPrice",
+          "key": "brand",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
+          "default": null
+        },
+        {
+          "key": "productFlowType",
           "type": "string",
           "status": "available",
           "error": "",
@@ -221,6 +216,57 @@
           "default": null
         },
         {
+          "key": "category",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
+          "default": null
+        },
+        {
+          "key": "satKey",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 100,
+          "default": null
+        },
+        {
+          "key": "piecesPerBox",
+          "type": "integer",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": -9223372036854775808,
+          "max": 9223372036854775807,
+          "default": null
+        },
+        {
+          "key": "listPrice",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 100,
+          "default": null
+        },
+        {
+          "key": "boxLength",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
           "key": "mediaGallery",
           "type": "string",
           "status": "available",
@@ -228,6 +274,47 @@
           "required": false,
           "array": true,
           "size": 400,
+          "default": null
+        },
+        {
+          "key": "pieceWeight",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "tvcId",
+          "type": "integer",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": 0,
+          "max": 9223372036854775807,
+          "default": null
+        },
+        {
+          "key": "providerModel",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 500,
+          "default": null
+        },
+        {
+          "key": "boxHeight",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
           "default": null
         },
         {
@@ -251,97 +338,6 @@
           "default": null
         },
         {
-          "key": "piecesPerBox",
-          "type": "integer",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "min": -9223372036854775808,
-          "max": 9223372036854775807,
-          "default": null
-        },
-        {
-          "key": "pieceHeight",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 50,
-          "default": null
-        },
-        {
-          "key": "pieceLength",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 50,
-          "default": null
-        },
-        {
-          "key": "pieceWidth",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 50,
-          "default": null
-        },
-        {
-          "key": "pieceWeight",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 50,
-          "default": null
-        },
-        {
-          "key": "boxHeight",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 50,
-          "default": null
-        },
-        {
-          "key": "boxLength",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 50,
-          "default": null
-        },
-        {
-          "key": "boxWidth",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 50,
-          "default": null
-        },
-        {
-          "key": "boxWeight",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 50,
-          "default": null
-        },
-        {
           "key": "breadcrumb",
           "type": "string",
           "status": "available",
@@ -362,13 +358,13 @@
           "default": null
         },
         {
-          "key": "overviews",
+          "key": "pieceLength",
           "type": "string",
           "status": "available",
           "error": "",
           "required": false,
           "array": false,
-          "size": 500000,
+          "size": 50,
           "default": null
         },
         {
@@ -382,14 +378,59 @@
           "default": null
         },
         {
-          "key": "providerModel",
+          "key": "pieceWidth",
           "type": "string",
           "status": "available",
           "error": "",
           "required": false,
           "array": false,
-          "size": 500,
+          "size": 50,
           "default": null
+        },
+        {
+          "key": "boxWidth",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "categoryId",
+          "type": "integer",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": 0,
+          "max": 9223372036854775807,
+          "default": null
+        },
+        {
+          "key": "overviews",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 500000,
+          "default": null
+        },
+        {
+          "key": "inventory",
+          "type": "relationship",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "relatedCollection": "inventory",
+          "relationType": "oneToMany",
+          "twoWay": false,
+          "twoWayKey": "products",
+          "onDelete": "cascade",
+          "side": "parent"
         }
       ],
       "indexes": []
@@ -418,7 +459,12 @@
     },
     {
       "$id": "inventory",
-      "$permissions": [],
+      "$permissions": [
+        "create(\"any\")",
+        "read(\"any\")",
+        "update(\"any\")",
+        "delete(\"any\")"
+      ],
       "databaseId": "tvc",
       "name": "inventory",
       "enabled": true,
@@ -456,6 +502,438 @@
         }
       ],
       "indexes": []
+    },
+    {
+      "$id": "quotations",
+      "$permissions": [
+        "create(\"any\")",
+        "read(\"any\")",
+        "update(\"any\")",
+        "delete(\"any\")"
+      ],
+      "databaseId": "quotations-db",
+      "name": "quotations",
+      "enabled": true,
+      "documentSecurity": false,
+      "attributes": [
+        {
+          "key": "title",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": true,
+          "array": false,
+          "size": 100,
+          "default": null
+        },
+        {
+          "key": "sentAt",
+          "type": "datetime",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "format": "",
+          "default": null
+        },
+        {
+          "key": "sentBy",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 100,
+          "default": null
+        },
+        {
+          "key": "createdBy",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": true,
+          "array": false,
+          "size": 100,
+          "default": null
+        },
+        {
+          "key": "updatedBy",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 100,
+          "default": null
+        },
+        {
+          "key": "scope",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 1000,
+          "default": null
+        },
+        {
+          "key": "exclusions",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 1000,
+          "default": null
+        },
+        {
+          "key": "observations",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 1000,
+          "default": null
+        },
+        {
+          "key": "paymentConditions",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 500,
+          "default": null
+        },
+        {
+          "key": "capacitation",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 1000,
+          "default": null
+        },
+        {
+          "key": "subtotal",
+          "type": "double",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": 0,
+          "max": 1.7976931348623157e308,
+          "default": null
+        },
+        {
+          "key": "iva",
+          "type": "double",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": 0,
+          "max": 1.7976931348623157e308,
+          "default": null
+        },
+        {
+          "key": "total",
+          "type": "double",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": 0,
+          "max": 1.7976931348623157e308,
+          "default": null
+        },
+        {
+          "key": "customer",
+          "type": "relationship",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "relatedCollection": "customers",
+          "relationType": "manyToOne",
+          "twoWay": false,
+          "twoWayKey": "quotations",
+          "onDelete": "restrict",
+          "side": "parent"
+        },
+        {
+          "key": "items",
+          "type": "relationship",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "relatedCollection": "quotationItems",
+          "relationType": "oneToMany",
+          "twoWay": false,
+          "twoWayKey": "quotations",
+          "onDelete": "restrict",
+          "side": "parent"
+        },
+        {
+          "key": "validUntil",
+          "type": "datetime",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "format": "",
+          "default": null
+        },
+        {
+          "key": "quotationNumber",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 30,
+          "default": null
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "$id": "customers",
+      "$permissions": [
+        "create(\"any\")",
+        "read(\"any\")",
+        "update(\"any\")",
+        "delete(\"any\")"
+      ],
+      "databaseId": "quotations-db",
+      "name": "customers",
+      "enabled": true,
+      "documentSecurity": false,
+      "attributes": [
+        {
+          "key": "name",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": true,
+          "array": false,
+          "size": 300,
+          "default": null
+        },
+        {
+          "key": "address",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 300,
+          "default": null
+        },
+        {
+          "key": "email",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "format": "email",
+          "default": null
+        },
+        {
+          "key": "phone",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 40,
+          "default": null
+        },
+        {
+          "key": "taxRegime",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "businessName",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 150,
+          "default": null
+        }
+      ],
+      "indexes": [
+        {
+          "key": "index_2",
+          "type": "key",
+          "status": "available",
+          "error": "",
+          "attributes": ["name"],
+          "orders": ["ASC"]
+        }
+      ]
+    },
+    {
+      "$id": "quotationItems",
+      "$permissions": [
+        "create(\"any\")",
+        "read(\"any\")",
+        "update(\"any\")",
+        "delete(\"any\")"
+      ],
+      "databaseId": "quotations-db",
+      "name": "quotationItems",
+      "enabled": true,
+      "documentSecurity": false,
+      "attributes": [
+        {
+          "key": "sequence",
+          "type": "integer",
+          "status": "available",
+          "error": "",
+          "required": true,
+          "array": false,
+          "min": -9223372036854775808,
+          "max": 9223372036854775807,
+          "default": null
+        },
+        {
+          "key": "model",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 100,
+          "default": null
+        },
+        {
+          "key": "quantity",
+          "type": "double",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": 0,
+          "max": 1.7976931348623157e308,
+          "default": null
+        },
+        {
+          "key": "unitPrice",
+          "type": "double",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": 0,
+          "max": 1.7976931348623157e308,
+          "default": null
+        },
+        {
+          "key": "description",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 1000,
+          "default": null
+        },
+        {
+          "key": "providerId",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 100,
+          "default": null
+        },
+        {
+          "key": "provider",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "$id": "quotationItemImages",
+      "$permissions": [
+        "create(\"any\")",
+        "read(\"any\")",
+        "update(\"any\")",
+        "delete(\"any\")"
+      ],
+      "databaseId": "quotations-db",
+      "name": "quotationItemImages",
+      "enabled": true,
+      "documentSecurity": false,
+      "attributes": [
+        {
+          "key": "quotationItems",
+          "type": "relationship",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "relatedCollection": "quotationItems",
+          "relationType": "manyToOne",
+          "twoWay": false,
+          "twoWayKey": "quotationItemImages",
+          "onDelete": "setNull",
+          "side": "parent"
+        },
+        {
+          "key": "fileId",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": true,
+          "array": false,
+          "size": 50,
+          "default": null
+        }
+      ],
+      "indexes": []
+    }
+  ],
+  "buckets": [
+    {
+      "$id": "avatars",
+      "$createdAt": "2023-11-20T20:06:56.524+00:00",
+      "$updatedAt": "2023-11-20T20:11:16.017+00:00",
+      "$permissions": [
+        "create(\"any\")",
+        "read(\"any\")",
+        "update(\"any\")",
+        "delete(\"any\")"
+      ],
+      "fileSecurity": false,
+      "name": "avatars",
+      "enabled": true,
+      "maximumFileSize": 30000000,
+      "allowedFileExtensions": [],
+      "compression": "none",
+      "encryption": true,
+      "antivirus": true
     }
   ]
 }
