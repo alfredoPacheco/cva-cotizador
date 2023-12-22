@@ -61,6 +61,21 @@
       "commands": "bun install",
       "ignore": ["node_modules", ".npm"],
       "path": "functions/syscom"
+    },
+    {
+      "$id": "reports",
+      "name": "reports",
+      "runtime": "bun-1.0",
+      "execute": ["any"],
+      "events": [],
+      "schedule": "",
+      "timeout": 15,
+      "enabled": true,
+      "logging": true,
+      "entrypoint": "src/main.ts",
+      "commands": "bun install",
+      "ignore": ["node_modules", ".npm"],
+      "path": "functions/reports"
     }
   ],
   "databases": [
