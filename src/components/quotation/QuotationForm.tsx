@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import {
   useQuotationCreate,
   useQuotationDelete,
+  useQuotationPDF,
   useQuotationSingle,
   useQuotationUpdate
 } from './quotation.hooks';
@@ -14,6 +15,9 @@ import { handleErrors } from '@/core/utils';
 import type { DialogWidget } from '@/ui/Dialog';
 import QuotationItemsList from './quotationItem/QuotationItemsList';
 import { useQuotationItemDelete } from './quotationItem/quotationItem.hooks';
+import { storage } from '@/core/appwriteClient';
+import { useRef } from 'react';
+import { useGlobalLoader } from '@/ui/GlobalLoader';
 
 const FormField = ({ label, name, control, rows = 2, ...props }) => {
   return (
@@ -115,6 +119,25 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
     }
   });
 
+  const quotationPDF = useQuotationPDF();
+  const { setLoading } = useGlobalLoader();
+  const pdfHref = useRef<HTMLAnchorElement>(null);
+  const handlePDF = async () => {
+    try {
+      setLoading(true);
+      await onSubmit();
+      const report = await quotationPDF.mutateAsync(id);
+      const file = await storage.getFileView('reports', report.$id);
+      pdfHref.current.href = file.href;
+      setLoading(false);
+      pdfHref.current.click();
+    } catch (err) {
+      handleErrors(err, error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const onRemove = async () => {
     try {
       if (confirm('¿Seguro de eliminar este registro?') === false) return;
@@ -145,6 +168,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
 
   return (
     <form className="flex flex-col gap-2" onSubmit={onSubmit}>
+      <a ref={pdfHref} target="_blank" className="hidden" />
       <div className="flex flex-row justify-between">
         <ReadonlyFormField
           control={control}
@@ -160,6 +184,10 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
           <FormButton onPress={onRemove}>Borrar</FormButton>
           <Divider orientation="vertical" className="h-5" />
           <FormButton type="submit">Guardar</FormButton>
+          <Divider orientation="vertical" className="h-5" />
+          <FormButton type="button" onPress={handlePDF}>
+            PDF
+          </FormButton>
         </div>
       </div>
       <div className="bg-white -ml-6 -mr-6 p-8 -mb-6 rounded-b-lg border-default-200 border-b-1 flex flex-col gap-2">

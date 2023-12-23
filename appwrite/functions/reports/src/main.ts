@@ -12,21 +12,22 @@ const main = async ({ req, res, log, error }) => {
   const CARBONE_URL = Bun.env['CARBONE_URL'];
   log('CARBONE_URL: ' + CARBONE_URL);
 
-  const requestedReport = encodeURIComponent(
-    '/cva/cotizador/cva-cotizacion.docx'
-  );
+  const requestedReport = req.query.report;
   log('requestedReport: ' + requestedReport);
-  const url = new URL(
-    `/report/${requestedReport}`.replace(/([^:]\/)\/+/g, '$1'),
-    CARBONE_URL
-  );
-  const href = url.href;
-  log('href: ' + href);
+
+  // https://carbone.do.inspiracode.com/report/cva%2Fcotizador%2Fcva-cotizacion-template.pptx
+
+  const encodedReport = encodeURIComponent(requestedReport);
+  log('encodedReport: ' + encodedReport);
 
   const destinationPath = './downloaded-file.pdf';
 
+  const href = `${CARBONE_URL}/report/${encodedReport}`;
+  log('href: ' + href);
+
   const response = await fetch(href, {
     method: 'POST',
+    body: JSON.stringify({ data: req.body }),
     headers: {
       Accept: 'application/pdf',
       'Content-Type': 'application/pdf'
@@ -67,7 +68,7 @@ const main = async ({ req, res, log, error }) => {
     );
     log('report:');
     log(report);
-    return res.json({ ok: true });
+    return res.json(report);
   } catch (err) {
     error(err);
   }

@@ -1,5 +1,4 @@
 import type { BaseDto } from '@/core/ReactQueryProvider/defaultMutations';
-import type { QuotationDto } from '../quotation';
 
 export interface QuotationItemDto extends BaseDto {
   $id: string;
@@ -8,7 +7,6 @@ export interface QuotationItemDto extends BaseDto {
   quantity?: number;
   unitPrice?: number;
   description?: string;
-  quotation?: string | QuotationDto;
   providerId?: string;
   provider?: 'tvc' | 'syscom';
 }

@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { Dialog, useDialog } from '../Dialog';
+import { Dialog } from '../Dialog';
 import { CircularProgress } from '@nextui-org/react';
-import { useDebounce } from '@/core';
 
 interface IGlobalLoaderContext {
   setLoading: (loading: boolean) => void;

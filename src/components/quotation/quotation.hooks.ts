@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 import { useDebounce } from '@/core';
 import { omit } from 'lodash';
 import type { ListQueryType } from '@/core/ReactQueryProvider/queryKeys';
+import { databases, functions } from '@/core/appwriteClient';
 
 const QUERY_KEY = 'quotations';
 const COLLECTION_ID = 'quotations';
@@ -109,5 +110,30 @@ export const useQuotationUpdate = () => {
 export const useQuotationDelete = () => {
   return useMutation({
     ...defaultDeleteMutation([QUERY_KEY], useQueryClient(), COLLECTION_ID)
+  });
+};
+
+export const getQuotationPDF = async id => {
+  if (!id) throw new Error('id is required');
+  const quotation = await databases.getDocument(
+    import.meta.env.PUBLIC_APPWRITE_DATABASE!,
+    COLLECTION_ID,
+    id
+  );
+  const payload = JSON.stringify(quotation);
+  const resp = await functions.createExecution(
+    'reports',
+    payload,
+    false,
+    `/?report=cva/cotizador/cva-cotizacion-template.pptx`,
+    'POST'
+  );
+  const json = JSON.parse(resp.responseBody);
+  return json;
+};
+
+export const useQuotationPDF = () => {
+  return useMutation({
+    mutationFn: getQuotationPDF
   });
 };

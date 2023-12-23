@@ -1,5 +1,6 @@
 import type { BaseDto } from '@/core/ReactQueryProvider/defaultMutations';
 import type { CustomerDto } from '../customer/customer';
+import type { QuotationItemDto } from './quotationItem/quotationItem';
 
 export interface QuotationDto extends BaseDto {
   $id: string;
