@@ -131,7 +131,8 @@ export function defaultUpdateMutation<T extends BaseDto>(
       queryClient.setQueryData(queryKey, context.previousData);
     },
     // Always refetch after error or success:
-    onSettled: () => {
+    onSettled: (_, error) => {
+      if (error) return;
       queryClient.invalidateQueries({ queryKey });
     }
   };

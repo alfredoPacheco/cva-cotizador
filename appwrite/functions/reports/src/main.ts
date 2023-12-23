@@ -25,12 +25,13 @@ const main = async ({ req, res, log, error }) => {
   const href = `${CARBONE_URL}/report/${encodedReport}`;
   log('href: ' + href);
 
+  const body = JSON.stringify({ data: req.body });
+
   const response = await fetch(href, {
     method: 'POST',
-    body: JSON.stringify({ data: req.body }),
+    body,
     headers: {
-      Accept: 'application/pdf',
-      'Content-Type': 'application/pdf'
+      'Content-Type': 'application/json'
     }
   });
 

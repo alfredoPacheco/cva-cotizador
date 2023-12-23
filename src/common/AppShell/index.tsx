@@ -4,7 +4,7 @@ import Login from '../Account/Login';
 import { useDialog } from '@/ui/Dialog';
 import AppBar from '@/ui/AppBar';
 import Providers from './Providers';
-import { useIsFetching } from '@tanstack/react-query';
+import { useIsFetching, useIsMutating } from '@tanstack/react-query';
 import { useGlobalLoader } from '@/ui/GlobalLoader';
 import { useEffect } from 'react';
 
@@ -29,11 +29,12 @@ const AppShell: React.FC<AppShellProps> = ({
   });
 
   const isFetching = useIsFetching();
+  const isMutating = useIsMutating();
   const { setLoading } = useGlobalLoader();
 
   useEffect(() => {
-    setLoading(isFetching > 0);
-  }, [isFetching, setLoading]);
+    setLoading(isFetching > 0 || isMutating > 0);
+  }, [isFetching, setLoading, isMutating]);
 
   return (
     <>

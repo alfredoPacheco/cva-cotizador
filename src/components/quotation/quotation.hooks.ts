@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 import { useDebounce } from '@/core';
 import { omit } from 'lodash';
 import type { ListQueryType } from '@/core/ReactQueryProvider/queryKeys';
-import { databases, functions } from '@/core/appwriteClient';
+import { databases, functions, storage } from '@/core/appwriteClient';
 
 const QUERY_KEY = 'quotations';
 const COLLECTION_ID = 'quotations';
@@ -134,6 +134,17 @@ export const getQuotationPDF = async id => {
 
 export const useQuotationPDF = () => {
   return useMutation({
-    mutationFn: getQuotationPDF
+    mutationFn: async (id: string) => {
+      const report = await getQuotationPDF(id);
+      const file = await storage.getFileView('reports', report.$id);
+      const reportUrl = file.pathname + file.search;
+      await databases.updateDocument(
+        import.meta.env.PUBLIC_APPWRITE_DATABASE!,
+        COLLECTION_ID,
+        id,
+        { reportUrl }
+      );
+      return report;
+    }
   });
 };

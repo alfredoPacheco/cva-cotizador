@@ -15,9 +15,6 @@ import { handleErrors } from '@/core/utils';
 import type { DialogWidget } from '@/ui/Dialog';
 import QuotationItemsList from './quotationItem/QuotationItemsList';
 import { useQuotationItemDelete } from './quotationItem/quotationItem.hooks';
-import { storage } from '@/core/appwriteClient';
-import { useRef } from 'react';
-import { useGlobalLoader } from '@/ui/GlobalLoader';
 
 const FormField = ({ label, name, control, rows = 2, ...props }) => {
   return (
@@ -83,60 +80,59 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
   const removeQuotation = useQuotationDelete();
   const deleteItemMutation = useQuotationItemDelete();
 
+  const save = async (data: QuotationDto) => {
+    // console.log('data', data);
+    // console.log({ isValid, isDirty });
+    // console.log('dirtyFields', form.formState.dirtyFields);
+    // return;
+    const removedItemsIds = form.getValues('__removedItemsIds');
+    if (removedItemsIds?.length) {
+      removedItemsIds.forEach(async id => {
+        await deleteItemMutation.mutateAsync(id);
+      });
+      form.setValue('__removedItemsIds', []);
+    }
+
+    if (!isValid) return console.log('not valid');
+    if (!isDirty) return console.log('not dirty');
+
+    // generate payload from dirty fields:
+    const payload = Object.keys(data).reduce((prev, current) => {
+      if (form.formState.dirtyFields[current]) {
+        prev[current] = data[current];
+      }
+      return prev;
+    }, {} as any);
+    payload.$id = data.$id;
+    console.log('payload to be saved', payload);
+    await saveQuotation.mutateAsync(payload);
+
+    // await refetch();
+
+    success('Registro actualizado.');
+    return true;
+  };
+
   const onSubmit = handleSubmit(async (data: QuotationDto) => {
     try {
-      // console.log('data', data);
-      // console.log({ isValid, isDirty });
-      // console.log('dirtyFields', form.formState.dirtyFields);
-      // return;
-      const removedItemsIds = form.getValues('__removedItemsIds');
-      if (removedItemsIds?.length) {
-        removedItemsIds.forEach(async id => {
-          await deleteItemMutation.mutateAsync(id);
-        });
-        form.setValue('__removedItemsIds', []);
-      }
-
-      if (!isValid) return console.log('not valid');
-      if (!isDirty) return console.log('not dirty');
-
-      // generate payload from dirty fields:
-      const payload = Object.keys(data).reduce((prev, current) => {
-        if (form.formState.dirtyFields[current]) {
-          prev[current] = data[current];
-        }
-        return prev;
-      }, {} as any);
-      payload.$id = data.$id;
-      console.log('payload to be saved', payload);
-      await saveQuotation.mutateAsync(payload);
-
-      // await refetch();
-
-      success('Registro actualizado.');
+      await save(data);
     } catch (err) {
       handleErrors(err, error);
     }
   });
 
   const quotationPDF = useQuotationPDF();
-  const { setLoading } = useGlobalLoader();
-  const pdfHref = useRef<HTMLAnchorElement>(null);
-  const handlePDF = async () => {
+  const handlePDF = handleSubmit(async (data: QuotationDto) => {
     try {
-      setLoading(true);
-      await onSubmit();
-      const report = await quotationPDF.mutateAsync(id);
-      const file = await storage.getFileView('reports', report.$id);
-      pdfHref.current.href = file.href;
-      setLoading(false);
-      pdfHref.current.click();
+      const updated = await save(data);
+      if (updated) {
+        await quotationPDF.mutateAsync(id);
+      }
+      window.open(`/reports/quotations/${id}.pdf`, '_blank');
     } catch (err) {
       handleErrors(err, error);
-    } finally {
-      setLoading(false);
     }
-  };
+  });
 
   const onRemove = async () => {
     try {
@@ -168,7 +164,6 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
 
   return (
     <form className="flex flex-col gap-2" onSubmit={onSubmit}>
-      <a ref={pdfHref} target="_blank" className="hidden" />
       <div className="flex flex-row justify-between">
         <ReadonlyFormField
           control={control}
