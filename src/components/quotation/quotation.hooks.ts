@@ -6,7 +6,7 @@ import {
 } from '@/core/ReactQueryProvider/defaultMutations';
 import type { QuotationDto } from './quotation';
 import { useForm } from 'react-hook-form';
-import { Query } from 'appwrite';
+import { Query, type Models } from 'appwrite';
 import { useEffect } from 'react';
 import { useDebounce } from '@/core';
 import { omit } from 'lodash';
@@ -129,20 +129,20 @@ export const getQuotationPDF = async id => {
     'POST'
   );
   const json = JSON.parse(resp.responseBody);
-  return json;
+  return json as Models.File;
 };
 
 export const useQuotationPDF = () => {
   return useMutation({
     mutationFn: async (id: string) => {
       const report = await getQuotationPDF(id);
-      const file = await storage.getFileView('reports', report.$id);
-      const reportUrl = file.pathname + file.search;
+      // const file = await storage.getFileView('reports', report.$id);
+      // const reportUrl = file.pathname + file.search;
       await databases.updateDocument(
         import.meta.env.PUBLIC_APPWRITE_DATABASE!,
         COLLECTION_ID,
         id,
-        { reportUrl }
+        { reportId: report.$id }
       );
       return report;
     }

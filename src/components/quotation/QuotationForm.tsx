@@ -105,12 +105,12 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
     }, {} as any);
     payload.$id = data.$id;
     console.log('payload to be saved', payload);
-    await saveQuotation.mutateAsync(payload);
+    const updated = await saveQuotation.mutateAsync(payload);
 
     // await refetch();
 
     success('Registro actualizado.');
-    return true;
+    return updated;
   };
 
   const onSubmit = handleSubmit(async (data: QuotationDto) => {
@@ -125,7 +125,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
   const handlePDF = handleSubmit(async (data: QuotationDto) => {
     try {
       const updated = await save(data);
-      if (updated) {
+      if (updated || !data.reportId) {
         await quotationPDF.mutateAsync(id);
       }
       window.open(`/reports/quotations/${id}.pdf`, '_blank');
@@ -180,7 +180,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
           <Divider orientation="vertical" className="h-5" />
           <FormButton type="submit">Guardar</FormButton>
           <Divider orientation="vertical" className="h-5" />
-          <FormButton type="button" onPress={handlePDF}>
+          <FormButton type="button" onPress={handlePDF} className="mr-4">
             PDF
           </FormButton>
         </div>

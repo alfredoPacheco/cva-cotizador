@@ -1,28 +1,28 @@
-import { databases } from '@/core/appwriteClient';
+import { databases, storage } from '@/core/appwriteClient';
 import { Query } from 'appwrite';
 
 export const prerender = false;
 
-export async function GET({ params, request }) {
+export async function GET({ params }) {
   const { id } = params;
   try {
     const quotation = await databases.getDocument(
       'quotations-db',
       'quotations',
       id,
-      [Query.select(['reportUrl'])]
+      [Query.select(['reportId'])]
     );
 
-    if (!quotation.reportUrl)
+    if (!quotation.reportId)
       return new Response(null, {
         status: 404,
         statusText: 'Not found'
       });
 
-    const response = await fetch(
-      new URL(quotation.reportUrl, import.meta.env.PUBLIC_APPWRITE_ENDPOINT)
-        .href
-    );
+    const file = storage.getFileView('reports', quotation.reportId);
+
+    const response = await fetch(file.href);
+
     return new Response(await response.arrayBuffer());
   } catch (e) {
     if (e.code === 404) {
