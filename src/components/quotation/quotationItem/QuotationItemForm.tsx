@@ -36,6 +36,7 @@ const QuotationItemForm: React.FC<QutationItemFormProps> = ({
         <Field label="Modelo">
           <FormTextInput
             control={form.control}
+            focus
             name={`items[${index}].model`}
             // endContent={
             //   <Button
@@ -63,6 +64,7 @@ const QuotationItemForm: React.FC<QutationItemFormProps> = ({
           <FormTextInput
             control={form.control}
             name={`items[${index}].unitPrice`}
+            type="number"
           />
         </Field>
 
@@ -72,6 +74,7 @@ const QuotationItemForm: React.FC<QutationItemFormProps> = ({
           <FormTextInput
             control={form.control}
             name={`items[${index}].quantity`}
+            type="number"
           />
         </Field>
 
@@ -86,9 +89,7 @@ const QuotationItemForm: React.FC<QutationItemFormProps> = ({
         <TextArea control={form.control} name={`items[${index}].description`} />
       </Field>
 
-      <Field label="Imagen(es)">
-        <QuotationItemImages item={item} />
-      </Field>
+      <QuotationItemImages item={item} />
     </div>
   );
 };

@@ -10,6 +10,7 @@ import { Query } from 'appwrite';
 import { useEffect } from 'react';
 import { useDebounce } from '@/core';
 import { omit } from 'lodash';
+import type { ListQueryType } from '@/core/ReactQueryProvider/queryKeys';
 
 const QUERY_KEY = 'customers';
 const COLLECTION_ID = 'customers';
@@ -57,7 +58,10 @@ export const useCustomerList = (enabled = true) => {
   // }, [debouncedSearch]);
 
   const query = useQuery<CustomerDto[]>({
-    queryKey: [QUERY_KEY],
+    queryKey: [
+      QUERY_KEY,
+      { limit: 5000, queries: [Query.orderDesc('$createdAt')] } as ListQueryType
+    ],
     enabled
   });
 

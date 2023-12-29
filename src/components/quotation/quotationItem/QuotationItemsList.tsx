@@ -17,7 +17,7 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({ form, items }) => {
     const added = {
       // $id: 'new',
       sequence: uniqueId()
-    };
+    } as any;
     form.setValue('items', [...items, added]);
   };
 
@@ -72,10 +72,7 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({ form, items }) => {
   };
 
   return (
-    <div
-      className="flex flex-col justify-center gap-2"
-      style={{ minHeight: 120 }}
-    >
+    <div className="flex flex-col justify-center gap-2">
       <div className="my-0 flex flex-row justify-center">
         <FormButton onPress={handleAddItem}>Agregar partida</FormButton>
         <FormButton onPress={onSearchProducts}>Buscar productos</FormButton>

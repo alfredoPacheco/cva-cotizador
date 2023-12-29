@@ -1,4 +1,4 @@
-import { Field, TextInput } from '@/ui/Inputs';
+import { Autocomplete, Field, TextInput } from '@/ui/Inputs';
 import { useForm } from 'react-hook-form';
 import { useQuotationCreate } from './quotation.hooks';
 import type { QuotationDto } from './quotation';
@@ -6,6 +6,7 @@ import { useNotifications } from '@/core/useNotifications';
 import { handleErrors } from '@/core/utils';
 import type { DialogWidget } from '@/ui/Dialog';
 import { authCentralState } from '@/core/AuthCentralService';
+import { useCustomerList } from '../customer/customer.hooks';
 
 const FormField = ({ label, name, control, ...props }) => {
   return (
@@ -38,6 +39,10 @@ const QuotationCreateForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
     handleSubmit,
     formState: { isValid, isDirty }
   } = form;
+
+  const {
+    query: { data: customers }
+  } = useCustomerList();
 
   const createQuotation = useQuotationCreate();
 
@@ -74,7 +79,16 @@ const QuotationCreateForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
   return (
     <form className="flex flex-col gap-2" onSubmit={onSubmit}>
       <FormField control={control} name="title" label="Titulo:" />
-      <Field label="Cliente">cliente</Field>
+      <Field label="Cliente">
+        <Autocomplete
+          control={control}
+          name="customer"
+          items={customers}
+          labelProp="name"
+          secondaryLabelProp="email"
+        />
+      </Field>
+      {/* <pre>{JSON.stringify(watch(), null, 2)}</pre> */}
     </form>
   );
 };

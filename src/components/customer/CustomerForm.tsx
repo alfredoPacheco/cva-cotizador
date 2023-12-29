@@ -67,6 +67,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ id, dialog }) => {
   const onCreate = async (s: string) => {
     try {
       const data = getValues();
+      data.$id = 'new';
       await createCustomer.mutateAsync(data);
       success('Registro creado.');
       dialog?.close();

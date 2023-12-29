@@ -1,4 +1,4 @@
-import { Field, ReadonlyField, TextInput } from '@/ui/Inputs';
+import { Autocomplete, Field, ReadonlyField, TextInput } from '@/ui/Inputs';
 import { Divider } from '@nextui-org/react';
 import { useForm } from 'react-hook-form';
 import {
@@ -15,6 +15,7 @@ import { handleErrors } from '@/core/utils';
 import type { DialogWidget } from '@/ui/Dialog';
 import QuotationItemsList from './quotationItem/QuotationItemsList';
 import { useQuotationItemDelete } from './quotationItem/quotationItem.hooks';
+import { useCustomerList } from '../customer/customer.hooks';
 
 const FormField = ({ label, name, control, rows = 2, ...props }) => {
   return (
@@ -58,7 +59,13 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
   const { success, error } = useNotifications();
   const { data, refetch } = useQuotationSingle(id, id !== 'new');
   const form = useForm<QuotationDto>({
-    values: data
+    values: {
+      ...data,
+      customer:
+        typeof data?.customer === 'string'
+          ? data?.customer
+          : data?.customer?.$id
+    }
   });
 
   const {
@@ -69,11 +76,9 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
     formState: { isValid, isDirty }
   } = form;
 
-  // const {
-  //   query: { data: customers }
-  // } = useCustomerList();
-
-  // console.log('customers', customers);
+  const {
+    query: { data: customers }
+  } = useCustomerList();
 
   const createQuotation = useQuotationCreate();
   const saveQuotation = useQuotationUpdate();
@@ -165,13 +170,26 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
   return (
     <form className="flex flex-col gap-2" onSubmit={onSubmit}>
       <div className="flex flex-row justify-between">
-        <ReadonlyFormField
+        {/* <ReadonlyFormField
           control={control}
           name="createdBy"
           label="Realizado por:"
           readOnly
-        />
-        <Field label="Cliente">cliente</Field>
+        /> */}
+        <Field label="Realizado por:" size="md" style={{ minWidth: 30 }}>
+          <div className={`flex flex-row items-center pt-5`}>
+            <ReadonlyField control={control} name="createdBy" />
+          </div>
+        </Field>
+        <Field label="Cliente">
+          <Autocomplete
+            control={control}
+            name="customer"
+            items={customers}
+            labelProp="name"
+            secondaryLabelProp="email"
+          />
+        </Field>
         <div
           className="flex flex-grow flex-row items-center justify-center gap-1"
           style={{ maxWidth: 200 }}
@@ -185,6 +203,8 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
           </FormButton>
         </div>
       </div>
+      {/* <pre>{JSON.stringify(watch(), null, 2)}</pre> */}
+
       <div className="bg-white -ml-6 -mr-6 p-8 -mb-6 rounded-b-lg border-default-200 border-b-1 flex flex-col gap-2">
         <QuotationItemsList form={form} items={items} />
 
@@ -198,13 +218,18 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
           label="Observaciones"
           rows={1}
         />
+
+        <FormField control={control} name="capacitation" label="Capacitación" />
+
         <FormField
           control={control}
           name="paymentConditions"
           label="Condiciones de pago"
         />
 
-        <FormField control={control} name="capacitation" label="Capacitación" />
+        <FormField control={control} name="warranty" label="Garantías" />
+
+        <FormField control={control} name="notes" label="Notas" />
 
         <div className="flex flex-row justify-between bg-default-200 rounded-lg p-8 mt-4">
           <div className="flex flex-col gap-2 flex-1">

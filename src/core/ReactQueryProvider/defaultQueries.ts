@@ -33,7 +33,7 @@ export const defaultQueryFn: QueryFunction<unknown, QueryType> = async ({
   const listQuery = queryKey[1];
 
   // QueryType is list:
-  const limit = get(listQuery, 'limit', 10);
+  const limit = get(listQuery, 'limit', 5000);
   const page = get(listQuery, 'page', 1);
 
   const allQueries: string[] = [];

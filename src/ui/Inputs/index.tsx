@@ -409,7 +409,7 @@ export const Field: React.FC<FieldProps> = props => {
       style={props.style}
     >
       <FormLabel size={props.size}>{props.label}</FormLabel>
-      <div className="flex flex-row">{props.children}</div>
+      <div className="flex flex-row whitespace-nowrap">{props.children}</div>
     </div>
   );
 };
@@ -439,6 +439,8 @@ interface AutocompleteeProps {
   name: string;
   control: any;
   items: any[];
+  labelProp?: string;
+  secondaryLabelProp?: string;
   ariaLabel?: string;
   placeholder?: string;
   children?: React.ReactNode;
@@ -454,14 +456,15 @@ export const Autocomplete: React.FC<AutocompleteeProps> = props => {
         fieldState: { error, isDirty }
       }) => (
         <AutocompleteNextUI
-          // defaultItems={[]}
+          // defaultItems={props.items || []}
           items={props.items || []}
-          variant="bordered"
+          variant="underlined"
           aria-label={props.ariaLabel || 'Autocomplete'}
           // label="Cliente"
-          placeholder={props.placeholder || 'Buscar'}
+          fullWidth
+          placeholder={props.placeholder || ''}
           labelPlacement="inside"
-          className="max-w-xs"
+          // className="max-w-xs"
           // selectedKey={data.customer?.$id}
           value={value}
           selectedKey={value}
@@ -470,7 +473,7 @@ export const Autocomplete: React.FC<AutocompleteeProps> = props => {
           }}
         >
           {item => (
-            <AutocompleteItem key={item.$id} textValue={item.name}>
+            <AutocompleteItem key={item.$id} textValue={item[props.labelProp]}>
               <div className="flex gap-2 items-center">
                 {/* <Avatar
           alt={item.name}
@@ -479,9 +482,9 @@ export const Autocomplete: React.FC<AutocompleteeProps> = props => {
           // src={item.avatar}
         /> */}
                 <div className="flex flex-col">
-                  <span className="text-small">{item.name}</span>
-                  <span className="text-tiny text-default-400">
-                    {item.email}
+                  <span className="text-md">{item[props.labelProp]}</span>
+                  <span className="text-md text-default-400">
+                    {item[props.secondaryLabelProp]}
                   </span>
                 </div>
               </div>
