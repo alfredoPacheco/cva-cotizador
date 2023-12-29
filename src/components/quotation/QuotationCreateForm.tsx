@@ -1,12 +1,16 @@
 import { Autocomplete, Field, TextInput } from '@/ui/Inputs';
 import { useForm } from 'react-hook-form';
-import { useQuotationCreate } from './quotation.hooks';
+import { generateQuotationNumber, useQuotationCreate } from './quotation.hooks';
 import type { QuotationDto } from './quotation';
 import { useNotifications } from '@/core/useNotifications';
 import { handleErrors } from '@/core/utils';
 import type { DialogWidget } from '@/ui/Dialog';
 import { authCentralState } from '@/core/AuthCentralService';
 import { useCustomerList } from '../customer/customer.hooks';
+import { useEffect } from 'react';
+import dayjs from 'dayjs';
+import { databases } from '@/core/appwriteClient';
+import { Query } from 'appwrite';
 
 const FormField = ({ label, name, control, ...props }) => {
   return (
@@ -76,10 +80,18 @@ const QuotationCreateForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
     };
   }
 
+  // generate quotationNumber from date with dayjs: YYMMDD + 3
+  useEffect(() => {
+    generateQuotationNumber().then(quotationNumber => {
+      form.setValue('quotationNumber', quotationNumber, { shouldDirty: true });
+    });
+  }, []);
+
   return (
     <form className="flex flex-col gap-2" onSubmit={onSubmit}>
+      <FormField control={control} name="quotationNumber" label="ID:" />
       <FormField control={control} name="title" label="Titulo:" />
-      <Field label="Cliente">
+      <Field label="Cliente:">
         <Autocomplete
           control={control}
           name="customer"

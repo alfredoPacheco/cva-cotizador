@@ -134,6 +134,7 @@ export const TextInput: React.FC<TextInputProps> = ({
             endContent={props.endContent}
             min={props.min}
             step="any"
+            readOnly={props.readOnly}
           />
         </div>
       )}

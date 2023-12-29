@@ -4,7 +4,7 @@ import { databases } from '../appwriteClient';
 import { Query } from 'appwrite';
 import type { QueryType } from './queryKeys';
 
-const DEFAULT_DATABASE_ID = import.meta.env.PUBLIC_APPWRITE_DATABASE!;
+export const DEFAULT_DATABASE_ID = import.meta.env.PUBLIC_APPWRITE_DATABASE!;
 
 export const defaultQueryFn: QueryFunction<unknown, QueryType> = async ({
   queryKey,

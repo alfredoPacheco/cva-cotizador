@@ -9,9 +9,11 @@ import { useForm } from 'react-hook-form';
 import { Query, type Models } from 'appwrite';
 import { useEffect } from 'react';
 import { useDebounce } from '@/core';
-import { omit } from 'lodash';
+import { get, omit } from 'lodash';
 import type { ListQueryType } from '@/core/ReactQueryProvider/queryKeys';
 import { databases, functions, storage } from '@/core/appwriteClient';
+import dayjs from 'dayjs';
+import { DEFAULT_DATABASE_ID } from '@/core/ReactQueryProvider/defaultQueries';
 
 const QUERY_KEY = 'quotations';
 const COLLECTION_ID = 'quotations';
@@ -141,4 +143,23 @@ export const useQuotationPDF = () => {
       return await generateQuotationPDF(id);
     }
   });
+};
+
+export const generateQuotationNumber = async () => {
+  const date = dayjs().format('YYMMDD');
+  const lastFromDb = await databases.listDocuments(
+    DEFAULT_DATABASE_ID,
+    COLLECTION_ID,
+    [
+      Query.limit(1),
+      Query.orderDesc('$createdAt'),
+      Query.orderDesc('quotationNumber')
+    ]
+  );
+  const lastNumber =
+    get(lastFromDb, 'documents[0].quotationNumber', '000') || '000';
+  const lastThree = lastNumber.slice(-3);
+  const nextSequence = Number(lastThree) + 1;
+  const quotationNumber = `${date}${nextSequence.toString().padStart(3, '0')}`;
+  return quotationNumber;
 };
