@@ -23,7 +23,7 @@ export const useNotifications = () => {
 
   const info = (
     message: string,
-    autoHideDuration: number | undefined = 1200
+    autoHideDuration: number | undefined = 1700
   ) => {
     toast(message, { duration: autoHideDuration });
   };

@@ -123,6 +123,7 @@ export const TextInput: React.FC<TextInputProps> = ({
             //   ) : null
             // }
             width="100%"
+            fullWidth
             style={{
               // backgroundColor: theme.colors.tertiary,
               marginTop: mt,
@@ -131,6 +132,7 @@ export const TextInput: React.FC<TextInputProps> = ({
             isInvalid={!!error}
             errorMessage={customMessage || error?.message}
             endContent={props.endContent}
+            min={props.min}
           />
         </div>
       )}
@@ -378,6 +380,7 @@ export const FormTextInput: React.FC<TextInputProps> = ({
             isInvalid={!!error}
             errorMessage={customMessage || error?.message}
             endContent={props.endContent}
+            min={props.min}
           />
         </div>
       )}
@@ -419,7 +422,8 @@ export const ReadonlyField = ({
   name,
   w = '100%',
   required = false,
-  fontSize = 'sm'
+  fontSize = 'sm',
+  format = (v: any) => v
 }) => {
   return (
     <Controller
@@ -427,7 +431,7 @@ export const ReadonlyField = ({
       rules={{ required }}
       render={({ field: { value } }) => (
         <div className="w-full p-0" style={{ maxWidth: w }}>
-          <p className={`text-${fontSize} min-h-unit-5`}>{value}</p>
+          <p className={`text-${fontSize} min-h-unit-5`}>{format(value)}</p>
         </div>
       )}
       name={name}
@@ -466,8 +470,8 @@ export const Autocomplete: React.FC<AutocompleteeProps> = props => {
           labelPlacement="inside"
           // className="max-w-xs"
           // selectedKey={data.customer?.$id}
-          value={value}
-          selectedKey={value}
+          value={value || null}
+          selectedKey={value || null}
           onSelectionChange={key => {
             onChange(key);
           }}

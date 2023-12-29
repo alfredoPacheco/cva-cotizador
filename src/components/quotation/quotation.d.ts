@@ -6,8 +6,9 @@ export interface QuotationDto extends BaseDto {
   $id: string;
   quotationNumber: string;
   title: string;
-  sentAt?: Datetime;
-  validUntil?: Datetime;
+  sentAt?: Date;
+  validUntil?: string;
+  quotationDate?: string;
   sentBy?: string;
   createdBy?: string;
   updatedBy?: string;
@@ -25,5 +26,4 @@ export interface QuotationDto extends BaseDto {
   reportId?: string;
   notes?: string;
   warranty?: string;
-  quotationDate?: Date;
 }

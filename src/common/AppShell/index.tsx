@@ -29,12 +29,19 @@ const AppShell: React.FC<AppShellProps> = ({
   });
 
   const isFetching = useIsFetching();
-  const isMutating = useIsMutating();
+  // const isMutating = useIsMutating();
   const { setLoading } = useGlobalLoader();
 
   useEffect(() => {
-    setLoading(isFetching > 0 || isMutating > 0);
-  }, [isFetching, setLoading, isMutating]);
+    setLoading(
+      isFetching > 0
+      //  || isMutating > 0
+    );
+  }, [
+    isFetching,
+    setLoading
+    //  isMutating
+  ]);
 
   return (
     <>

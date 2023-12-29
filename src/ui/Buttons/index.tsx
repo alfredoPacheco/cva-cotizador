@@ -55,7 +55,9 @@ export const TextButton: React.FC<TextButtonProps> = props => {
   );
 };
 
-interface FormButtonProps extends ButtonProps {}
+interface FormButtonProps extends ButtonProps {
+  loading?: boolean;
+}
 export const FormButton: React.FC<FormButtonProps> = props => {
   return (
     <Button
@@ -64,6 +66,7 @@ export const FormButton: React.FC<FormButtonProps> = props => {
       variant="light"
       className={'py-4 px-2 font-bold rounded-xl text-left ' + props.className}
       size="md"
+      isLoading={props.loading}
     />
   );
 };

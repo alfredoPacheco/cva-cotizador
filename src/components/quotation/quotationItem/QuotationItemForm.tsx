@@ -3,7 +3,7 @@ import { Field, FormTextInput, TextArea } from '@/ui/Inputs';
 import { Divider } from '@nextui-org/react';
 import { formatCurrency } from '@/core/utils';
 import { FormButton } from '@/ui/Buttons';
-import type { UseFormReturn } from 'react-hook-form';
+import { type UseFormReturn } from 'react-hook-form';
 import type { QuotationDto } from '../quotation';
 import QuotationItemImages from './QuotationItemImages';
 
@@ -65,6 +65,7 @@ const QuotationItemForm: React.FC<QutationItemFormProps> = ({
             control={form.control}
             name={`items[${index}].unitPrice`}
             type="number"
+            min={0}
           />
         </Field>
 
@@ -75,6 +76,7 @@ const QuotationItemForm: React.FC<QutationItemFormProps> = ({
             control={form.control}
             name={`items[${index}].quantity`}
             type="number"
+            min={0}
           />
         </Field>
 

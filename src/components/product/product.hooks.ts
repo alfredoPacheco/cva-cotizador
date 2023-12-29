@@ -132,7 +132,7 @@ export const useProductImages = (id: string, enabled = true) => {
 
       return result;
     },
-    enabled
+    enabled: enabled && !!id
   });
 };
 

@@ -1,4 +1,4 @@
-import { Client, ID, InputFile, Storage } from 'node-appwrite';
+import { Client, Databases, ID, InputFile, Storage } from 'node-appwrite';
 import fs from 'fs';
 
 const main = async ({ req, res, log, error }) => {
@@ -7,6 +7,7 @@ const main = async ({ req, res, log, error }) => {
     .setProject(Bun.env['APPWRITE_FUNCTION_PROJECT_ID'])
     .setKey(Bun.env['APPWRITE_API_KEY']);
 
+  const databases = new Databases(client);
   const storage = new Storage(client);
 
   const CARBONE_URL = Bun.env['CARBONE_URL'];
@@ -69,6 +70,17 @@ const main = async ({ req, res, log, error }) => {
     );
     log('report:');
     log(report);
+
+    const quotation = JSON.parse(req.body);
+    log('about to update quotatino Id: ' + quotation.$id);
+    await databases.updateDocument(
+      'quotations-db',
+      'quotations',
+      quotation.$id,
+      { reportId: report.$id }
+    );
+    log('updated quotation!');
+
     return res.json(report);
   } catch (err) {
     error(err);

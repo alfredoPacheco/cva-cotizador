@@ -114,7 +114,7 @@ export const useQuotationDelete = () => {
   });
 };
 
-export const getQuotationPDF = async id => {
+export const generateQuotationPDF = async id => {
   if (!id) throw new Error('id is required');
   const quotation = await databases.getDocument(
     import.meta.env.PUBLIC_APPWRITE_DATABASE!,
@@ -130,22 +130,14 @@ export const getQuotationPDF = async id => {
     'POST'
   );
   const json = JSON.parse(resp.responseBody);
+
   return json as Models.File;
 };
 
 export const useQuotationPDF = () => {
   return useMutation({
     mutationFn: async (id: string) => {
-      const report = await getQuotationPDF(id);
-      // const file = await storage.getFileView('reports', report.$id);
-      // const reportUrl = file.pathname + file.search;
-      await databases.updateDocument(
-        import.meta.env.PUBLIC_APPWRITE_DATABASE!,
-        COLLECTION_ID,
-        id,
-        { reportId: report.$id }
-      );
-      return report;
+      return await generateQuotationPDF(id);
     }
   });
 };

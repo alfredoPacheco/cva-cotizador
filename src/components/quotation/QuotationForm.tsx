@@ -1,7 +1,8 @@
 import { Autocomplete, Field, ReadonlyField, TextInput } from '@/ui/Inputs';
 import { Divider } from '@nextui-org/react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import {
+  generateQuotationPDF,
   useQuotationCreate,
   useQuotationDelete,
   useQuotationPDF,
@@ -11,11 +12,12 @@ import {
 import type { QuotationDto } from './quotation';
 import { FormButton } from '@/ui/Buttons';
 import { useNotifications } from '@/core/useNotifications';
-import { handleErrors } from '@/core/utils';
+import { formatCurrency, handleErrors } from '@/core/utils';
 import type { DialogWidget } from '@/ui/Dialog';
 import QuotationItemsList from './quotationItem/QuotationItemsList';
 import { useQuotationItemDelete } from './quotationItem/quotationItem.hooks';
 import { useCustomerList } from '../customer/customer.hooks';
+import { useEffect } from 'react';
 
 const FormField = ({ label, name, control, rows = 2, ...props }) => {
   return (
@@ -42,7 +44,9 @@ const ReadonlyFormField = ({
 }) => {
   return (
     <Field label={label} size={labelSize} style={{ minWidth }}>
-      <div className={`flex flex-row items-center text-${props.fontSize}`}>
+      <div
+        className={`flex flex-row items-center whitespace-nowrap text-${props.fontSize}`}
+      >
         {prefix}
         <ReadonlyField control={control} name={name} {...props} />
       </div>
@@ -56,15 +60,17 @@ interface QuotationFormProps {
 }
 
 const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
-  const { success, error } = useNotifications();
-  const { data, refetch } = useQuotationSingle(id, id !== 'new');
+  const { success, error, info } = useNotifications();
+  const { data } = useQuotationSingle(id, id !== 'new');
   const form = useForm<QuotationDto>({
     values: {
       ...data,
       customer:
         typeof data?.customer === 'string'
           ? data?.customer
-          : data?.customer?.$id
+          : data?.customer?.$id,
+      quotationDate: data?.quotationDate?.split('T')[0],
+      validUntil: data?.validUntil?.split('T')[0]
     }
   });
 
@@ -72,7 +78,6 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
     control,
     handleSubmit,
     getValues,
-    watch,
     formState: { isValid, isDirty }
   } = form;
 
@@ -99,7 +104,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
     }
 
     if (!isValid) return console.log('not valid');
-    if (!isDirty) return console.log('not dirty');
+    if (!isDirty) return info('No hay cambios para guardar.');
 
     // generate payload from dirty fields:
     const payload = Object.keys(data).reduce((prev, current) => {
@@ -110,7 +115,16 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
     }, {} as any);
     payload.$id = data.$id;
     console.log('payload to be saved', payload);
+    if (payload.items) {
+      payload.items.forEach((item, index) => {
+        item.sequence = index + 1;
+        item.amount = Number(item.quantity) * Number(item.unitPrice);
+      });
+    }
     const updated = await saveQuotation.mutateAsync(payload);
+
+    // We do not wait for report generation (await keyword):
+    quotationPDF.mutateAsync(id);
 
     // await refetch();
 
@@ -164,12 +178,26 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
     dialog.onOk = onCreate;
   }
 
-  const items = watch('items');
-  // console.log('watched items', items);
+  const items = useWatch({
+    control: form.control,
+    name: `items`
+  });
+
+  useEffect(() => {
+    const subtotal = items?.reduce((prev, current) => {
+      return prev + current.quantity * current.unitPrice;
+    }, 0);
+    const iva = subtotal * 0.16;
+    const total = subtotal + iva;
+
+    form.setValue('subtotal', subtotal, { shouldDirty: true });
+    form.setValue('iva', iva, { shouldDirty: true });
+    form.setValue('total', total, { shouldDirty: true });
+  }, [items]);
 
   return (
     <form className="flex flex-col gap-2" onSubmit={onSubmit}>
-      <div className="flex flex-row justify-between">
+      <div className="flex flex-row justify-between items-baseline">
         {/* <ReadonlyFormField
           control={control}
           name="createdBy"
@@ -198,17 +226,39 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
           <Divider orientation="vertical" className="h-5" />
           <FormButton type="submit">Guardar</FormButton>
           <Divider orientation="vertical" className="h-5" />
-          <FormButton type="button" onPress={handlePDF} className="mr-4">
+          <FormButton
+            type="button"
+            onPress={handlePDF}
+            className="mr-4"
+            loading={quotationPDF.isPending}
+          >
             PDF
           </FormButton>
         </div>
       </div>
       {/* <pre>{JSON.stringify(watch(), null, 2)}</pre> */}
 
-      <div className="bg-white -ml-6 -mr-6 p-8 -mb-6 rounded-b-lg border-default-200 border-b-1 flex flex-col gap-2">
+      <div className="bg-white -ml-6 -mr-6 p-8 -mb-6 rounded-b-lg border-default-200 border-b-1 flex flex-col gap-4">
         <QuotationItemsList form={form} items={items} />
 
         {/* <pre>{JSON.stringify(items, null, 1)}</pre> */}
+        <div className="flex flex-col sm:flex-row gap-10">
+          <FormField
+            control={control}
+            name="quotationDate"
+            label="Fecha de cotización"
+            type="date"
+            rows={0}
+          />
+
+          <FormField
+            control={control}
+            name="validUntil"
+            label="Vigencia"
+            type="date"
+            rows={0}
+          />
+        </div>
 
         <FormField control={control} name="scope" label="Alcance del trabajo" />
         <FormField control={control} name="exclusions" label="Exclusiones" />
@@ -231,7 +281,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
 
         <FormField control={control} name="notes" label="Notas" />
 
-        <div className="flex flex-row justify-between bg-default-200 rounded-lg p-8 mt-4">
+        <div className="flex flex-col gap-5 sm:flex-row justify-between bg-default-200 rounded-lg p-8 mt-4">
           <div className="flex flex-col gap-2 flex-1">
             <ReadonlyFormField
               control={control}
@@ -240,9 +290,10 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
               labelSize="2xl"
               fontSize="2xl"
               prefix="$"
+              format={formatCurrency}
             />
           </div>
-          <Divider orientation="vertical" className="h-14 mx-10" />
+          <Divider orientation="vertical" className="h-0 sm:h-14 mx-10" />
           <div className="flex flex-col gap-2 flex-1">
             <ReadonlyFormField
               control={control}
@@ -251,9 +302,10 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
               labelSize="2xl"
               fontSize="2xl"
               prefix="$"
+              format={formatCurrency}
             />
           </div>
-          <Divider orientation="vertical" className="h-14 mx-10" />
+          <Divider orientation="vertical" className="h-0 sm:h-14 mx-10" />
           <div className="flex flex-col gap-2 flex-1">
             <ReadonlyFormField
               control={control}
@@ -262,6 +314,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
               labelSize="2xl"
               fontSize="2xl"
               prefix="$"
+              format={formatCurrency}
             />
           </div>
         </div>
