@@ -133,6 +133,7 @@ export const TextInput: React.FC<TextInputProps> = ({
             errorMessage={customMessage || error?.message}
             endContent={props.endContent}
             min={props.min}
+            step="any"
           />
         </div>
       )}
@@ -381,6 +382,7 @@ export const FormTextInput: React.FC<TextInputProps> = ({
             errorMessage={customMessage || error?.message}
             endContent={props.endContent}
             min={props.min}
+            step="any"
           />
         </div>
       )}

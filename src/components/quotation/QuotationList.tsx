@@ -35,14 +35,14 @@ const ItemTitle = ({ item }: { item: QuotationDto }) => (
 
       <span className="text-xs font-normal">
         <span className="font-bold">Fecha: </span>
-        {formatDate(item.sentAt || new Date())}
+        {formatDate(item.quotationDate)}
       </span>
 
       <Divider orientation="vertical" className="h-6 bg-white" />
 
       <span className="text-xs font-normal">
         <span className="font-bold">Vigencia: </span>
-        {formatDate(item.validUntil || new Date())}
+        {formatDate(item.validUntil)}
       </span>
     </div>
     <div className="flex flex-row justify-start items-center">

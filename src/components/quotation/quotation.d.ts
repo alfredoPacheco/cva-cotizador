@@ -7,8 +7,11 @@ export interface QuotationDto extends BaseDto {
   quotationNumber: string;
   title: string;
   sentAt?: Date;
+  _convertedSentAt?: string;
   validUntil?: string;
+  _convertedValidUntil?: string;
   quotationDate?: string;
+  _convertedQuotationDate?: string;
   sentBy?: string;
   createdBy?: string;
   updatedBy?: string;

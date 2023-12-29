@@ -18,6 +18,8 @@ import QuotationItemsList from './quotationItem/QuotationItemsList';
 import { useQuotationItemDelete } from './quotationItem/quotationItem.hooks';
 import { useCustomerList } from '../customer/customer.hooks';
 import { useEffect } from 'react';
+import { omit } from 'lodash';
+import dayjs from 'dayjs';
 
 const FormField = ({ label, name, control, rows = 2, ...props }) => {
   return (
@@ -69,8 +71,12 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
         typeof data?.customer === 'string'
           ? data?.customer
           : data?.customer?.$id,
-      quotationDate: data?.quotationDate?.split('T')[0],
-      validUntil: data?.validUntil?.split('T')[0]
+      _convertedQuotationDate: data?.quotationDate
+        ? new Date(data?.quotationDate).toISOString().split('T')[0]
+        : undefined,
+      _convertedValidUntil: data?.validUntil
+        ? new Date(data?.validUntil).toISOString().split('T')[0]
+        : undefined
     }
   });
 
@@ -78,7 +84,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
     control,
     handleSubmit,
     getValues,
-    formState: { isValid, isDirty }
+    formState: { isValid, isDirty, dirtyFields }
   } = form;
 
   const {
@@ -107,13 +113,23 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
     if (!isDirty) return info('No hay cambios para guardar.');
 
     // generate payload from dirty fields:
-    const payload = Object.keys(data).reduce((prev, current) => {
+    const payload: QuotationDto = Object.keys(data).reduce((prev, current) => {
       if (form.formState.dirtyFields[current]) {
         prev[current] = data[current];
       }
       return prev;
     }, {} as any);
     payload.$id = data.$id;
+
+    if (dirtyFields._convertedQuotationDate) {
+      payload.quotationDate = dayjs(
+        payload._convertedQuotationDate
+      ).toISOString();
+    }
+    if (dirtyFields._convertedValidUntil) {
+      payload.validUntil = dayjs(payload._convertedValidUntil).toISOString();
+    }
+
     console.log('payload to be saved', payload);
     if (payload.items) {
       payload.items.forEach((item, index) => {
@@ -121,7 +137,9 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
         item.amount = Number(item.quantity) * Number(item.unitPrice);
       });
     }
-    const updated = await saveQuotation.mutateAsync(payload);
+    const updated = await saveQuotation.mutateAsync(
+      omit(payload, ['_convertedQuotationDate', '_convertedValidUntil'])
+    );
 
     // We do not wait for report generation (await keyword):
     quotationPDF.mutateAsync(id);
@@ -245,7 +263,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
         <div className="flex flex-col sm:flex-row gap-10">
           <FormField
             control={control}
-            name="quotationDate"
+            name="_convertedQuotationDate"
             label="Fecha de cotización"
             type="date"
             rows={0}
@@ -253,7 +271,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
 
           <FormField
             control={control}
-            name="validUntil"
+            name="_convertedValidUntil"
             label="Vigencia"
             type="date"
             rows={0}

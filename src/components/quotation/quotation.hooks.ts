@@ -68,7 +68,8 @@ export const useQuotationList = (enabled = true) => {
             'title',
             'quotationNumber',
             'sentAt',
-            'validUntil'
+            'validUntil',
+            'quotationDate'
           ]),
           Query.orderDesc('$createdAt')
         ]
