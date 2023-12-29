@@ -1,7 +1,6 @@
 {
   "extends": "astro/tsconfigs/base",
   "compilerOptions": {
-    "types": ["bun-types"],
     "jsx": "react-jsx",
     "jsxImportSource": "react",
     "baseUrl": ".",
