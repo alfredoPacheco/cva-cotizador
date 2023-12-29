@@ -136,6 +136,16 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
         item.sequence = index + 1;
         item.amount = Number(item.quantity) * Number(item.unitPrice);
       });
+
+      const subtotal = items?.reduce((prev, current) => {
+        return prev + Number(current.quantity) * Number(current.unitPrice);
+      }, 0);
+      const iva = subtotal * 0.16;
+      const total = subtotal + iva;
+
+      payload.subtotal = subtotal;
+      payload.iva = iva;
+      payload.total = total;
     }
     const updated = await saveQuotation.mutateAsync(
       omit(payload, ['_convertedQuotationDate', '_convertedValidUntil'])
@@ -203,7 +213,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
 
   useEffect(() => {
     const subtotal = items?.reduce((prev, current) => {
-      return prev + current.quantity * current.unitPrice;
+      return prev + Number(current.quantity) * Number(current.unitPrice);
     }, 0);
     const iva = subtotal * 0.16;
     const total = subtotal + iva;
