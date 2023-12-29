@@ -208,9 +208,9 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
     const iva = subtotal * 0.16;
     const total = subtotal + iva;
 
-    form.setValue('subtotal', subtotal, { shouldDirty: true });
-    form.setValue('iva', iva, { shouldDirty: true });
-    form.setValue('total', total, { shouldDirty: true });
+    form.setValue('subtotal', subtotal, { shouldDirty: false });
+    form.setValue('iva', iva, { shouldDirty: false });
+    form.setValue('total', total, { shouldDirty: false });
   }, [items]);
 
   return (
