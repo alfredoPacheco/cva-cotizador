@@ -5,7 +5,8 @@ import {
   Textarea,
   type InputProps,
   Autocomplete as AutocompleteNextUI,
-  AutocompleteItem
+  AutocompleteItem,
+  Checkbox as CheckboxNextUI
 } from '@nextui-org/react';
 import { useMutation } from '@tanstack/react-query';
 import React, { useState } from 'react';
@@ -525,6 +526,53 @@ export const TextArea = ({ control, name }) => {
         fieldState: { error, isDirty }
       }) => <Textarea value={value || ''} onChange={onChange} />}
       name={name}
+    />
+  );
+};
+
+interface CheckboxProps {
+  control: Control<any>;
+  name: string;
+  mt?: number;
+  mb?: number;
+  customMessage?: string;
+  children?: React.ReactNode;
+  focus?: boolean;
+  width?: string | number;
+}
+
+export const Checkbox: React.FC<CheckboxProps> = ({
+  control,
+  name,
+  mt,
+  mb,
+  customMessage,
+  focus,
+  width = '100%',
+  ...props
+}) => {
+  return (
+    <Controller
+      name={name}
+      control={control}
+      render={({
+        field: { onChange, onBlur, value },
+        fieldState: { error }
+      }) => (
+        <CheckboxNextUI
+          isSelected={value || false}
+          onValueChange={onChange}
+          radius="full"
+          size="md"
+          style={{
+            marginTop: mt,
+            marginBottom: mb,
+            maxWidth: width
+          }}
+        >
+          {props.children}
+        </CheckboxNextUI>
+      )}
     />
   );
 };

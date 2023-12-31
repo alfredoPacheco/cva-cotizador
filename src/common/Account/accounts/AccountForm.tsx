@@ -1,4 +1,4 @@
-import { Field, PasswordInput, TextInput } from '@/ui/Inputs';
+import { Checkbox, Field, PasswordInput, TextInput } from '@/ui/Inputs';
 import { useForm } from 'react-hook-form';
 import {
   updateUserPrefs,
@@ -6,6 +6,7 @@ import {
   useAccountDelete,
   useAccountSingle,
   useAccountUpdateEmail,
+  useAccountUpdateLabels,
   useAccountUpdateName,
   useAccountUpdatePassword,
   useAccountUpdatePhone
@@ -20,6 +21,23 @@ import type { DialogWidget } from '@/ui/Dialog';
 import Avatar from '@/ui/Avatar';
 import { ID } from '@/core/appwriteClient';
 import { useQueryClient } from '@tanstack/react-query';
+import { Roles, RolesI18n } from '@/core';
+import { useEffect } from 'react';
+
+const roles = RolesI18n.mx;
+
+const rolesArray = Object.keys(roles).map(key => ({
+  id: 'roles.' + key,
+  name: roles[key as Roles]
+}));
+
+const mapLabelsToRoles = (labels: string[] = []) => {
+  const roles = {};
+  labels.forEach(label => {
+    roles[label] = true;
+  });
+  return roles;
+};
 
 const FormField = ({ label, name, control, rows = 0, ...props }) => {
   return (
@@ -57,7 +75,7 @@ const AccountForm: React.FC<AccountFormProps> = ({ id, dialog }) => {
     // setError,
     formState: { isValid, dirtyFields, isSubmitSuccessful }
   } = useForm<AccountDto>({
-    values: data
+    values: { ...data!, roles: mapLabelsToRoles(data?.labels) }
   });
 
   // useEffect(() => {
@@ -72,6 +90,7 @@ const AccountForm: React.FC<AccountFormProps> = ({ id, dialog }) => {
   const updateEmail = useAccountUpdateEmail();
   const updatePhone = useAccountUpdatePhone();
   const updateName = useAccountUpdateName();
+  const updateLabels = useAccountUpdateLabels();
 
   const queryClient = useQueryClient();
 
@@ -107,6 +126,11 @@ const AccountForm: React.FC<AccountFormProps> = ({ id, dialog }) => {
       if (dirtyFields.password) {
         await updatePassword.mutateAsync(data);
         success('Password actualizado');
+      }
+
+      if (dirtyFields.labels) {
+        await updateLabels.mutateAsync(data);
+        success('Permisos actualizados');
       }
 
       queryClient.invalidateQueries({ queryKey: ['accounts'] });
@@ -149,6 +173,19 @@ const AccountForm: React.FC<AccountFormProps> = ({ id, dialog }) => {
     success('Imagen de perfil actualizada');
   };
 
+  const stringRoles = JSON.stringify(watch('roles') || 'null', null, 2);
+  useEffect(() => {
+    const roles = getValues('roles');
+    if (roles) {
+      // labels is an array of roles' keys where roles' value is true
+      const labels = Object.keys(roles).filter(key => roles[key as Roles]);
+      // .map(key => key);
+      setValue('labels', labels, { shouldDirty: true });
+    } else {
+      setValue('labels', [], { shouldDirty: true });
+    }
+  }, [stringRoles]);
+
   return (
     <form className="flex flex-col gap-5" onSubmit={onSubmit}>
       <div className={dialog ? 'self-center' : ''}>
@@ -165,6 +202,15 @@ const AccountForm: React.FC<AccountFormProps> = ({ id, dialog }) => {
       <FormField control={control} name="prefs.phone" label="Teléfono" />
       <Field label="Contraseña">
         <PasswordInput control={control} name="password" variant="underlined" />
+      </Field>
+      <Field label="Permisos">
+        <div className="flex flex-col gap-5 mt-5">
+          {rolesArray.map(role => (
+            <Checkbox key={role.id} control={control} name={role.id}>
+              {role.name}
+            </Checkbox>
+          ))}
+        </div>
       </Field>
       {id !== 'new' && (
         <>
@@ -192,6 +238,7 @@ const AccountForm: React.FC<AccountFormProps> = ({ id, dialog }) => {
           </div>
         </>
       )}
+      {/* <pre>{JSON.stringify(rolesArray, null, 2)}</pre> */}
     </form>
   );
 };

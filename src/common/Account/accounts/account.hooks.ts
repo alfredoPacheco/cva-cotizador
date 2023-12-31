@@ -391,6 +391,14 @@ export const useAccountUpdateEmail = () => {
     }
   });
 };
+export const useAccountUpdateLabels = () => {
+  return useMutation({
+    mutationFn: async ({ $id, labels }: any) => {
+      const resp = await updateUserLabels($id, labels);
+      return resp;
+    }
+  });
+};
 export const useAccountDelete = () => {
   return useMutation({
     ...defaultDeleteMutation([QUERY_KEY], useQueryClient()),
