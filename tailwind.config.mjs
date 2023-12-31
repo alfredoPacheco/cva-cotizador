@@ -11,6 +11,7 @@ export default {
   },
   darkMode: 'class',
   plugins: [
+    require('@tailwindcss/typography'),
     nextui({
       addCommonColors: true,
       themes: {

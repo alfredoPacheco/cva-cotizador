@@ -7,6 +7,7 @@ import Underline from '@tiptap/extension-underline';
 import { useEffect, useState } from 'react';
 // import TiptapToolbar from './TiptapToolbar';
 import Link from '@tiptap/extension-link';
+import TiptapToolbar from './TiptapToolbar';
 
 interface TiptapProps {
   label?: string;
@@ -62,7 +63,7 @@ const Tiptap: React.FC<TiptapProps> = ({
       }),
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       ResizableImageExtension.configure({
-        allowBase64: true,
+        allowBase64: false,
         inline: true
       })
     ]
@@ -82,8 +83,8 @@ const Tiptap: React.FC<TiptapProps> = ({
 
   return (
     // <div className="border-[1.5px] py-2 border-stone-300 rounded-[5px]">
-    <div className="">
-      {/* {toolbar && <TiptapToolbar editor={editor} />} */}
+    <div className="w-full">
+      {toolbar && <TiptapToolbar editor={editor} />}
       <div className="relative w-full min-w-[200px]">
         {/* <div className="relative h-10 w-full min-w-[200px]"> */}
         <EditorContent editor={editor} />

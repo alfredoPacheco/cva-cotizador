@@ -29,4 +29,5 @@ export interface QuotationDto extends BaseDto {
   reportId?: string;
   notes?: string;
   warranty?: string;
+  internalNotes?: string;
 }

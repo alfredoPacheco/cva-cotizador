@@ -504,14 +504,14 @@ export const Autocomplete: React.FC<AutocompleteeProps> = props => {
   );
 };
 
-export const RichTextEditor = ({ control, name }) => {
+export const RichTextEditor = ({ control, name, toolbar = false }) => {
   return (
     <Controller
       control={control}
       render={({
         field: { onChange, onBlur, value },
         fieldState: { error, isDirty }
-      }) => <Tiptap value={value} onChange={onChange} />}
+      }) => <Tiptap value={value} onChange={onChange} toolbar={toolbar} />}
       name={name}
     />
   );

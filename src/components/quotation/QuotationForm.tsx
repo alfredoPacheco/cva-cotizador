@@ -1,8 +1,13 @@
-import { Autocomplete, Field, ReadonlyField, TextInput } from '@/ui/Inputs';
+import {
+  Autocomplete,
+  Field,
+  ReadonlyField,
+  RichTextEditor,
+  TextInput
+} from '@/ui/Inputs';
 import { Divider } from '@nextui-org/react';
 import { useForm, useWatch } from 'react-hook-form';
 import {
-  generateQuotationPDF,
   useQuotationCreate,
   useQuotationDelete,
   useQuotationPDF,
@@ -226,12 +231,6 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
   return (
     <form className="flex flex-col gap-2" onSubmit={onSubmit}>
       <div className="flex flex-row justify-between items-baseline">
-        {/* <ReadonlyFormField
-          control={control}
-          name="createdBy"
-          label="Realizado por:"
-          readOnly
-        /> */}
         <Field label="Realizado por:" size="md" style={{ minWidth: 30 }}>
           <div className={`flex flex-row items-center pt-5`}>
             <ReadonlyField control={control} name="createdBy" />
@@ -257,7 +256,6 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
           <FormButton
             type="button"
             onPress={handlePDF}
-            className="mr-4"
             loading={quotationPDF.isPending}
           >
             PDF
@@ -308,6 +306,10 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
         <FormField control={control} name="warranty" label="Garantías" />
 
         <FormField control={control} name="notes" label="Notas" />
+
+        <Field label="Notas Internas">
+          <RichTextEditor control={control} name="internalNotes" toolbar />
+        </Field>
 
         <div className="flex flex-col gap-5 sm:flex-row justify-between bg-default-200 rounded-lg p-8 mt-4">
           <div className="flex flex-col gap-2 flex-1">
