@@ -159,7 +159,7 @@ export const EmailInput: React.FC<EmailInputProps> = ({
   const { success, error } = useNotifications();
   const verifyEmailMutation = useMutation({
     mutationFn: () => {
-      const verifyUrl = new URL('/profile', window.location.origin);
+      const verifyUrl = new URL('/verify', window.location.origin);
       return account.createVerification(verifyUrl.toString());
     }
   });

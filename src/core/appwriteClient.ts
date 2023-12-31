@@ -3,7 +3,8 @@ import { Client, Account, ID, Databases, Storage, Functions } from 'appwrite';
 const client = new Client();
 client
   .setEndpoint(import.meta.env.PUBLIC_APPWRITE_ENDPOINT)
-  .setProject(import.meta.env.PUBLIC_APPWRITE_PROJECT);
+  .setProject(import.meta.env.PUBLIC_APPWRITE_PROJECT)
+  .setLocale('es-mx');
 
 const databases = new Databases(client);
 const account = new Account(client);
