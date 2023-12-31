@@ -136,6 +136,10 @@ export const handleErrors = (
     return;
   }
   if (err instanceof AppwriteException) {
+    if (err.code === 401) {
+      notifyError('No tiene permisos para realizar esta acción', 8000);
+      return;
+    }
     notifyError(get(i18n, err.message, err.message), 8000);
     return;
   }

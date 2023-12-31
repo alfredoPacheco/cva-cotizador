@@ -343,11 +343,12 @@ export const useAccountSingle = (id: string, enabled = true) => {
 
 export const useAccountCreate = () => {
   return useMutation({
-    ...defaultCreateMutation({
-      queryKey: [QUERY_KEY],
-      queryClient: useQueryClient(),
-      appendMode: 'prepend'
-    }),
+    // Disabling optimistic update for Users because it uses Users cloud function
+    // ...defaultCreateMutation({
+    //   queryKey: [QUERY_KEY],
+    //   queryClient: useQueryClient(),
+    //   appendMode: 'prepend'
+    // }),
     mutationFn: async (data: AccountDto) => {
       const resp = await createUser(data);
       return resp;

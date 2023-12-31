@@ -92,6 +92,13 @@
       "$createdAt": "2023-11-17T01:00:20.931+00:00",
       "$updatedAt": "2023-11-17T01:00:20.931+00:00",
       "enabled": true
+    },
+    {
+      "$id": "syscom",
+      "name": "syscom",
+      "$createdAt": "2023-12-14T06:11:14.138+00:00",
+      "$updatedAt": "2023-12-14T06:11:14.138+00:00",
+      "enabled": true
     }
   ],
   "collections": [
@@ -521,10 +528,11 @@
     {
       "$id": "quotations",
       "$permissions": [
-        "create(\"any\")",
-        "read(\"any\")",
-        "update(\"any\")",
-        "delete(\"any\")"
+        "create(\"label:quotations\")",
+        "read(\"label:quotations\")",
+        "update(\"label:quotations\")",
+        "delete(\"label:quotations\")",
+        "read(\"any\")"
       ],
       "databaseId": "quotations-db",
       "name": "quotations",
@@ -758,10 +766,11 @@
     {
       "$id": "customers",
       "$permissions": [
-        "create(\"any\")",
         "read(\"any\")",
-        "update(\"any\")",
-        "delete(\"any\")"
+        "create(\"label:customers\")",
+        "read(\"label:customers\")",
+        "update(\"label:customers\")",
+        "delete(\"label:customers\")"
       ],
       "databaseId": "quotations-db",
       "name": "customers",
