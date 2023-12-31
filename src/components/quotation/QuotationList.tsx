@@ -4,7 +4,12 @@ import Container from '@/ui/Container';
 import Title from '@/ui/Title';
 import { TextButton } from '@/ui/Buttons';
 import { SearchInput } from '@/ui/Inputs';
-import { Accordion, AccordionItem, Divider } from '@nextui-org/react';
+import {
+  Accordion,
+  AccordionItem,
+  Divider,
+  type Selection
+} from '@nextui-org/react';
 import { PiPlus } from 'react-icons/pi';
 import { RxDividerVertical } from 'react-icons/rx';
 import QuotationForm from './QuotationForm';
@@ -12,6 +17,7 @@ import { Dialog, useDialog } from '@/ui/Dialog';
 import type { QuotationDto } from './quotation';
 import { formatDate } from '@/core/utils';
 import QuotationCreateForm from './QuotationCreateForm';
+import { useEffect, useState } from 'react';
 
 const searchLocally = (query: string) => (item: any) => {
   if (!query || query.trim() === '') return true;
@@ -59,6 +65,19 @@ const QuotationList = () => {
 
   const filteredData = query.data?.filter(searchLocally(debouncedSearch));
 
+  const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
+
+  // get quotationId to expand form hash param:
+  const quotationId = window.location.hash.replace('#', '');
+  useEffect(() => {
+    if (quotationId && query.data?.length > 0) {
+      const item = query.data.find(item => item.$id === quotationId);
+      if (item) {
+        setSelectedKeys(new Set([item.$id]));
+      }
+    }
+  }, [quotationId, query.data]);
+
   return (
     <Container>
       <Dialog {...dialog} formOff okLabel="Crear" title="Cotización">
@@ -74,7 +93,15 @@ const QuotationList = () => {
         <SearchInput control={filtersForm.control} name="search" />
       </div>
 
-      <Accordion variant="light" showDivider={false}>
+      <Accordion
+        variant="light"
+        showDivider={false}
+        selectedKeys={selectedKeys}
+        onSelectionChange={value => {
+          window.location.hash = '';
+          setSelectedKeys(value);
+        }}
+      >
         {filteredData?.map(item => (
           <AccordionItem
             key={item.$id}

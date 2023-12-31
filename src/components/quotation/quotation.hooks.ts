@@ -163,3 +163,19 @@ export const generateQuotationNumber = async () => {
   const quotationNumber = `${date}${nextSequence.toString().padStart(3, '0')}`;
   return quotationNumber;
 };
+
+export const useQuotationsByCustomer = (customerId: string) => {
+  return useQuery<QuotationDto[]>({
+    queryKey: [
+      QUERY_KEY,
+      {
+        queries: [
+          Query.select(['$id', 'title', 'quotationNumber', 'quotationDate']),
+          Query.equal('customerId', customerId),
+          Query.orderDesc('$createdAt')
+        ]
+      } as ListQueryType
+    ],
+    enabled: !!customerId
+  });
+};

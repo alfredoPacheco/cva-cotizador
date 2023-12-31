@@ -64,6 +64,13 @@ const QuotationCreateForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
       }, {} as any);
       payload.$id = 'new';
       payload.createdBy = authCentralState.account.value.email;
+      if (payload.customer) {
+        if (typeof payload.customer === 'string') {
+          payload.customerId = payload.customer;
+        } else {
+          payload.customerId = payload.customer.$id;
+        }
+      }
       console.log('payload to be sent', payload);
       await createQuotation.mutateAsync(payload);
       success('Registro creado.');

@@ -124,7 +124,19 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
       }
       return prev;
     }, {} as any);
+
+    const keysLength = Object.keys(payload).length;
+    if (keysLength === 0) return info('No hay cambios para guardar.');
+
     payload.$id = data.$id;
+
+    if (payload.customer) {
+      if (typeof payload.customer === 'string') {
+        payload.customerId = payload.customer;
+      } else {
+        payload.customerId = payload.customer.$id;
+      }
+    }
 
     if (dirtyFields._convertedQuotationDate) {
       payload.quotationDate = dayjs(
@@ -186,6 +198,16 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
     }
   });
 
+  const handleEmail = handleSubmit(async (data: QuotationDto) => {
+    try {
+      await save(data);
+
+      window.open(`/reports/quotations/${id}.pdf`, '_blank');
+    } catch (err) {
+      handleErrors(err, error);
+    }
+  });
+
   const onRemove = async () => {
     try {
       if (confirm('¿Seguro de eliminar este registro?') === false) return;
@@ -231,27 +253,32 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
   return (
     <form className="flex flex-col gap-2" onSubmit={onSubmit}>
       <div className="flex flex-row justify-between items-baseline">
-        <Field label="Realizado por:" size="md" style={{ minWidth: 30 }}>
-          <div className={`flex flex-row items-center pt-5`}>
-            <ReadonlyField control={control} name="createdBy" />
-          </div>
-        </Field>
-        <Field label="Cliente">
-          <Autocomplete
-            control={control}
-            name="customer"
-            items={customers}
-            labelProp="name"
-            secondaryLabelProp="email"
-          />
-        </Field>
-        <div
-          className="flex flex-grow flex-row items-center justify-center gap-1"
-          style={{ maxWidth: 200 }}
-        >
+        <div className="flex flex-auto">
+          <Field label="Realizado por:" size="md" style={{ minWidth: 30 }}>
+            <div className={`flex flex-row items-center pt-5`}>
+              <ReadonlyField control={control} name="createdBy" />
+            </div>
+          </Field>
+        </div>
+        <div className="flex flex-auto">
+          <Field label="Cliente">
+            <Autocomplete
+              control={control}
+              name="customer"
+              items={customers}
+              labelProp="name"
+              secondaryLabelProp="email"
+            />
+          </Field>
+        </div>
+        <div className="flex flex-grow flex-row items-center justify-end gap-1">
           <FormButton onPress={onRemove}>Borrar</FormButton>
           <Divider orientation="vertical" className="h-5" />
           <FormButton type="submit">Guardar</FormButton>
+          <Divider orientation="vertical" className="h-5" />
+          <FormButton type="button" onPress={handleEmail}>
+            Email
+          </FormButton>
           <Divider orientation="vertical" className="h-5" />
           <FormButton
             type="button"

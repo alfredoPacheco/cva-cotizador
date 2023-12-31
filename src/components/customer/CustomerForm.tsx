@@ -13,6 +13,7 @@ import { PiTrashBold } from 'react-icons/pi';
 import { useNotifications } from '@/core/useNotifications';
 import { handleErrors } from '@/core/utils';
 import type { DialogWidget } from '@/ui/Dialog';
+import { useQuotationsByCustomer } from '../quotation/quotation.hooks';
 
 const FormField = ({ label, name, control, rows = 0, ...props }) => {
   return (
@@ -79,6 +80,9 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ id, dialog }) => {
   if (dialog) {
     dialog.onOk = onCreate;
   }
+
+  const { data: quotationsByCustomer } = useQuotationsByCustomer(id);
+
   return (
     <form className="flex flex-col gap-5" onSubmit={onSubmit}>
       <FormField control={control} name="name" label="Nombre" />
@@ -94,7 +98,19 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ id, dialog }) => {
       <FormField control={control} name="taxRegime" label="Régimen Fiscal" />
       {id !== 'new' && (
         <>
-          <Field label="Cotizaciones">Aquí iran las cotizaciones</Field>
+          <Field label="Cotizaciones">
+            <div className="flex flex-col">
+              {quotationsByCustomer?.map(q => (
+                <a
+                  className="text-primary-300"
+                  key={q.$id}
+                  href={'/quotations#' + q.$id}
+                >
+                  {q.quotationNumber} {q.title}
+                </a>
+              ))}
+            </div>
+          </Field>
           <div className="flex flex-row justify-between items-center">
             <FormButton
               onPress={onRemove}
