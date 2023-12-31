@@ -6,7 +6,7 @@ import {
   TextInput
 } from '@/ui/Inputs';
 import { Divider } from '@nextui-org/react';
-import { useForm, useWatch } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import {
   useQuotationCreate,
   useQuotationDelete,
@@ -25,6 +25,8 @@ import { useCustomerList } from '../customer/customer.hooks';
 import { useEffect } from 'react';
 import { omit } from 'lodash';
 import dayjs from 'dayjs';
+import Attachments from '@/ui/Attachments';
+import { fileDeserialize } from '@/ui/Attachments/FileSerialize';
 
 const FormField = ({ label, name, control, rows = 2, ...props }) => {
   return (
@@ -81,7 +83,8 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
         : undefined,
       _convertedValidUntil: data?.validUntil
         ? new Date(data?.validUntil).toISOString().split('T')[0]
-        : undefined
+        : undefined,
+      _attachments: data?.attachments?.map(fileDeserialize) || []
     }
   });
 
@@ -89,6 +92,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
     control,
     handleSubmit,
     getValues,
+    setValue,
     formState: { isValid, isDirty, dirtyFields }
   } = form;
 
@@ -101,11 +105,17 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
   const removeQuotation = useQuotationDelete();
   const deleteItemMutation = useQuotationItemDelete();
 
+  const attachmentsApi = { saveAll: () => [] };
+
   const save = async (data: QuotationDto) => {
     // console.log('data', data);
     // console.log({ isValid, isDirty });
     // console.log('dirtyFields', form.formState.dirtyFields);
     // return;
+    const [, serializedFiles] = await attachmentsApi.saveAll();
+
+    data.attachments = serializedFiles;
+
     const removedItemsIds = form.getValues('__removedItemsIds');
     if (removedItemsIds?.length) {
       removedItemsIds.forEach(async id => {
@@ -165,7 +175,11 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
       payload.total = total;
     }
     const updated = await saveQuotation.mutateAsync(
-      omit(payload, ['_convertedQuotationDate', '_convertedValidUntil'])
+      omit(payload, [
+        '_convertedQuotationDate',
+        '_convertedValidUntil',
+        '_attachments'
+      ])
     );
 
     // We do not wait for report generation (await keyword):
@@ -175,6 +189,22 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
 
     success('Registro actualizado.');
     return updated;
+  };
+
+  const handleAttachmentsChange = (
+    updatedFiles,
+    serializedFiles: string[],
+    directUpload,
+    kind
+  ) => {
+    console.log({
+      updatedFiles,
+      serializedFiles,
+      directUpload,
+      kind
+    });
+    setValue('attachments', serializedFiles, { shouldDirty: true });
+    setValue('_attachments', updatedFiles, { shouldDirty: false });
   };
 
   const onSubmit = handleSubmit(async (data: QuotationDto) => {
@@ -336,6 +366,21 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
 
         <Field label="Notas Internas">
           <RichTextEditor control={control} name="internalNotes" toolbar />
+        </Field>
+
+        <Field label="Archivos adjuntos">
+          <Controller
+            control={control}
+            name="_attachments"
+            render={({ field }) => (
+              <Attachments
+                api={attachmentsApi}
+                kind="quote-attachments"
+                value={field.value || []}
+                onChange={handleAttachmentsChange}
+              />
+            )}
+          />
         </Field>
 
         <div className="flex flex-col gap-5 sm:flex-row justify-between bg-default-200 rounded-lg p-8 mt-4">

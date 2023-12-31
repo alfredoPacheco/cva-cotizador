@@ -31,4 +31,6 @@ export interface QuotationDto extends BaseDto {
   notes?: string;
   warranty?: string;
   internalNotes?: string;
+  attachments?: string[];
+  _attachments?: IAttachment[];
 }

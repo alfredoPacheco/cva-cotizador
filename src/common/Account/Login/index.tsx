@@ -26,8 +26,8 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
     formState: { isSubmitSuccessful }
   } = useForm<LoginDto>({
     defaultValues: {
-      email: 'demo@demo.com',
-      password: '12345678'
+      email: '',
+      password: ''
     }
   });
 
