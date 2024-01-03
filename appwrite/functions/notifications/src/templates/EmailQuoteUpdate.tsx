@@ -10,14 +10,16 @@ import {
   Text
 } from '@react-email/components';
 
+const baseUrl = Bun.env['WEBAPP_BASE_URL'];
+
 interface QuoteUpdatedProps {
   subject?: string;
-  quotationHref?: string;
+  quotationId?: string;
 }
 
 export const EmailQuoteUpdate = ({
   subject,
-  quotationHref
+  quotationId
 }: QuoteUpdatedProps) => (
   <Html>
     <Head />
@@ -29,7 +31,7 @@ export const EmailQuoteUpdate = ({
           Hola, el sistema de Cotizaciones de CVA le informa:
         </Text>
         <Link
-          href={quotationHref}
+          href={`${baseUrl}/quotations#${quotationId}`}
           target="_blank"
           style={{
             ...link,
@@ -38,6 +40,18 @@ export const EmailQuoteUpdate = ({
           }}
         >
           {subject}
+        </Link>
+
+        <Link
+          href={`${baseUrl}/reports/quotations/${quotationId}.pdf`}
+          target="_blank"
+          style={{
+            ...link,
+            display: 'block',
+            marginBottom: '16px'
+          }}
+        >
+          Cotización en PDF
         </Link>
 
         {/* <Img

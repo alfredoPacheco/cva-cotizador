@@ -33,14 +33,12 @@ const sendNotification = async (
       subject = `Se ha creado una nueva cotización: ${notification.quotationId}`;
     }
 
-    const quotationHref = `https://cva-cotizador.vercel.app/quotations#${notification.quotationId}`;
-
     await sendEmail(
       log,
       error,
       // template,
       subject,
-      { quotationHref },
+      { quotationId: notification.quotationId },
       notification.to
     );
 
@@ -72,7 +70,6 @@ const sendNotification = async (
   }
 };
 
-// TODO use groups instead of unique to
 const sendEmail = async (
   log,
   error,
@@ -94,13 +91,13 @@ const sendEmail = async (
           })
           .filter(e => e);
 
-  log('recipients');
-  log(recipients);
-
   if (recipients.length === 0) {
     log('sendEmail: No Recipients provided');
     return;
   }
+
+  log('recipients');
+  log(recipients);
 
   const transporter = nodemailer.createTransport({
     // @ts-ignore
@@ -113,50 +110,38 @@ const sendEmail = async (
     }
   });
 
-  for await (const recipient of recipients) {
-    try {
-      log('about to sendEmail to: ' + recipient);
+  try {
+    const mailOptions = {
+      from: Bun.env['SMTP_SENDER'],
+      to: recipients,
+      subject:
+        subject || Bun.env['EMAIL_DEFAULT_SUBJECT'] || 'System Notification',
+      html: render(
+        <EmailQuoteUpdate
+          subject={
+            subject || Bun.env['EMAIL_DEFAULT_SUBJECT'] || 'System Notification'
+          }
+          quotationId={params.quotationId}
+        />
+      )
+    };
 
-      const mailOptions = {
-        from: Bun.env['SMTP_SENDER'],
-        to: recipient,
-        subject:
-          subject || Bun.env['EMAIL_DEFAULT_SUBJECT'] || 'System Notification',
-        html: render(
-          <EmailQuoteUpdate
-            subject={
-              subject ||
-              Bun.env['EMAIL_DEFAULT_SUBJECT'] ||
-              'System Notification'
-            }
-            quotationHref={params.quotationHref}
-          />
-        )
-      };
+    const mailResponse = await new Promise((resolve, reject) => {
+      try {
+        const email = transporter.sendMail(mailOptions);
+        setTimeout(() => {
+          resolve(email);
+        }, 2000);
+      } catch (e) {
+        reject(e);
+      }
+    });
 
-      const mailResponse = await new Promise((resolve, reject) => {
-        try {
-          const email = transporter.sendMail(mailOptions);
-          setTimeout(() => {
-            resolve(email);
-          }, 2000);
-        } catch (e) {
-          reject(e);
-        }
-      });
-
-      log(mailResponse);
-
-      // if (!response.ok) throw new Error('Error');
-
-      // const json = await response.json();
-      // log(json);
-      // // return json
-      // return true;
-    } catch (e) {
-      error(e);
-      return false;
-    }
+    log(mailResponse);
+    return true;
+  } catch (e) {
+    error(e);
+    return false;
   }
 };
 
@@ -248,7 +233,7 @@ const main = async ({ req, res, log, error }: any) => {
   log(quotationsIds);
 
   if (quotationsIds.length === 0) {
-    log('No recent updated quotations');
+    log('No recent updated/created quotations');
   }
 
   const recentNotifications =
@@ -260,8 +245,7 @@ const main = async ({ req, res, log, error }: any) => {
             Query.select(['$id', '$createdAt', 'quotationId']),
             Query.greaterThan(
               '$createdAt',
-              // @ts-ignore
-              dayjs().subtract(2, 'hours').toDate()
+              dayjs().subtract(2, 'hours').toISOString()
             ),
             Query.equal('quotationId', quotationsIds)
           ]
@@ -269,7 +253,7 @@ const main = async ({ req, res, log, error }: any) => {
       : { documents: [] };
 
   log('recentNotifications: ' + recentNotifications.documents.length);
-  log(recentNotifications);
+  if (recentNotifications.documents.length > 0) log(recentNotifications);
 
   for await (const quotation of recentQuotations.documents) {
     log('processing quotation:');
@@ -305,7 +289,8 @@ const main = async ({ req, res, log, error }: any) => {
     );
   }
 
-  res.json(FN_RESPONSE);
+  log(JSON.stringify(FN_RESPONSE, null, 2));
+  return res.json(FN_RESPONSE);
 };
 
 export default main;
