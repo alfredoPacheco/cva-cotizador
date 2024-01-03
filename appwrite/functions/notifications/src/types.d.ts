@@ -1,4 +1,6 @@
-export type NOTIFICATION_TYPE = 'quote-updated';
+import type { Models } from 'node-appwrite';
+
+export type NOTIFICATION_TYPE = 'quote-updated' | 'quote-created';
 
 export interface ContactDto {
   userId?: string;
@@ -15,8 +17,7 @@ export interface ReadByDto {
   phone?: string;
 }
 
-export interface NotificationDto {
-  $createdAt?: Date;
+export interface NotificationDto extends Models.Document {
   notificationType: NOTIFICATION_TYPE;
   sentAt?: Date;
   sentBy?: string;
@@ -26,4 +27,8 @@ export interface NotificationDto {
   title?: string;
   quotationId?: string;
   //   level?: number;
+}
+
+export interface QuotationDto extends Models.Document {
+  suscribers?: string[];
 }

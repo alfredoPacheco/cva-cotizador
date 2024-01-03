@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "main": "src/main.tsx",
   "devDependencies": {
+    "@types/bun": "^1.0.0",
+    "@types/nodemailer": "^6.4.14",
     "prettier": "^3.0.0"
   },
   "description": "",
@@ -15,6 +17,7 @@
     "@react-email/render": "^0.0.10",
     "dayjs": "^1.11.10",
     "node-appwrite": "^11.1.0",
+    "nodemailer": "^6.9.8",
     "react-email": "^1.10.0"
   }
 }
