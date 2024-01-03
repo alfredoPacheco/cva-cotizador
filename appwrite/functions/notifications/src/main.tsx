@@ -1,4 +1,4 @@
-import { Client, Databases, ID, Query, Storage } from 'node-appwrite';
+import { Client, Databases, ID, Query } from 'node-appwrite';
 import type { ContactDto, NotificationDto, QuotationDto } from './types';
 import dayjs from 'dayjs';
 import nodemailer from 'nodemailer';
@@ -7,13 +7,19 @@ import EmailQuoteUpdate from './templates/EmailQuoteUpdate';
 
 const DEV_EMAILS = ['apacheco@inspiracode.net'];
 
+const FN_RESPONSE = {
+  quotationsCreated: [],
+  quotationsUpdated: [],
+  quotationsDeleted: [],
+  quotationsOmitted: []
+};
+
 const client = new Client()
   .setEndpoint(Bun.env['APPWRITE_ENDPOINT'])
   .setProject(Bun.env['APPWRITE_FUNCTION_PROJECT_ID'])
   .setKey(Bun.env['APPWRITE_API_KEY']);
 
 const databases = new Databases(client);
-const storage = new Storage(client);
 
 const sendNotification = async (
   notification: Partial<NotificationDto>,
@@ -22,29 +28,44 @@ const sendNotification = async (
 ) => {
   log('SEND ALERT', notification);
   try {
-    const quotation = notification.payload as QuotationDto;
-    let subject = `Se ha actualizado la siguiente cotización: ${quotation.$id}`;
+    let subject = `Se ha actualizado la siguiente cotización: ${notification.quotationId}`;
     if (notification.notificationType === 'quote-created') {
-      subject = `Se ha creado una nueva cotización: ${quotation.$id}`;
+      subject = `Se ha creado una nueva cotización: ${notification.quotationId}`;
     }
+
+    const quotationHref = `https://cva-cotizador.vercel.app/quotations#${notification.quotationId}`;
 
     await sendEmail(
       log,
       error,
       // template,
       subject,
-      {
-        quotationHref: `https://cva-cotizador.vercel.app/quotations#${quotation.$id}`
-      },
+      { quotationHref },
       notification.to
     );
 
-    // await databases.createDocument(
-    //   Bun.env['APPWRITE_DATABASE'],
-    //   'notifications',
-    //   ID.unique(),
-    //   { ...notification, to: JSON.stringify(notification.to) }
-    // );
+    await databases.createDocument(
+      Bun.env['APPWRITE_DATABASE'],
+      'notifications',
+      ID.unique(),
+      {
+        ...notification,
+        payload: subject,
+        to:
+          typeof notification.to === 'string'
+            ? notification.to
+            : notification.to.map(e => JSON.stringify(e))
+      }
+    );
+
+    await databases.updateDocument(
+      Bun.env['APPWRITE_DATABASE'],
+      'quotations',
+      notification.quotationId,
+      {
+        notificationAt: dayjs().add(10, 'seconds').toISOString() // add 10 seconds so notificationAt is greater than $updatedAt
+      }
+    );
   } catch (e) {
     log('ERROR on sendNotification');
     error(e);
@@ -60,11 +81,6 @@ const sendEmail = async (
   params = {} as any,
   to: string | string[] | ContactDto[] = DEV_EMAILS
 ) => {
-  if (to.length === 0) {
-    log('sendEmail: No email provided');
-    return;
-  }
-
   const recipients =
     typeof to === 'string'
       ? to
@@ -81,6 +97,11 @@ const sendEmail = async (
   log('recipients');
   log(recipients);
 
+  if (recipients.length === 0) {
+    log('sendEmail: No Recipients provided');
+    return;
+  }
+
   const transporter = nodemailer.createTransport({
     // @ts-ignore
     host: Bun.env['SMTP_HOST'],
@@ -92,7 +113,7 @@ const sendEmail = async (
     }
   });
 
-  for (const recipient of recipients) {
+  for await (const recipient of recipients) {
     try {
       log('about to sendEmail to: ' + recipient);
 
@@ -112,8 +133,6 @@ const sendEmail = async (
           />
         )
       };
-
-      // console.log('mail options', mailOptions);
 
       const mailResponse = await new Promise((resolve, reject) => {
         try {
@@ -172,28 +191,26 @@ const handleNotification = async (
     notification.to = level1Suscribers;
     log('create notification');
     log(notification);
+    FN_RESPONSE.quotationsCreated.push(quotationId);
     await sendNotification(notification, log, error);
   } else {
     const sentAt = dayjs(notificationAlreadySent.$createdAt);
     const diff = now.diff(sentAt, 'minutes');
-    if (diff >= 5) {
+    if (diff >= 1) {
       notification.title = 'Cotización actualizada';
       notification.notificationType = 'quote-updated';
       log('update notification');
       log(notification);
-      return;
+      FN_RESPONSE.quotationsUpdated.push(quotationId);
       await sendNotification(notification, log, error);
+    } else {
+      FN_RESPONSE.quotationsOmitted.push(quotationId);
+      log('notification already sent in the last 5 minutes');
     }
   }
 };
 
 const main = async ({ req, res, log, error }: any) => {
-  const response = {
-    quotationsCreated: 0,
-    quotationsUpdated: 0,
-    quotationsDeleted: 0
-  };
-
   const recentQuotations = await databases.listDocuments<QuotationDto>(
     Bun.env['APPWRITE_DATABASE'],
     'quotations',
@@ -206,30 +223,55 @@ const main = async ({ req, res, log, error }: any) => {
     ]
   );
 
+  log('recentQuotations: ' + recentQuotations.documents.length);
+
+  FN_RESPONSE.quotationsOmitted = recentQuotations.documents
+    .filter(d => {
+      return (
+        d.notificationAt !== null &&
+        dayjs(d.$updatedAt).isBefore(dayjs(d.notificationAt))
+      );
+    })
+    .map(d => d.$id);
+
+  recentQuotations.documents = recentQuotations.documents.filter(d => {
+    return (
+      d.notificationAt === null ||
+      dayjs(d.$updatedAt).isAfter(dayjs(d.notificationAt))
+    );
+  });
+
+  log('recentQuotations after filter: ' + recentQuotations.documents.length);
+
   const quotationsIds = recentQuotations.documents.map(q => q.$id);
   log('quotationsIds: ' + quotationsIds.length);
   log(quotationsIds);
 
   if (quotationsIds.length === 0) {
     log('No recent updated quotations');
-    response.quotationsUpdated = 0;
   }
 
-  const recentNotifications = await databases.listDocuments<NotificationDto>(
-    Bun.env['APPWRITE_DATABASE'],
-    'notifications',
-    [
-      Query.select(['$id', '$createdAt', 'quotationId']),
-      // @ts-ignore
-      Query.greaterThan('$createdAt', dayjs().subtract(2, 'hours').toDate()),
-      Query.equal('quotationId', quotationsIds)
-    ]
-  );
+  const recentNotifications =
+    quotationsIds.length > 0
+      ? await databases.listDocuments<NotificationDto>(
+          Bun.env['APPWRITE_DATABASE'],
+          'notifications',
+          [
+            Query.select(['$id', '$createdAt', 'quotationId']),
+            Query.greaterThan(
+              '$createdAt',
+              // @ts-ignore
+              dayjs().subtract(2, 'hours').toDate()
+            ),
+            Query.equal('quotationId', quotationsIds)
+          ]
+        )
+      : { documents: [] };
 
   log('recentNotifications: ' + recentNotifications.documents.length);
   log(recentNotifications);
 
-  for (const quotation of recentQuotations.documents) {
+  for await (const quotation of recentQuotations.documents) {
     log('processing quotation:');
     log(quotation.$id);
 
@@ -251,7 +293,7 @@ const main = async ({ req, res, log, error }: any) => {
     log('recentlySentNotifications');
     log(recentlySentNotifications);
 
-    handleNotification(
+    await handleNotification(
       {
         payload: quotation,
         quotationId: quotation.$id,
@@ -262,8 +304,15 @@ const main = async ({ req, res, log, error }: any) => {
       error
     );
   }
+
+  res.json(FN_RESPONSE);
 };
 
 export default main;
 
-main({ req: {}, res: {}, log: console.log, error: console.error });
+// main({
+//   req: {},
+//   res: { json: console.log },
+//   log: console.log,
+//   error: console.error
+// });

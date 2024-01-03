@@ -31,4 +31,5 @@ export interface NotificationDto extends Models.Document {
 
 export interface QuotationDto extends Models.Document {
   suscribers?: string[];
+  notificationAt?: string | Date;
 }
