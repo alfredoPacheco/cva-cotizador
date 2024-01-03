@@ -21,7 +21,7 @@ export interface NotificationDto extends Models.Document {
   notificationType: NOTIFICATION_TYPE;
   sentAt?: Date;
   sentBy?: string;
-  payload: string;
+  payload: string | any;
   to?: string | ContactDto[];
   readBy?: string | ReadByDto[];
   title?: string;

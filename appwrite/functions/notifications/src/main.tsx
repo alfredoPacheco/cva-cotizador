@@ -2,6 +2,8 @@ import { Client, Databases, ID, Query, Storage } from 'node-appwrite';
 import type { ContactDto, NotificationDto, QuotationDto } from './types';
 import dayjs from 'dayjs';
 import nodemailer from 'nodemailer';
+import { render } from '@react-email/render';
+import EmailQuoteUpdate from './templates/EmailQuoteUpdate';
 
 const DEV_EMAILS = ['apacheco@inspiracode.net'];
 
@@ -20,21 +22,29 @@ const sendNotification = async (
 ) => {
   log('SEND ALERT', notification);
   try {
-    const emailSent = await sendEmail(
+    const quotation = notification.payload as QuotationDto;
+    let subject = `Se ha actualizado la siguiente cotización: ${quotation.$id}`;
+    if (notification.notificationType === 'quote-created') {
+      subject = `Se ha creado una nueva cotización: ${quotation.$id}`;
+    }
+
+    await sendEmail(
       log,
       error,
-      undefined,
-      notification.payload,
+      // template,
+      subject,
+      {
+        quotationHref: `https://cva-cotizador.vercel.app/quotations#${quotation.$id}`
+      },
       notification.to
     );
-    if (emailSent) {
-      await databases.createDocument(
-        Bun.env['APPWRITE_DATABASE'],
-        'notifications',
-        ID.unique(),
-        { ...notification, to: JSON.stringify(notification.to) }
-      );
-    }
+
+    // await databases.createDocument(
+    //   Bun.env['APPWRITE_DATABASE'],
+    //   'notifications',
+    //   ID.unique(),
+    //   { ...notification, to: JSON.stringify(notification.to) }
+    // );
   } catch (e) {
     log('ERROR on sendNotification');
     error(e);
@@ -45,8 +55,9 @@ const sendNotification = async (
 const sendEmail = async (
   log,
   error,
-  theSubject: string,
-  message: string,
+  // template: string,
+  subject: string,
+  params = {} as any,
   to: string | string[] | ContactDto[] = DEV_EMAILS
 ) => {
   if (to.length === 0) {
@@ -71,6 +82,7 @@ const sendEmail = async (
   log(recipients);
 
   const transporter = nodemailer.createTransport({
+    // @ts-ignore
     host: Bun.env['SMTP_HOST'],
     port: Bun.env['SMTP_PORT'],
     secure: Bun.env['SMTP_TLS'] === 'true' || false, // `true` for port 465, `false` for all other ports
@@ -84,26 +96,31 @@ const sendEmail = async (
     try {
       log('about to sendEmail to: ' + recipient);
 
-      const subject =
-        theSubject || Bun.env['EMAIL_DEFAULT_SUBJECT'] || 'System Notification';
-
       const mailOptions = {
         from: Bun.env['SMTP_SENDER'],
-        // from: 'no-reply@siafrac.com',
         to: recipient,
-        subject,
-        // text: subject,
-        html: '<b>Hello world</b>'
+        subject:
+          subject || Bun.env['EMAIL_DEFAULT_SUBJECT'] || 'System Notification',
+        html: render(
+          <EmailQuoteUpdate
+            subject={
+              subject ||
+              Bun.env['EMAIL_DEFAULT_SUBJECT'] ||
+              'System Notification'
+            }
+            quotationHref={params.quotationHref}
+          />
+        )
       };
 
-      console.log('mail options', mailOptions);
+      // console.log('mail options', mailOptions);
 
       const mailResponse = await new Promise((resolve, reject) => {
         try {
           const email = transporter.sendMail(mailOptions);
           setTimeout(() => {
             resolve(email);
-          }, 500);
+          }, 2000);
         } catch (e) {
           reject(e);
         }
