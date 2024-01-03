@@ -76,6 +76,21 @@
       "commands": "bun install",
       "ignore": ["node_modules", ".npm"],
       "path": "functions/reports"
+    },
+    {
+      "$id": "notifications",
+      "name": "notifications",
+      "runtime": "bun-1.0",
+      "execute": ["any"],
+      "events": [],
+      "schedule": "",
+      "timeout": 15,
+      "enabled": true,
+      "logging": true,
+      "entrypoint": "src/main.tsx",
+      "commands": "bun install",
+      "ignore": ["node_modules", ".npm"],
+      "path": "functions/notifications"
     }
   ],
   "databases": [
@@ -984,6 +999,97 @@
           "required": true,
           "array": false,
           "size": 50,
+          "default": null
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "$id": "notifications",
+      "$permissions": [],
+      "databaseId": "quotations-db",
+      "name": "notifications",
+      "enabled": true,
+      "documentSecurity": false,
+      "attributes": [
+        {
+          "key": "sentAt",
+          "type": "datetime",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "format": "",
+          "default": null
+        },
+        {
+          "key": "sentBy",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "payload",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": true,
+          "array": false,
+          "size": 5000,
+          "default": null
+        },
+        {
+          "key": "to",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": true,
+          "size": 200,
+          "default": null
+        },
+        {
+          "key": "readBy",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 100,
+          "default": "[]"
+        },
+        {
+          "key": "title",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 700,
+          "default": null
+        },
+        {
+          "key": "quotationId",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "notificationType",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 100,
           "default": null
         }
       ],

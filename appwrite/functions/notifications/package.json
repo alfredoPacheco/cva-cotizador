@@ -1,0 +1,20 @@
+{
+  "name": "starter-template",
+  "version": "1.0.0",
+  "main": "src/main.tsx",
+  "devDependencies": {
+    "prettier": "^3.0.0"
+  },
+  "description": "",
+  "scripts": {
+    "format": "prettier --write ."
+  },
+  "type": "module",
+  "dependencies": {
+    "@react-email/components": "^0.0.12",
+    "@react-email/render": "^0.0.10",
+    "dayjs": "^1.11.10",
+    "node-appwrite": "^11.1.0",
+    "react-email": "^1.10.0"
+  }
+}
