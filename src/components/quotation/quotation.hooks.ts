@@ -4,7 +4,7 @@ import {
   defaultUpdateMutation,
   defaultDeleteMutation
 } from '@/core/ReactQueryProvider/defaultMutations';
-import type { QuotationDto } from './quotation';
+import type { ContactDto, QuotationDto } from './quotation';
 import { useForm } from 'react-hook-form';
 import { Query, type Models } from 'appwrite';
 import { useEffect } from 'react';
@@ -80,9 +80,9 @@ export const useQuotationList = (enabled = true) => {
     enabled
   });
 
-  useEffect(() => {
-    query.refetch();
-  }, [debouncedSearch]);
+  // useEffect(() => {
+  //   query.refetch();
+  // }, [debouncedSearch]);
 
   return { query, filtersForm, debouncedSearch };
 };
@@ -177,5 +177,65 @@ export const useQuotationsByCustomer = (customerId: string) => {
       } as ListQueryType
     ],
     enabled: !!customerId
+  });
+};
+
+const parseSuscribers = (data: string[] | ContactDto[]): ContactDto[] => {
+  return (
+    data.map(s => {
+      if (typeof s === 'string') {
+        try {
+          const json = JSON.parse(s);
+          return json;
+        } catch (e) {
+          return s;
+        }
+      }
+      return s;
+    }) || []
+  );
+};
+
+export const useQuotationSuscribers = (id: string) => {
+  return useQuery<ContactDto[]>({
+    queryKey: [QUERY_KEY, 'suscribers', id],
+    queryFn: async () => {
+      const quotation = await databases.getDocument(
+        DEFAULT_DATABASE_ID,
+        COLLECTION_ID,
+        id
+      );
+      const suscribers = quotation.suscribers || [];
+      return parseSuscribers(suscribers);
+    },
+    enabled: !!id
+  });
+};
+
+export const useUpdateSuscribers = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      $id,
+      suscribers
+    }: {
+      $id: string;
+      suscribers: ContactDto[];
+    }) => {
+      const parsedSuscribers = suscribers.map(suscriber => {
+        return JSON.stringify(suscriber);
+      });
+      const updated = await databases.updateDocument(
+        DEFAULT_DATABASE_ID,
+        COLLECTION_ID,
+        $id,
+        { suscribers: parsedSuscribers }
+      );
+
+      // console.log('updated', updated);
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY, 'suscribers'] });
+
+      return updated;
+    }
   });
 };

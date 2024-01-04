@@ -5,16 +5,24 @@ import {
   RichTextEditor,
   TextInput
 } from '@/ui/Inputs';
-import { Divider } from '@nextui-org/react';
+import {
+  Avatar,
+  AvatarGroup,
+  Button,
+  Divider,
+  Tooltip
+} from '@nextui-org/react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import {
   useQuotationCreate,
   useQuotationDelete,
   useQuotationPDF,
   useQuotationSingle,
-  useQuotationUpdate
+  useQuotationSuscribers,
+  useQuotationUpdate,
+  useUpdateSuscribers
 } from './quotation.hooks';
-import type { QuotationDto } from './quotation';
+import type { ContactDto, QuotationDto } from './quotation';
 import { FormButton } from '@/ui/Buttons';
 import { useNotifications } from '@/core/useNotifications';
 import { formatCurrency, handleErrors } from '@/core/utils';
@@ -27,6 +35,7 @@ import { omit } from 'lodash';
 import dayjs from 'dayjs';
 import Attachments from '@/ui/Attachments';
 import { fileDeserialize } from '@/ui/Attachments/FileSerialize';
+import { authCentralState } from '@/core/AuthCentralService';
 
 const FormField = ({ label, name, control, rows = 2, ...props }) => {
   return (
@@ -280,6 +289,73 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
     form.setValue('total', total, { shouldDirty: false });
   }, [items]);
 
+  const updateSuscribers = useUpdateSuscribers();
+
+  const { data: suscribers } = useQuotationSuscribers(id);
+
+  const suscribeMe = async () => {
+    try {
+      const account = authCentralState.account.value;
+      if (!account) {
+        throw new Error('Inicie sesión para suscribirse.');
+      }
+
+      const alreadySuscribed = suscribers.find(
+        s => s.email.toLowerCase() === account.email.toLowerCase()
+      );
+      if (alreadySuscribed) return;
+
+      const updated = await updateSuscribers.mutateAsync({
+        $id: id,
+        suscribers: [
+          ...suscribers,
+          {
+            email: account.email.toLowerCase(),
+            name: account.name,
+            phone: account.phone,
+            avatarHref: authCentralState.avatarHref.value
+          } as ContactDto
+        ]
+      });
+      success('Suscripción actualizada.');
+      return updated;
+    } catch (err) {
+      handleErrors(err, error);
+    }
+  };
+
+  const removeMySuscription = async () => {
+    try {
+      if (confirm('¿Seguro de eliminar su suscripción?') === false) return;
+      const account = authCentralState.account.value;
+      if (!account) {
+        throw new Error('Debe iniciar sesión.');
+      }
+
+      const alreadySuscribed = suscribers.find(
+        s => s.email.toLowerCase() === account.email.toLowerCase()
+      );
+      if (alreadySuscribed) {
+        const updatedSuscribers = suscribers.filter(
+          s => s.email.toLowerCase() !== account.email.toLowerCase()
+        );
+        await updateSuscribers.mutateAsync({
+          $id: id,
+          suscribers: updatedSuscribers
+        });
+        success('Suscripción actualizada.');
+      }
+    } catch (err) {
+      handleErrors(err, error);
+    }
+  };
+
+  const currentAccount = authCentralState.account.value;
+
+  const mySuscription = suscribers?.find(
+    s => !!currentAccount?.email && s.email === currentAccount.email
+  );
+
   return (
     <form className="flex flex-col gap-2" onSubmit={onSubmit}>
       <div className="flex flex-row justify-between items-baseline">
@@ -301,22 +377,56 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
             />
           </Field>
         </div>
-        <div className="flex flex-grow flex-row items-center justify-end gap-1">
-          <FormButton onPress={onRemove}>Borrar</FormButton>
-          <Divider orientation="vertical" className="h-5" />
-          <FormButton type="submit">Guardar</FormButton>
-          <Divider orientation="vertical" className="h-5" />
-          <FormButton type="button" onPress={handleEmail}>
-            Email
-          </FormButton>
-          <Divider orientation="vertical" className="h-5" />
-          <FormButton
-            type="button"
-            onPress={handlePDF}
-            loading={quotationPDF.isPending}
-          >
-            PDF
-          </FormButton>
+        <div className="flex flex-grow flex-col items-end gap-1">
+          <div className="flex flex-grow flex-row items-center justify-end gap-1">
+            <FormButton onPress={onRemove}>Borrar</FormButton>
+            <Divider orientation="vertical" className="h-5" />
+            <FormButton type="submit">Guardar</FormButton>
+            <Divider orientation="vertical" className="h-5" />
+            <FormButton type="button" onPress={handleEmail}>
+              Email
+            </FormButton>
+            <Divider orientation="vertical" className="h-5" />
+            <FormButton
+              type="button"
+              onPress={handlePDF}
+              loading={quotationPDF.isPending}
+            >
+              PDF
+            </FormButton>
+          </div>
+          <AvatarGroup max={10}>
+            {suscribers?.map(suscriber => (
+              <Tooltip
+                key={suscriber.email}
+                // color={color}
+                content={suscriber.email}
+                className="capitalize"
+              >
+                <Avatar
+                  key={suscriber.email}
+                  size="md"
+                  src={suscriber.avatarHref}
+                  onClick={removeMySuscription}
+                />
+              </Tooltip>
+            ))}
+          </AvatarGroup>
+          <div className="text-xs text-default-700 mt-2">
+            {suscribers?.length === 0 && <span>No hay suscriptores.</span>}
+            {!mySuscription && (
+              <Button
+                size="sm"
+                className="ml-2"
+                variant="flat"
+                onClick={() => {
+                  suscribeMe();
+                }}
+              >
+                Suscribirme
+              </Button>
+            )}
+          </div>
         </div>
       </div>
       {/* <pre>{JSON.stringify(watch(), null, 2)}</pre> */}

@@ -2,7 +2,7 @@ import type { QueryClient, QueryKey } from '@tanstack/react-query';
 import { ID, databases } from '../appwriteClient';
 import omit from 'lodash/omit';
 
-const DATABASE_ID = import.meta.env.PUBLIC_APPWRITE_DATABASE!;
+export const DEFAULT_DATABASE_ID = import.meta.env.PUBLIC_APPWRITE_DATABASE!;
 
 export interface BaseDto {
   $id: string;
@@ -32,7 +32,7 @@ export function defaultCreateMutation<T extends BaseDto>({
         '$updatedAt'
       ]);
       return await databases.createDocument(
-        DATABASE_ID,
+        DEFAULT_DATABASE_ID,
         collectionId,
         ID.unique(),
         payload
@@ -94,7 +94,7 @@ export function defaultUpdateMutation<T extends BaseDto>(
         '$updatedAt'
       ]);
       return await databases.updateDocument(
-        DATABASE_ID,
+        DEFAULT_DATABASE_ID,
         collectionId,
         data.$id,
         payload
@@ -146,7 +146,11 @@ export function defaultDeleteMutation<T extends BaseDto>(
   return {
     mutationFn: async (id: string) => {
       if (!collectionId) throw new Error('collectionId is required');
-      return await databases.deleteDocument(DATABASE_ID, collectionId, id);
+      return await databases.deleteDocument(
+        DEFAULT_DATABASE_ID,
+        collectionId,
+        id
+      );
     },
     onMutate: async (id: string) => {
       // Cancel any outgoing refetches

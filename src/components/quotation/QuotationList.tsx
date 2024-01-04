@@ -52,7 +52,7 @@ const ItemTitle = ({ item }: { item: QuotationDto }) => (
       </span>
     </div>
     <div className="flex flex-row justify-start items-center">
-      <span className="font-bold text-xl">{item.title}</span>
+      <span className="text-2xl font-montHeavy">{item.title}</span>
     </div>
   </div>
 );
