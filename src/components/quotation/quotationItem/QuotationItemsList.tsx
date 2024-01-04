@@ -7,6 +7,7 @@ import { Dialog, useDialog } from '@/ui/Dialog';
 import { ProductList } from '@/components/product/ProductList';
 import type { TVCProductDto } from '@/components/product/product';
 import uniqueId from 'lodash/uniqueId';
+import Dollar from '@/components/dollar';
 
 interface QuotationItemsProps {
   form: UseFormReturn<QuotationDto>;
@@ -76,6 +77,7 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({ form, items }) => {
       <div className="my-0 flex flex-row justify-center">
         <FormButton onPress={handleAddItem}>Agregar partida</FormButton>
         <FormButton onPress={onSearchProducts}>Buscar productos</FormButton>
+        <Dollar form={form} />
       </div>
 
       {items?.map((item, index) => (

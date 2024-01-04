@@ -139,7 +139,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
     if (!isDirty) return info('No hay cambios para guardar.');
 
     // generate payload from dirty fields:
-    const payload: QuotationDto = Object.keys(data).reduce((prev, current) => {
+    let payload: QuotationDto = Object.keys(data).reduce((prev, current) => {
       if (form.formState.dirtyFields[current]) {
         prev[current] = data[current];
       }
@@ -168,15 +168,16 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
       payload.validUntil = dayjs(payload._convertedValidUntil).toISOString();
     }
 
-    console.log('payload to be saved', payload);
     if (payload.items) {
       payload.items.forEach((item, index) => {
         item.sequence = index + 1;
-        item.amount = Number(item.quantity) * Number(item.unitPrice);
+        item.amount =
+          // Number(payload.dollar) *
+          Number(item.quantity) * Number(item.unitPrice);
       });
 
       const subtotal = items?.reduce((prev, current) => {
-        return prev + Number(current.quantity) * Number(current.unitPrice);
+        return prev + current.amount;
       }, 0);
       const iva = subtotal * 0.16;
       const total = subtotal + iva;
@@ -185,13 +186,13 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
       payload.iva = iva;
       payload.total = total;
     }
-    const updated = await saveQuotation.mutateAsync(
-      omit(payload, [
-        '_convertedQuotationDate',
-        '_convertedValidUntil',
-        '_attachments'
-      ])
-    );
+    payload = omit(payload, [
+      '_convertedQuotationDate',
+      '_convertedValidUntil',
+      '_attachments'
+    ]);
+    console.log('payload to be saved', payload);
+    const updated = await saveQuotation.mutateAsync(payload);
 
     // We do not wait for report generation (await keyword):
     quotationPDF.mutateAsync(id);
