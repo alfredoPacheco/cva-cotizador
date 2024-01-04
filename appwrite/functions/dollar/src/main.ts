@@ -23,6 +23,7 @@ const main = async ({ req, res, log, error }: any) => {
     const dollar = await response.json();
 
     FN_RESPONSE.dollar = dollar;
+    log(FN_RESPONSE);
     return res.json(FN_RESPONSE);
   } catch (err) {
     error(err);
