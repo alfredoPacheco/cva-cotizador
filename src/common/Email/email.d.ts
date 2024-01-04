@@ -2,7 +2,7 @@ import type { BaseDto } from '@/core/ReactQueryProvider/defaultMutations';
 import type { ContactDto } from '@/types';
 
 export interface EmailDto extends BaseDto {
-  $id: string;
+  $id?: string;
   to?: ContactDto[];
   cc?: ContactDto[];
   bcc?: ContactDto[];

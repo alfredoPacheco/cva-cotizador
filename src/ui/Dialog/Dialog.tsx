@@ -46,7 +46,8 @@ export interface DialogProps {
 export class DialogWidget extends Component<DialogProps> {
   i18n: any = {};
   state = {
-    okDisabled: false
+    okDisabled: false,
+    loading: false
   };
 
   constructor(props: any) {
@@ -60,12 +61,13 @@ export class DialogWidget extends Component<DialogProps> {
 
   _onOk = (action: string) => async () => {
     try {
-      this.setState({ okDisabled: true });
+      this.setState({ okDisabled: true, loading: true });
       await this.onOk(action);
     } catch (err) {
       console.error('dialog err', err);
       handleErrors(err, this.props.notifications!.error, this.i18n);
     } finally {
+      this.setState({ loading: false });
       setTimeout(() => {
         this.setState({ okDisabled: false });
       }, 1500);
@@ -106,7 +108,7 @@ export class DialogWidget extends Component<DialogProps> {
       ...rest
     } = this.props;
 
-    const { okDisabled } = this.state;
+    const { okDisabled, loading } = this.state;
 
     const onFormSubmit = (e: React.FormEvent) => {
       e.preventDefault();
@@ -156,6 +158,7 @@ export class DialogWidget extends Component<DialogProps> {
                           onPress={this._onOk('save')}
                           color="primary"
                           disabled={okDisabled}
+                          isLoading={loading}
                         >
                           {okLabel === true ? 'OK' : okLabel}
                         </Button>

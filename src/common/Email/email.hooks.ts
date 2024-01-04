@@ -1,33 +1,20 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  defaultCreateMutation,
-  defaultUpdateMutation
-} from '@/core/ReactQueryProvider/defaultMutations';
+import { useMutation } from '@tanstack/react-query';
 import type { EmailDto } from './email';
+import { functions } from '@/core/appwriteClient';
 
-const QUERY_KEY = 'emails';
-const COLLECTION_ID = 'emails';
-
-export const useEmailSingle = (id: string, enabled = true) => {
-  return useQuery<EmailDto>({
-    queryKey: [QUERY_KEY, id],
-    enabled
-  });
-};
-
-export const useEmailCreate = () => {
+export const useSendEmail = () => {
   return useMutation({
-    ...defaultCreateMutation({
-      queryKey: [QUERY_KEY],
-      collectionId: COLLECTION_ID,
-      queryClient: useQueryClient(),
-      appendMode: 'prepend'
-    })
-  });
-};
-
-export const useEmailUpdate = () => {
-  return useMutation({
-    ...defaultUpdateMutation([QUERY_KEY], useQueryClient(), COLLECTION_ID)
+    mutationFn: async (email: EmailDto) => {
+      const payload = JSON.stringify(email);
+      const response = await functions.createExecution(
+        'emails',
+        payload,
+        false
+      );
+      const parsedResponse = JSON.parse(response.responseBody);
+      // console.log('email response', parsedResponse);
+      if (!parsedResponse.ok) throw new Error(parsedResponse.response);
+      return parsedResponse;
+    }
   });
 };
