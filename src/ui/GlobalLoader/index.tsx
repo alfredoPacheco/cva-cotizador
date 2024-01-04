@@ -31,7 +31,7 @@ export const GlobalLoaderProvider = ({ children }) => {
     }
     const handler = setTimeout(() => {
       setLoaderDebounced(loading);
-    }, 300);
+    }, 1000);
     return () => {
       clearTimeout(handler);
     };
