@@ -22,11 +22,11 @@ import {
   useQuotationUpdate,
   useUpdateSuscribers
 } from './quotation.hooks';
-import type { ContactDto, QuotationDto } from './quotation';
+import type { QuotationDto } from './quotation';
 import { FormButton } from '@/ui/Buttons';
 import { useNotifications } from '@/core/useNotifications';
 import { formatCurrency, handleErrors } from '@/core/utils';
-import type { DialogWidget } from '@/ui/Dialog';
+import { Dialog, useDialog, type DialogWidget } from '@/ui/Dialog';
 import QuotationItemsList from './quotationItem/QuotationItemsList';
 import { useQuotationItemDelete } from './quotationItem/quotationItem.hooks';
 import { useCustomerList } from '../customer/customer.hooks';
@@ -36,6 +36,8 @@ import dayjs from 'dayjs';
 import Attachments from '@/ui/Attachments';
 import { fileDeserialize } from '@/ui/Attachments/FileSerialize';
 import { authCentralState } from '@/core/AuthCentralService';
+import type { ContactDto } from '@/types';
+import EmailForm from '@/common/Email/EmailForm';
 
 const FormField = ({ label, name, control, rows = 2, ...props }) => {
   return (
@@ -240,8 +242,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
   const handleEmail = handleSubmit(async (data: QuotationDto) => {
     try {
       await save(data);
-
-      window.open(`/reports/quotations/${id}.pdf`, '_blank');
+      emailDialog.open();
     } catch (err) {
       handleErrors(err, error);
     }
@@ -356,8 +357,13 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
     s => !!currentAccount?.email && s.email === currentAccount.email
   );
 
+  const emailDialog = useDialog();
+
   return (
     <form className="flex flex-col gap-2" onSubmit={onSubmit}>
+      <Dialog {...emailDialog} formOff okLabel="Enviar Email" title="Email">
+        {d => <EmailForm id="new" dialog={d} />}
+      </Dialog>
       <div className="flex flex-row justify-between items-baseline">
         <div className="flex flex-auto">
           <Field label="Realizado por:" size="md" style={{ minWidth: 30 }}>

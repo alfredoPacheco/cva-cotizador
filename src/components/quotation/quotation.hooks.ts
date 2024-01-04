@@ -4,7 +4,7 @@ import {
   defaultUpdateMutation,
   defaultDeleteMutation
 } from '@/core/ReactQueryProvider/defaultMutations';
-import type { ContactDto, QuotationDto } from './quotation';
+import type { QuotationDto } from './quotation';
 import { useForm } from 'react-hook-form';
 import { Query, type Models } from 'appwrite';
 import { useEffect } from 'react';
@@ -14,6 +14,7 @@ import type { ListQueryType } from '@/core/ReactQueryProvider/queryKeys';
 import { databases, functions, storage } from '@/core/appwriteClient';
 import dayjs from 'dayjs';
 import { DEFAULT_DATABASE_ID } from '@/core/ReactQueryProvider/defaultQueries';
+import type { ContactDto } from '@/types';
 
 const QUERY_KEY = 'quotations';
 const COLLECTION_ID = 'quotations';

@@ -1,13 +1,7 @@
 import type { BaseDto } from '@/core/ReactQueryProvider/defaultMutations';
 import type { CustomerDto } from '../customer/customer';
 import type { QuotationItemDto } from './quotationItem/quotationItem';
-
-export interface ContactDto {
-  name: string;
-  email: string;
-  phone: string;
-  avatarHref?: string;
-}
+import type { ContactDto } from '@/types';
 
 export interface QuotationDto extends BaseDto {
   $id: string;
