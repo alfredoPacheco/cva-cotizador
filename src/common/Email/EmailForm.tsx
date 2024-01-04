@@ -104,7 +104,9 @@ const EmailForm: React.FC<EmailFormProps> = ({ id, dialog, quotationId }) => {
 
   return (
     <div className="flex flex-col gap-5">
-      <FormField control={control} name="subject" label="Título" />
+      <Field label="Título">
+        <TextInput control={control} name="subject" variant="bordered" />
+      </Field>
       <ContactsSelector
         control={control}
         name="to"
