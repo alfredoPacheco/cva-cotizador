@@ -16,7 +16,7 @@ export const PrimaryButton = props => {
   return (
     <Button
       color="primary"
-      className="w-full p-10 text-xl font-bold rounded-xl"
+      className="w-full p-10 text-2xl font-bold rounded-xl font-montHeavy"
       type="submit"
     >
       {children}

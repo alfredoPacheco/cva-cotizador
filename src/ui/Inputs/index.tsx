@@ -108,8 +108,9 @@ export const TextInput: React.FC<TextInputProps> = ({
             onBlur={onBlur}
             onChange={onChange}
             type={type}
-            variant={isDirty ? 'flat' : variant}
-            color={isDirty ? 'warning' : color}
+            // variant={isDirty ? 'flat' : variant}
+            variant={variant}
+            // color={isDirty ? 'warning' : color}
             value={value || ''}
             label={props.label}
             autoFocus={focus}
@@ -524,7 +525,16 @@ export const TextArea = ({ control, name }) => {
       render={({
         field: { onChange, onBlur, value },
         fieldState: { error, isDirty }
-      }) => <Textarea value={value || ''} onChange={onChange} />}
+      }) => (
+        <Textarea
+          value={value || ''}
+          variant="flat"
+          classNames={{
+            inputWrapper: 'bg-transparent'
+          }}
+          onChange={onChange}
+        />
+      )}
       name={name}
     />
   );

@@ -4,7 +4,7 @@ const Title = ({ children, mt = 0, mb = 0, divider = false }) => {
   return (
     <div className="flex flex-col justify-center">
       <h1
-        className={`text-7xl font-extrabold text-primary`}
+        className={`text-7xl font-extrabold text-primary font-montHeavy`}
         style={{ marginBottom: mb, marginTop: mt }}
       >
         {children}

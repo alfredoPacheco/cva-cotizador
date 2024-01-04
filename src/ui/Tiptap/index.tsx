@@ -39,6 +39,8 @@ const Tiptap: React.FC<TiptapProps> = ({
       onChange(editor.getHTML());
       // if (initialized) {
       //   setDirty(true);
+
+      /*
       editor.setOptions({
         editorProps: {
           attributes: {
@@ -46,6 +48,8 @@ const Tiptap: React.FC<TiptapProps> = ({
           }
         }
       });
+      */
+
       // }
       // if (!initialized) setInitialized(true);
     },
