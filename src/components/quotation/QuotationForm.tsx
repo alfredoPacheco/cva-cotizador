@@ -362,7 +362,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
   return (
     <form className="flex flex-col gap-2" onSubmit={onSubmit}>
       <Dialog {...emailDialog} formOff okLabel="Enviar Email" title="Email">
-        {d => <EmailForm id="new" dialog={d} />}
+        {d => <EmailForm id="new" dialog={d} quotationId={id} />}
       </Dialog>
       <div className="flex flex-row justify-between items-baseline">
         <div className="flex flex-auto">

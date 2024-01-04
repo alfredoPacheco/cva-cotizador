@@ -181,7 +181,7 @@ export const useQuotationsByCustomer = (customerId: string) => {
   });
 };
 
-const parseSuscribers = (data: string[] | ContactDto[]): ContactDto[] => {
+export const parseContacts = (data: string[] | ContactDto[]): ContactDto[] => {
   return (
     data.map(s => {
       if (typeof s === 'string') {
@@ -207,7 +207,7 @@ export const useQuotationSuscribers = (id: string) => {
         id
       );
       const suscribers = quotation.suscribers || [];
-      return parseSuscribers(suscribers);
+      return parseContacts(suscribers);
     },
     enabled: !!id
   });
