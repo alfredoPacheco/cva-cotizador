@@ -1,5 +1,5 @@
 import { get } from 'lodash';
-import { Client, Databases, ID, Query } from 'node-appwrite';
+import { Client, Databases, Query, Functions } from 'node-appwrite';
 
 interface InventoryDto {
   name: string;
@@ -91,12 +91,26 @@ interface ProductDto {
 // It's executed each time we get a request
 // export default async ({ req, res, log, error }: any) => {
 const main = async ({ req, res, log, error }: any) => {
+  // @ts-ignore
+  let startPage = Number(Bun.env['START_PAGE'] || 1);
+
+  try {
+    startPage = JSON.parse(req.body).startPage;
+    log('startPage from request: ' + startPage);
+  } catch {}
+
+  const startTime = new Date().getTime();
+  let currentTime = new Date().getTime();
+
   const client = new Client()
     .setEndpoint('https://app.do.inspiracode.com/v1')
+    // @ts-ignore
     .setProject(Bun.env['APPWRITE_FUNCTION_PROJECT_ID'])
+    // @ts-ignore
     .setKey(Bun.env['APPWRITE_API_KEY']);
 
   const databases = new Databases(client);
+  const functions = new Functions(client);
 
   const existingProducts = await databases.listDocuments('tvc', 'products', [
     Query.limit(999999999),
@@ -105,7 +119,7 @@ const main = async ({ req, res, log, error }: any) => {
 
   const baseUrl = new URL('https://api.tvc.mx/products');
 
-  let CURRENT_PAGE = Number(Bun.env['START_PAGE'] || 1);
+  let CURRENT_PAGE = startPage;
   const PER_PAGE = '100';
   const MAX_LOOP_TIMES = 999999999;
   // const MAX_LOOP_TIMES = 1;
@@ -116,7 +130,7 @@ const main = async ({ req, res, log, error }: any) => {
   let hasNextPage = false;
 
   let params = {
-    // tvcIds: [31071, 148],
+    // tvcIds: [4804], // Do not use like this, see below
     // tvcModels: ['RBM0220002', '42109'],
     withInventory: 'detailed',
     withPrice: true,
@@ -131,12 +145,14 @@ const main = async ({ req, res, log, error }: any) => {
     baseUrl.searchParams.append(key, params[key])
   );
 
+  // @ts-ignore
   const tvcToken = Bun.env['TVC_TOKEN'];
 
   do {
     try {
       const url = new URL(baseUrl);
       url.searchParams.set('page', CURRENT_PAGE.toString());
+      // url.searchParams.append('tvcIds[]', '4804');
 
       const response = await fetch(url, {
         method: 'GET',
@@ -153,8 +169,15 @@ const main = async ({ req, res, log, error }: any) => {
 
       const products = json.data;
 
-      for (const product of products) {
-        const payload: ProductDto = {
+      for await (const product of products) {
+        log(
+          'goint to process page: ' +
+            CURRENT_PAGE +
+            ', LOOP_COUNT: ' +
+            LOOP_COUNT
+        );
+        // const payload: ProductDto = {
+        const payload = {
           // $id: get(product, 'tvc_id').toString(),
           raw: JSON.stringify(product),
           tvcModel: get(product, 'tvc_model'),
@@ -201,13 +224,13 @@ const main = async ({ req, res, log, error }: any) => {
           )
         };
 
-        log('current tvcId: ' + payload.tvcId);
         // log(payload);
         if (
           existingProducts.documents.some(
             (doc: any) => doc.$id === payload.tvcId.toString()
           )
         ) {
+          log('updating product: ' + payload.tvcId);
           await databases.updateDocument(
             'tvc',
             'products',
@@ -215,6 +238,7 @@ const main = async ({ req, res, log, error }: any) => {
             payload
           );
         } else {
+          log('creating product: ' + payload.tvcId);
           await databases.createDocument(
             'tvc',
             'products',
@@ -240,15 +264,34 @@ const main = async ({ req, res, log, error }: any) => {
         throw e;
       }
     }
+    currentTime = new Date().getTime();
+    log('time elapsed' + (currentTime - startTime) / 1000);
   } while (
     hasNextPage &&
     ATTEMPTS_COUNT <= MAX_ATTEMPTS &&
-    LOOP_COUNT <= MAX_LOOP_TIMES
+    LOOP_COUNT <= MAX_LOOP_TIMES &&
+    currentTime - startTime < 1000 * 60 * 10
   );
+
+  if (
+    hasNextPage &&
+    ATTEMPTS_COUNT <= MAX_ATTEMPTS &&
+    LOOP_COUNT <= MAX_LOOP_TIMES
+  ) {
+    log("didn't finish, calling again with next page:" + CURRENT_PAGE);
+    functions.createExecution(
+      // @ts-ignore
+      Bun.env['APPWRITE_FUNCTION_ID'],
+      JSON.stringify({
+        startPage: CURRENT_PAGE
+      }),
+      true
+    );
+  }
 
   return res.json({ ok: true });
 };
 
 export default main;
 
-// main({ log: console.log, error: console.error });
+// main({ res: { json: console.log }, log: console.log, error: console.error });
