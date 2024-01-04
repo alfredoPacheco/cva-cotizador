@@ -404,6 +404,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
                 className="capitalize"
               >
                 <Avatar
+                  isBordered
                   key={suscriber.email}
                   size="md"
                   src={suscriber.avatarHref}

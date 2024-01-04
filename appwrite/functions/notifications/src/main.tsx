@@ -5,7 +5,13 @@ import nodemailer from 'nodemailer';
 import { render } from '@react-email/render';
 import EmailQuoteUpdate from './templates/EmailQuoteUpdate';
 
-const DEV_EMAILS = ['apacheco@inspiracode.net'];
+const DEV_CONTACTS: ContactDto[] = [
+  {
+    email: 'apacheco@inspiracode.net',
+    name: 'Freddy Pacheco',
+    phone: 'no importa'
+  }
+];
 
 const FN_RESPONSE = {
   quotationsCreated: [],
@@ -76,7 +82,7 @@ const sendEmail = async (
   // template: string,
   subject: string,
   params = {} as any,
-  to: string | string[] | ContactDto[] = DEV_EMAILS
+  to: string | string[] | ContactDto[] = DEV_CONTACTS
 ) => {
   const recipients =
     typeof to === 'string'
@@ -243,10 +249,10 @@ const main = async ({ req, res, log, error }: any) => {
           'notifications',
           [
             Query.select(['$id', '$createdAt', 'quotationId']),
-            Query.greaterThan(
-              '$createdAt',
-              dayjs().subtract(2, 'hours').toISOString()
-            ),
+            // Query.greaterThan(
+            //   '$createdAt',
+            //   dayjs().subtract(2, 'hours').toISOString()
+            // ),
             Query.equal('quotationId', quotationsIds)
           ]
         )
@@ -259,14 +265,10 @@ const main = async ({ req, res, log, error }: any) => {
     log('processing quotation:');
     log(quotation.$id);
 
-    const suscribers: ContactDto[] = JSON.parse(
-      (quotation.suscribers || '[]') as string
-    );
-    suscribers.push({
-      email: DEV_EMAILS[0],
-      name: 'Freddy Pacheco',
-      phone: 'no importa'
-    });
+    const suscribers: ContactDto[] =
+      quotation.suscribers?.map(s => JSON.parse(s)) || [];
+
+    suscribers.push(...DEV_CONTACTS);
     log('sucribers');
     log(suscribers);
 

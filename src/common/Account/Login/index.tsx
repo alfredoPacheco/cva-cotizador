@@ -31,12 +31,12 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
     }
   });
 
-  useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset();
-      onClose();
-    }
-  }, [isSubmitSuccessful]);
+  // useEffect(() => {
+  //   if (isSubmitSuccessful) {
+  //     reset();
+  //     onClose();
+  //   }
+  // }, [isSubmitSuccessful]);
 
   const loginMutation = useLoginMutation();
 
@@ -48,9 +48,15 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
       setError(undefined);
       await loginMutation.mutateAsync(data);
     } catch (e) {
-      handleErrors(e, msg => {
-        setError(msg);
-      });
+      handleErrors(
+        e,
+        msg => {
+          setError(msg);
+        },
+        {
+          'Invalid credentials': 'Credenciales no válidas'
+        }
+      );
     }
   });
 
