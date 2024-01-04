@@ -6,6 +6,7 @@ const FN_RESPONSE = {
 const main = async ({ req, res, log, error }: any) => {
   try {
     const url = 'https://api.tvc.mx/exchange-rates';
+    // @ts-ignore
     const tvcToken = Bun.env['TVC_TOKEN'];
     log('tvcToken');
     log(tvcToken);

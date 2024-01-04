@@ -21,8 +21,11 @@ const FN_RESPONSE = {
 };
 
 const client = new Client()
+  // @ts-ignore
   .setEndpoint(Bun.env['APPWRITE_ENDPOINT'])
+  // @ts-ignore
   .setProject(Bun.env['APPWRITE_FUNCTION_PROJECT_ID'])
+  // @ts-ignore
   .setKey(Bun.env['APPWRITE_API_KEY']);
 
 const databases = new Databases(client);
@@ -49,6 +52,7 @@ const sendNotification = async (
     );
 
     await databases.createDocument(
+      // @ts-ignore
       Bun.env['APPWRITE_DATABASE'],
       'notifications',
       ID.unique(),
@@ -63,6 +67,7 @@ const sendNotification = async (
     );
 
     await databases.updateDocument(
+      // @ts-ignore
       Bun.env['APPWRITE_DATABASE'],
       'quotations',
       notification.quotationId,
@@ -107,24 +112,32 @@ const sendEmail = async (
 
   const transporter = nodemailer.createTransport({
     // @ts-ignore
+    // @ts-ignore
     host: Bun.env['SMTP_HOST'],
+    // @ts-ignore
     port: Bun.env['SMTP_PORT'],
+    // @ts-ignore
     secure: Bun.env['SMTP_TLS'] === 'true' || false, // `true` for port 465, `false` for all other ports
     auth: {
+      // @ts-ignore
       user: Bun.env['SMTP_USER'],
+      // @ts-ignore
       pass: Bun.env['SMTP_PASSWORD']
     }
   });
 
   try {
     const mailOptions = {
+      // @ts-ignore
       from: Bun.env['SMTP_SENDER'],
       to: recipients,
       subject:
+        // @ts-ignore
         subject || Bun.env['EMAIL_DEFAULT_SUBJECT'] || 'System Notification',
       html: render(
         <EmailQuoteUpdate
           subject={
+            // @ts-ignore
             subject || Bun.env['EMAIL_DEFAULT_SUBJECT'] || 'System Notification'
           }
           quotationId={params.quotationId}
@@ -170,6 +183,7 @@ const handleNotification = async (
 
   const notification: Partial<NotificationDto> = {
     sentAt: now.toDate(),
+    // @ts-ignore
     sentBy: Bun.env['NOTIFICATIONS_SENDER'],
     payload,
     quotationId,
@@ -203,6 +217,7 @@ const handleNotification = async (
 
 const main = async ({ req, res, log, error }: any) => {
   const recentQuotations = await databases.listDocuments<QuotationDto>(
+    // @ts-ignore
     Bun.env['APPWRITE_DATABASE'],
     'quotations',
     [
@@ -245,6 +260,7 @@ const main = async ({ req, res, log, error }: any) => {
   const recentNotifications =
     quotationsIds.length > 0
       ? await databases.listDocuments<NotificationDto>(
+          // @ts-ignore
           Bun.env['APPWRITE_DATABASE'],
           'notifications',
           [
