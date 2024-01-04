@@ -20,7 +20,7 @@ const useDollar = () => {
       // console.log(json);
       return json;
     },
-    refetchInterval: 5000
+    refetchInterval: 1000 * 60 * 5
   });
 };
 
@@ -48,6 +48,8 @@ const Dollar: React.FC<DollarProps> = ({ form }) => {
 
   const notSaved = !quotationDollar || form.formState.dirtyFields.dollar;
   const dollarChanged = quotationDollar > 0 && quotationDollar !== data?.dollar;
+
+  if (isLoading) return <span>Cargando...</span>;
 
   return (
     <div className="flex flex-row items-center justify-end flex-1 gap-2">
