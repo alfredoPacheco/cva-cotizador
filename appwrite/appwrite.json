@@ -91,6 +91,21 @@
       "commands": "bun install",
       "ignore": ["node_modules", ".npm"],
       "path": "functions/notifications"
+    },
+    {
+      "$id": "emails",
+      "name": "emails",
+      "runtime": "node-20.0",
+      "execute": ["any"],
+      "events": [],
+      "schedule": "",
+      "timeout": 100,
+      "enabled": true,
+      "logging": true,
+      "entrypoint": "src/main.js",
+      "commands": "npm install",
+      "ignore": ["node_modules", ".npm"],
+      "path": "functions/emails"
     }
   ],
   "databases": [
