@@ -475,25 +475,6 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
 
         <FormField control={control} name="notes" label="Notas" />
 
-        <Field label="Notas Internas">
-          <RichTextEditor control={control} name="internalNotes" toolbar />
-        </Field>
-
-        <Field label="Archivos adjuntos">
-          <Controller
-            control={control}
-            name="_attachments"
-            render={({ field }) => (
-              <Attachments
-                api={attachmentsApi}
-                kind="quote-attachments"
-                value={field.value || []}
-                onChange={handleAttachmentsChange}
-              />
-            )}
-          />
-        </Field>
-
         <div className="flex flex-col gap-5 sm:flex-row justify-between bg-default-200 rounded-lg p-8 mt-4">
           <div className="flex flex-col gap-2 flex-1">
             <ReadonlyFormField
@@ -531,6 +512,25 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
             />
           </div>
         </div>
+
+        <Field label="Archivos adjuntos">
+          <Controller
+            control={control}
+            name="_attachments"
+            render={({ field }) => (
+              <Attachments
+                api={attachmentsApi}
+                kind="quote-attachments"
+                value={field.value || []}
+                onChange={handleAttachmentsChange}
+              />
+            )}
+          />
+        </Field>
+
+        <Field label="Notas Internas">
+          <RichTextEditor control={control} name="internalNotes" toolbar />
+        </Field>
       </div>
     </form>
   );
