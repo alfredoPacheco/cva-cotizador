@@ -48,10 +48,10 @@
       "path": "functions/tvc"
     },
     {
-      "$id": "657a9b321fe812dc6cf9",
-      "name": "syscom",
+      "$id": "syscom-api",
+      "name": "syscom-api",
       "runtime": "bun-1.0",
-      "execute": [],
+      "execute": ["any"],
       "events": [],
       "schedule": "",
       "timeout": 900,
@@ -60,7 +60,7 @@
       "entrypoint": "src/main.ts",
       "commands": "bun install",
       "ignore": ["node_modules", ".npm"],
-      "path": "functions/syscom"
+      "path": "functions/syscom-api"
     },
     {
       "$id": "reports",
@@ -819,6 +819,78 @@
           "array": false,
           "format": "",
           "default": null
+        },
+        {
+          "key": "internalNotes",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 5000,
+          "default": null
+        },
+        {
+          "key": "customerId",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "attachments",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": true,
+          "size": 200,
+          "default": null
+        },
+        {
+          "key": "notificationAt",
+          "type": "datetime",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "format": "",
+          "default": null
+        },
+        {
+          "key": "suscribers",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": true,
+          "size": 200,
+          "default": null
+        },
+        {
+          "key": "dollar",
+          "type": "double",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": -1.7976931348623157e308,
+          "max": 1.7976931348623157e308,
+          "default": null
+        },
+        {
+          "key": "dollarSyscom",
+          "type": "double",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": -1.7976931348623157e308,
+          "max": 1.7976931348623157e308,
+          "default": null
         }
       ],
       "indexes": []
@@ -1058,6 +1130,16 @@
       "documentSecurity": false,
       "attributes": [
         {
+          "key": "title",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 700,
+          "default": null
+        },
+        {
           "key": "sentAt",
           "type": "datetime",
           "status": "available",
@@ -1088,13 +1170,13 @@
           "default": null
         },
         {
-          "key": "to",
+          "key": "quotationId",
           "type": "string",
           "status": "available",
           "error": "",
           "required": false,
-          "array": true,
-          "size": 200,
+          "array": false,
+          "size": 50,
           "default": null
         },
         {
@@ -1108,13 +1190,84 @@
           "default": "[]"
         },
         {
-          "key": "title",
+          "key": "to",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": true,
+          "size": 200,
+          "default": null
+        },
+        {
+          "key": "notificationType",
           "type": "string",
           "status": "available",
           "error": "",
           "required": false,
           "array": false,
-          "size": 700,
+          "size": 100,
+          "default": null
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "$id": "emails",
+      "$permissions": [],
+      "databaseId": "quotations-db",
+      "name": "emails",
+      "enabled": true,
+      "documentSecurity": false,
+      "attributes": [
+        {
+          "key": "to",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": true,
+          "size": 200,
+          "default": null
+        },
+        {
+          "key": "cc",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": true,
+          "size": 200,
+          "default": null
+        },
+        {
+          "key": "bcc",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": true,
+          "size": 200,
+          "default": null
+        },
+        {
+          "key": "subject",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 2000,
+          "default": null
+        },
+        {
+          "key": "body",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 10000,
           "default": null
         },
         {
@@ -1128,7 +1281,416 @@
           "default": null
         },
         {
-          "key": "notificationType",
+          "key": "sentAt",
+          "type": "datetime",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "format": "",
+          "default": null
+        },
+        {
+          "key": "sentBy",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "$id": "brands",
+      "$permissions": [],
+      "databaseId": "syscom",
+      "name": "brands",
+      "enabled": true,
+      "documentSecurity": false,
+      "attributes": [
+        {
+          "key": "name",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": true,
+          "array": false,
+          "size": 200,
+          "default": null
+        },
+        {
+          "key": "id",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "$id": "products",
+      "$permissions": [],
+      "databaseId": "syscom",
+      "name": "products",
+      "enabled": true,
+      "documentSecurity": false,
+      "attributes": [
+        {
+          "key": "productId",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": true,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "model",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
+          "default": null
+        },
+        {
+          "key": "totalStock",
+          "type": "double",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": -1.7976931348623157e308,
+          "max": 1.7976931348623157e308,
+          "default": null
+        },
+        {
+          "key": "title",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 500,
+          "default": null
+        },
+        {
+          "key": "brand",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
+          "default": null
+        },
+        {
+          "key": "satKey",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "imgMain",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 500,
+          "default": null
+        },
+        {
+          "key": "privateLink",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 500,
+          "default": null
+        },
+        {
+          "key": "categories",
+          "type": "relationship",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "relatedCollection": "categories",
+          "relationType": "oneToMany",
+          "twoWay": false,
+          "twoWayKey": "products",
+          "onDelete": "setNull",
+          "side": "parent"
+        },
+        {
+          "key": "pvol",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "brandLogo",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 500,
+          "default": null
+        },
+        {
+          "key": "link",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 300,
+          "default": null
+        },
+        {
+          "key": "icons",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 1000,
+          "default": null
+        },
+        {
+          "key": "weight",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 20,
+          "default": null
+        },
+        {
+          "key": "existence",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 500,
+          "default": null
+        },
+        {
+          "key": "uom",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 300,
+          "default": null
+        },
+        {
+          "key": "height",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 10,
+          "default": null
+        },
+        {
+          "key": "large",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 20,
+          "default": null
+        },
+        {
+          "key": "width",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 20,
+          "default": null
+        },
+        {
+          "key": "prices",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 500,
+          "default": null
+        },
+        {
+          "key": "note",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 1000,
+          "default": null
+        },
+        {
+          "key": "attributes",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 1000,
+          "default": null
+        },
+        {
+          "key": "uomCode",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 10,
+          "default": null
+        },
+        {
+          "key": "uomName",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "uomSat",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "priceOne",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "priceSpecial",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "priceDiscount",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "priceList",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "raw",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 1000000,
+          "default": null
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "$id": "categories",
+      "$permissions": [],
+      "databaseId": "syscom",
+      "name": "categories",
+      "enabled": true,
+      "documentSecurity": false,
+      "attributes": [
+        {
+          "key": "id",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 100,
+          "default": null
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
+          "default": null
+        },
+        {
+          "key": "level",
+          "type": "integer",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": -9223372036854775808,
+          "max": 9223372036854775807,
+          "default": null
+        },
+        {
+          "key": "productId",
           "type": "string",
           "status": "available",
           "error": "",

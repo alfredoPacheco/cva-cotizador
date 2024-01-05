@@ -1,4 +1,4 @@
-# syscom
+# syscom-api
 
 ## 🧰 Usage
 
