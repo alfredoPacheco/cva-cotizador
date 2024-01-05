@@ -48,6 +48,7 @@ interface StandardProduct {
   listPrice: string;
   distributorPrice: string;
   mediaMainImage: string;
+  link: string;
 }
 
 const tvcToStandardProduct = (product: TVCProductDto): StandardProduct => {
@@ -56,7 +57,8 @@ const tvcToStandardProduct = (product: TVCProductDto): StandardProduct => {
     name: product.name,
     listPrice: product.listPrice,
     distributorPrice: product.distributorPrice,
-    mediaMainImage: product.mediaMainImage
+    mediaMainImage: product.mediaMainImage,
+    link: `https://tvc.mx/products/${product.$id}`
   };
 };
 
@@ -68,7 +70,8 @@ const syscomToStandardProduct = (
     name: product.title,
     listPrice: product.priceList,
     distributorPrice: product.priceDiscount,
-    mediaMainImage: product.imgMain
+    mediaMainImage: product.imgMain,
+    link: `https://www.syscom.mx${product.link}`
   };
 };
 
@@ -205,7 +208,7 @@ export const ProductList: React.FC<ProductListProps> = ({ dialog }) => {
                 </p>
                 <a
                   className="text-sm p-0 text-white"
-                  href={`https://tvc.mx/products/${item.$id}`}
+                  href={item.link}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

@@ -21,20 +21,23 @@ export const useSyscomProductList = (enabled = true) => {
         queries: [
           Query.select([
             '$id',
-            'name',
-            'model',
+            'title',
+            // 'model',
             'priceList',
             'priceOne', // Verify if this is distribuitor price
-            'brand',
-            'brandId',
-            'imgMain'
-          ])
+            // 'brand',
+            // 'brandId',
+            'imgMain',
+            'link'
+          ]),
+          Query.greaterThan('totalStock', 0)
         ]
       } as ListQueryType
     ],
     enabled,
     meta: {
-      DATABASE_ID
+      DATABASE_ID,
+      COLLECTION_ID: 'products'
     }
   });
 
@@ -49,7 +52,7 @@ export const useSyscomProductList = (enabled = true) => {
 //         Query.equal('$id', id),
 //         Query.select([
 //           '$id',
-//           'name',
+//           'title',
 //           'model',
 //           'priceList',
 //           'priceOne', // Verify if this is distribuitor price
