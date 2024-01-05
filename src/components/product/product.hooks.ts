@@ -41,24 +41,6 @@ function getSearchQuery(searchValue: string, sample: any) {
 }
 
 export const useProductList = (enabled = true) => {
-  const filtersForm = useForm(); // This form is to handle search and filters over list
-
-  const debouncedSearch = useDebounce(filtersForm.watch('search'), 100);
-  // const [searchQuery, setSearchQuery] = useState<Query[]>([]);
-
-  // useEffect(() => {
-  //   const newSearch = getSearchQuery(debouncedSearch, {
-  //     name: ''
-  //     // email: '',
-  //     // phone: '',
-  //     // address: '',
-  //     // businessName: '',
-  //     // taxRegime: ''
-  //   });
-  //   console.log('newSearch', newSearch);
-  //   // setSearchQuery(newSearch);
-  // }, [debouncedSearch]);
-
   const query = useQuery<TVCProductDto[]>({
     queryKey: [
       QUERY_KEY,
@@ -89,14 +71,7 @@ export const useProductList = (enabled = true) => {
   //   query.refetch();
   // }, [debouncedSearch]);
 
-  return { query, filtersForm, debouncedSearch };
-};
-
-export const useProductSingle = (id: string, enabled = true) => {
-  return useQuery<TVCProductDto>({
-    queryKey: [QUERY_KEY, id],
-    enabled
-  });
+  return { query };
 };
 
 export const useProductImages = (id: string, enabled = true) => {

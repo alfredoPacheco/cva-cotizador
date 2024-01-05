@@ -13,13 +13,16 @@ import {
   Image,
   Pagination
 } from '@nextui-org/react';
-import ProductForm from './ProductForm';
-import { Dialog, DialogWidget, useDialog } from '@/ui/Dialog';
+import { DialogWidget } from '@/ui/Dialog';
 import { useEffect, useMemo, useState } from 'react';
 import { formatCurrency } from '@/core/utils';
 import { PiLink } from 'react-icons/pi';
 import ProductQuantity from './ProductQuantity';
 import { useForm } from 'react-hook-form';
+import { useSyscomProductList } from '../product-syscom/product.hooks';
+import { useDebounce } from '@/core';
+import type { TVCProductDto } from './product';
+import type { SyscomProductDto } from '../product-syscom/product';
 
 const searchLocally = (query: string) => (item: any) => {
   if (!query || query.trim() === '') return true;
@@ -39,11 +42,42 @@ interface ProductListProps {
   dialog?: DialogWidget;
 }
 
-export const ProductList: React.FC<ProductListProps> = ({ dialog }) => {
-  // const dialog = useDialog();
+interface StandardProduct {
+  $id: string;
+  name: string;
+  listPrice: string;
+  distributorPrice: string;
+  mediaMainImage: string;
+}
 
-  const { query, filtersForm, debouncedSearch } = useProductList();
-  // !dialog.isOpen
+const tvcToStandardProduct = (product: TVCProductDto): StandardProduct => {
+  return {
+    $id: 'tvc-' + product.$id,
+    name: product.name,
+    listPrice: product.listPrice,
+    distributorPrice: product.distributorPrice,
+    mediaMainImage: product.mediaMainImage
+  };
+};
+
+const syscomToStandardProduct = (
+  product: SyscomProductDto
+): StandardProduct => {
+  return {
+    $id: 'syscom-' + product.$id,
+    name: product.title,
+    listPrice: product.priceList,
+    distributorPrice: product.priceDiscount,
+    mediaMainImage: product.imgMain
+  };
+};
+
+export const ProductList: React.FC<ProductListProps> = ({ dialog }) => {
+  const filtersForm = useForm(); // This form is to handle search and filters over list
+  const debouncedSearch = useDebounce(filtersForm.watch('search'), 100);
+
+  const { query } = useProductList();
+  const { query: syscomQuery } = useSyscomProductList();
 
   const form = useForm<ProductsSelectionCount>({
     defaultValues: {}
@@ -54,14 +88,19 @@ export const ProductList: React.FC<ProductListProps> = ({ dialog }) => {
   const [pageSize] = useState(12);
 
   const filteredItems = useMemo(() => {
+    const tvcItems = query.data?.map(tvcToStandardProduct) || [];
+    const syscomItems = syscomQuery.data?.map(syscomToStandardProduct) || [];
+    const allItems = tvcItems.concat(syscomItems);
+
     if (filterSelected) {
       const selectedItems = Object.keys(form.getValues()).filter(
         key => form.getValues()[key] > 0
       );
-      return query.data?.filter(item => selectedItems.includes(item.$id)) || [];
+
+      return allItems.filter(item => selectedItems.includes(item.$id));
     }
-    return query.data?.filter(searchLocally(debouncedSearch)) || [];
-  }, [query.data, debouncedSearch, filterSelected]);
+    return allItems.filter(searchLocally(debouncedSearch));
+  }, [query.data, syscomQuery.data, debouncedSearch, filterSelected]);
 
   const pages = Math.ceil(filteredItems.length / pageSize);
 
@@ -90,17 +129,18 @@ export const ProductList: React.FC<ProductListProps> = ({ dialog }) => {
     }, {} as any);
 
     const selectedIds = Object.keys(selection);
-    const items = query.data?.filter(item => selectedIds.includes(item.$id));
+
+    const tvcItems = query.data?.map(tvcToStandardProduct) || [];
+    const syscomItems = syscomQuery.data?.map(syscomToStandardProduct) || [];
+    const allItems = tvcItems.concat(syscomItems);
+
+    const items = allItems?.filter(item => selectedIds.includes(item.$id));
 
     dialog.close('ok', items, selection);
   };
 
   return (
     <Container maxWidth="5xl">
-      {/* <Dialog {...dialog} formOff okLabel="Guardar" title="Producto">
-        {d => <ProductForm id="new" dialog={d} />}
-      </Dialog> */}
-
       <div className="flex flex-row justify-between items-center mt-5 min-h-unit-16">
         {/* <TextButton onPress={dialog.open}>Crear nuevo producto</TextButton> */}
         <Checkbox
