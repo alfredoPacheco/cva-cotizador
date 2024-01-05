@@ -270,7 +270,7 @@ const main = async ({ req, res, log, error }: any) => {
     hasNextPage &&
     ATTEMPTS_COUNT <= MAX_ATTEMPTS &&
     LOOP_COUNT <= MAX_LOOP_TIMES &&
-    currentTime - startTime < 1000 * 60 * 10
+    currentTime - startTime < 1000 * 60 * 3
   );
 
   if (
