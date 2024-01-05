@@ -22,6 +22,7 @@ interface ProductDto {
   totalStock: number;
   title: string;
   brand: string;
+  brandId: string;
   satKey: string;
   imgMain: string;
   privateLink: string;
@@ -57,6 +58,18 @@ const client = new Client()
 
 const databases = new Databases(client);
 const functions = new Functions(client);
+
+const recursiveCall = async body => {
+  await functions.createExecution('syscom-api', body, true);
+  // main({
+  //   req: {
+  //     body
+  //   },
+  //   res: { json: console.log },
+  //   log: console.log,
+  //   error: console.error
+  // });
+};
 
 const main = async ({ req, res, log, error }: any) => {
   try {
@@ -150,23 +163,11 @@ const main = async ({ req, res, log, error }: any) => {
       const firstBrand = existingBrands.documents[0].$id;
       log('calling again with first brand: ' + firstBrand);
       try {
-        await functions.createExecution(
-          'syscom-api',
+        await recursiveCall(
           JSON.stringify({
             startBrand: firstBrand
-          }),
-          true
+          })
         );
-        // main({
-        //   req: {
-        //     body: JSON.stringify({
-        //       startBrand: firstBrand
-        //     })
-        //   },
-        //   res: { json: console.log },
-        //   log: console.log,
-        //   error: console.error
-        // });
       } catch (e) {
         error('error calling again with first brand: ' + firstBrand);
         error(e);
@@ -263,6 +264,7 @@ const main = async ({ req, res, log, error }: any) => {
             totalStock: get(product, 'total_existencia'),
             title: get(product, 'titulo'),
             brand: get(product, 'marca'),
+            brandId: CURRENT_BRAND,
             satKey: get(product, 'sat_key'),
             imgMain: get(product, 'img_portada'),
             privateLink: get(product, 'link_privado'),
@@ -357,25 +359,12 @@ const main = async ({ req, res, log, error }: any) => {
       log("didn't finish, calling again with next page:" + CURRENT_PAGE);
 
       try {
-        await functions.createExecution(
-          'syscom-api',
+        await recursiveCall(
           JSON.stringify({
             startPage: CURRENT_PAGE,
             startBrand: CURRENT_BRAND
-          }),
-          true
+          })
         );
-        // main({
-        //   req: {
-        //     body: JSON.stringify({
-        //       startPage: CURRENT_PAGE,
-        //       startBrand: CURRENT_BRAND
-        //     })
-        //   },
-        //   res: { json: console.log },
-        //   log: console.log,
-        //   error: console.error
-        // });
       } catch (e) {
         error('error calling again with next page:' + CURRENT_PAGE);
         error(e);
@@ -398,23 +387,11 @@ const main = async ({ req, res, log, error }: any) => {
         log('calling again with next brand: ' + nextBrand.$id);
 
         try {
-          await functions.createExecution(
-            'syscom-api',
+          await recursiveCall(
             JSON.stringify({
               startBrand: nextBrand.$id
-            }),
-            true
+            })
           );
-          // main({
-          //   req: {
-          //     body: JSON.stringify({
-          //       startBrand: nextBrand.$id
-          //     })
-          //   },
-          //   res: { json: console.log },
-          //   log: console.log,
-          //   error: console.error
-          // });
         } catch (e) {
           error('error calling again with next brand: ' + nextBrand.$id);
           error(e);
@@ -431,13 +408,8 @@ const main = async ({ req, res, log, error }: any) => {
 
 export default main;
 
-// main({
-//   req: {
-//     body: JSON.stringify({
-//       startBrand: 'sinmarca'
-//     })
-//   },
-//   res: { json: console.log },
-//   log: console.log,
-//   error: console.error
-// });
+// recursiveCall(
+//   JSON.stringify({
+//     startBrand: '3icorporation'
+//   })
+// );

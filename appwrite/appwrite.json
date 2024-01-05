@@ -1305,7 +1305,12 @@
     },
     {
       "$id": "brands",
-      "$permissions": [],
+      "$permissions": [
+        "create(\"any\")",
+        "read(\"any\")",
+        "update(\"any\")",
+        "delete(\"any\")"
+      ],
       "databaseId": "syscom",
       "name": "brands",
       "enabled": true,
@@ -1336,7 +1341,12 @@
     },
     {
       "$id": "products",
-      "$permissions": [],
+      "$permissions": [
+        "create(\"any\")",
+        "read(\"any\")",
+        "update(\"any\")",
+        "delete(\"any\")"
+      ],
       "databaseId": "syscom",
       "name": "products",
       "enabled": true,
@@ -1646,13 +1656,28 @@
           "array": false,
           "size": 1000000,
           "default": null
+        },
+        {
+          "key": "brandId",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
         }
       ],
       "indexes": []
     },
     {
       "$id": "categories",
-      "$permissions": [],
+      "$permissions": [
+        "create(\"any\")",
+        "read(\"any\")",
+        "update(\"any\")",
+        "delete(\"any\")"
+      ],
       "databaseId": "syscom",
       "name": "categories",
       "enabled": true,
