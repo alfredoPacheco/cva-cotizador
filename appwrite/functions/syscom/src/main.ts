@@ -110,15 +110,15 @@ const main = async ({ req, res, log, error }: any) => {
         name: get(brand, 'nombre')
       };
 
-      log('payload');
-      log(payload);
+      // log('payload');
+      // log(payload);
 
       if (existingBrands.documents.some((doc: any) => doc.$id === id)) {
         log('updating brand: ' + id);
         await databases.updateDocument('syscom', 'brands', id, payload);
         brandsUpdated++;
       } else {
-        log('creating product: ' + id);
+        log('creating brand: ' + id);
         await databases.createDocument('syscom', 'brands', id, payload);
         brandsCreated++;
       }
@@ -139,13 +139,13 @@ const main = async ({ req, res, log, error }: any) => {
   // START PRODUCTS ======================
   log('going to process products');
   const productsByBrand = await databases.listDocuments('syscom', 'products', [
-    Query.limit(999999999),
+    Query.limit(1),
     Query.select(['$id']),
     Query.equal('brand', startBrand)
   ]);
 
-  log('productsByBrand');
-  log(productsByBrand);
+  // log('productsByBrand');
+  // log(productsByBrand);
 
   const productsUrl = new URL('https://developers.syscom.mx/api/v1/productos');
 
@@ -190,7 +190,7 @@ const main = async ({ req, res, log, error }: any) => {
 
       const json = await response.json();
 
-      log(JSON.stringify(json, null, 2));
+      // log(JSON.stringify(json, null, 2));
 
       const products = json.productos;
       const paginas = Number(get(json, 'paginas', 1));
@@ -229,7 +229,7 @@ const main = async ({ req, res, log, error }: any) => {
           pvol: get(product, 'pvol'),
           brandLogo: get(product, 'marca_logo'),
           link: get(product, 'link'),
-          icons: get(product, 'iconos'),
+          icons: JSON.stringify(get(product, 'iconos'), []),
           weight: get(product, 'peso'),
           existence: JSON.stringify(get(product, 'existencia', {})),
           uom: JSON.stringify(get(product, 'unidad_de_medida', {})),
@@ -239,16 +239,16 @@ const main = async ({ req, res, log, error }: any) => {
           height: get(product, 'alto'),
           large: get(product, 'largo'),
           width: get(product, 'ancho'),
-          prices: get(product, 'precios'),
-          priceOne: get(product, 'prices.precio_1'),
-          priceSpecial: get(product, 'prices.precio_especial'),
-          priceDiscount: get(product, 'prices.precio_descuento'),
-          priceList: get(product, 'prices.precio_lista'),
+          prices: JSON.stringify(get(product, 'precios', {})),
+          priceOne: get(product, 'precios.precio_1'),
+          priceSpecial: get(product, 'precios.precio_especial'),
+          priceDiscount: get(product, 'precios.precio_descuento'),
+          priceList: get(product, 'precios.precio_lista'),
           note: get(product, 'nota'),
           attributes: JSON.stringify(get(product, 'atributos', {}))
         };
 
-        log(payload);
+        // log(payload);
         if (
           productsByBrand.documents.some((doc: any) => doc.$id === productId)
         ) {
@@ -310,9 +310,7 @@ const main = async ({ req, res, log, error }: any) => {
       }),
       true
     );
-  }
-
-  if (!hasNextPage) {
+  } else if (!hasNextPage) {
     const nextBrand =
       brands[brands.findIndex((brand: any) => brand.id === CURRENT_BRAND) + 1];
 
@@ -326,6 +324,16 @@ const main = async ({ req, res, log, error }: any) => {
         }),
         true
       );
+      // main({
+      //   req: {
+      //     body: JSON.stringify({
+      //       startBrand: nextBrand.id
+      //     })
+      //   },
+      //   res: { json: console.log },
+      //   log: console.log,
+      //   error: console.error
+      // });
     }
   }
 
@@ -334,13 +342,13 @@ const main = async ({ req, res, log, error }: any) => {
 
 export default main;
 
-main({
-  req: {
-    body: JSON.stringify({
-      startBrand: 'zkteco'
-    })
-  },
-  res: { json: console.log },
-  log: console.log,
-  error: console.error
-});
+// main({
+//   req: {
+//     body: JSON.stringify({
+//       startBrand: 'sinmarca'
+//     })
+//   },
+//   res: { json: console.log },
+//   log: console.log,
+//   error: console.error
+// });
