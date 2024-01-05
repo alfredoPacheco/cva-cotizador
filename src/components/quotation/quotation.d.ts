@@ -36,4 +36,5 @@ export interface QuotationDto extends BaseDto {
   _attachments?: IAttachment[];
   suscribers?: string[] | ContactDto[];
   dollar?: number;
+  dollarSyscom?: number;
 }

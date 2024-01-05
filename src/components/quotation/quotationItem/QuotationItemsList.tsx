@@ -8,6 +8,7 @@ import { ProductList } from '@/components/product/ProductList';
 import type { TVCProductDto } from '@/components/product/product';
 import uniqueId from 'lodash/uniqueId';
 import Dollar from '@/components/dollar';
+import DollarSyscom from '@/components/dollar-syscom';
 
 interface QuotationItemsProps {
   form: UseFormReturn<QuotationDto>;
@@ -77,7 +78,10 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({ form, items }) => {
       <div className="my-0 flex flex-row justify-center">
         <FormButton onPress={handleAddItem}>Agregar partida</FormButton>
         <FormButton onPress={onSearchProducts}>Buscar productos</FormButton>
-        <Dollar form={form} />
+        <div className="flex flex-col flex-1 gap-1">
+          <DollarSyscom form={form} />
+          <Dollar form={form} />
+        </div>
       </div>
 
       {items?.map((item, index) => (

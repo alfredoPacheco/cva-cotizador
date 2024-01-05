@@ -13,11 +13,16 @@ interface DollarResponse {
 
 const useDollar = () => {
   return useQuery<DollarResponse>({
-    queryKey: ['dollar'],
+    queryKey: ['dollar-syscom'],
     queryFn: async () => {
-      const response = await functions.createExecution('dollar', '', false);
+      const response = await functions.createExecution(
+        'syscom-dollar',
+        '',
+        false
+      );
       const json = JSON.parse(response.responseBody);
       // console.log(json);
+      json.dollar = Number(json.dollar);
       return json;
     },
     refetchInterval: 1000 * 60 * 5
@@ -28,34 +33,38 @@ interface DollarProps {
   form: UseFormReturn<QuotationDto>;
 }
 
-const Dollar: React.FC<DollarProps> = ({ form }) => {
+const DollarSyscom: React.FC<DollarProps> = ({ form }) => {
   const { data, isLoading, refetch } = useDollar();
 
-  const quotationDollar = form.watch('dollar');
+  const quotationDollar = form.watch('dollarSyscom');
 
   const update = async () => {
     const response = await refetch();
     if (
-      confirm(`Confirma actualizar el dollar de TVC a ${response.data.dollar}?`)
+      confirm(
+        `Confirma actualizar el dollar de Syscom a ${response.data.dollar}?`
+      )
     ) {
-      form.setValue('dollar', response.data.dollar, { shouldDirty: true });
+      form.setValue('dollarSyscom', response.data.dollar, {
+        shouldDirty: true
+      });
     }
   };
 
   useEffect(() => {
     if (!quotationDollar) {
-      form.setValue('dollar', data?.dollar, { shouldDirty: true });
+      form.setValue('dollarSyscom', data?.dollar, { shouldDirty: true });
     }
   }, [quotationDollar, data]);
 
-  const notSaved = !quotationDollar || form.formState.dirtyFields.dollar;
+  const notSaved = !quotationDollar || form.formState.dirtyFields.dollarSyscom;
   const dollarChanged = quotationDollar > 0 && quotationDollar !== data?.dollar;
 
   if (isLoading) return <span>Cargando...</span>;
 
   return (
     <div className="flex flex-row items-center justify-end flex-1 gap-2">
-      <label>Dollar TVC:</label>
+      <label>Dollar Syscom:</label>
       <Chip
         style={{ minWidth: 60 }}
         color={notSaved ? 'danger' : dollarChanged ? 'warning' : 'success'}
@@ -72,4 +81,4 @@ const Dollar: React.FC<DollarProps> = ({ form }) => {
   );
 };
 
-export default Dollar;
+export default DollarSyscom;

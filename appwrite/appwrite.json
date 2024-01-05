@@ -121,6 +121,21 @@
       "commands": "bun install",
       "ignore": ["node_modules", ".npm"],
       "path": "functions/dollar"
+    },
+    {
+      "$id": "syscom-dollar",
+      "name": "syscom-dollar",
+      "runtime": "bun-1.0",
+      "execute": ["any"],
+      "events": [],
+      "schedule": "",
+      "timeout": 15,
+      "enabled": true,
+      "logging": true,
+      "entrypoint": "src/main.ts",
+      "commands": "bun install",
+      "ignore": ["node_modules", ".npm"],
+      "path": "functions/syscom-dollar"
     }
   ],
   "databases": [
