@@ -13,7 +13,7 @@ export const defaultQueryFn: QueryFunction<unknown, QueryType> = async ({
 }) => {
   const DATABASE_ID = get(meta, 'DATABASE_ID', DEFAULT_DATABASE_ID);
 
-  const collectionId = get(queryKey, '[0]');
+  const collectionId = get(meta, 'COLLECTION_ID', queryKey[0]) as string;
   if (!collectionId) {
     return { documents: [] };
   }
@@ -33,7 +33,7 @@ export const defaultQueryFn: QueryFunction<unknown, QueryType> = async ({
   const listQuery = queryKey[1];
 
   // QueryType is list:
-  const limit = get(listQuery, 'limit', 5000);
+  const limit = get(listQuery, 'limit', 99999999);
   const page = get(listQuery, 'page', 1);
 
   const allQueries: string[] = [];

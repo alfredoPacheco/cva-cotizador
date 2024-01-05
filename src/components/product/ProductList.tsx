@@ -42,13 +42,15 @@ interface ProductListProps {
   dialog?: DialogWidget;
 }
 
-interface StandardProduct {
+export interface StandardProduct {
   $id: string;
   name: string;
+  model: string;
   listPrice: string;
   distributorPrice: string;
   mediaMainImage: string;
   link: string;
+  provider: string;
 }
 
 const tvcToStandardProduct = (product: TVCProductDto): StandardProduct => {
@@ -58,7 +60,9 @@ const tvcToStandardProduct = (product: TVCProductDto): StandardProduct => {
     listPrice: product.listPrice,
     distributorPrice: product.distributorPrice,
     mediaMainImage: product.mediaMainImage,
-    link: `https://tvc.mx/products/${product.$id}`
+    link: `https://tvc.mx/products/${product.$id}`,
+    model: product.tvcModel,
+    provider: 'tvc'
   };
 };
 
@@ -71,7 +75,9 @@ const syscomToStandardProduct = (
     listPrice: product.priceList,
     distributorPrice: product.priceDiscount,
     mediaMainImage: product.imgMain,
-    link: `https://www.syscom.mx${product.link}`
+    link: `https://www.syscom.mx${product.link}`,
+    model: product.model,
+    provider: 'syscom'
   };
 };
 

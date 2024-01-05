@@ -22,7 +22,7 @@ export const useSyscomProductList = (enabled = true) => {
           Query.select([
             '$id',
             'title',
-            // 'model',
+            'model',
             'priceList',
             'priceOne', // Verify if this is distribuitor price
             // 'brand',

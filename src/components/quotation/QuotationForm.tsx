@@ -177,7 +177,10 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
       });
 
       const subtotal = items?.reduce((prev, current) => {
-        return prev + current.amount;
+        return (
+          prev + // Number(payload.dollar) *
+          Number(current.quantity) * Number(current.unitPrice)
+        );
       }, 0);
       const iva = subtotal * 0.16;
       const total = subtotal + iva;

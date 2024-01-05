@@ -4,8 +4,10 @@ import type { QuotationItemDto } from './quotationItem';
 import type { UseFormReturn } from 'react-hook-form';
 import type { QuotationDto } from '../quotation';
 import { Dialog, useDialog } from '@/ui/Dialog';
-import { ProductList } from '@/components/product/ProductList';
-import type { TVCProductDto } from '@/components/product/product';
+import {
+  ProductList,
+  type StandardProduct
+} from '@/components/product/ProductList';
 import uniqueId from 'lodash/uniqueId';
 import Dollar from '@/components/dollar';
 import DollarSyscom from '@/components/dollar-syscom';
@@ -18,7 +20,7 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({ form, items }) => {
   const handleAddItem = async () => {
     const added = {
       // $id: 'new',
-      sequence: uniqueId()
+      sequence: uniqueId('new-')
     } as any;
     form.setValue('items', [...items, added]);
   };
@@ -54,16 +56,16 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({ form, items }) => {
       const [selectedItems, quantities] = dialogFeddback.args;
       // adapt TVCProductDto to QuotationItemDto
       const added = selectedItems.map(
-        (item: TVCProductDto) =>
+        (item: StandardProduct) =>
           ({
             // $id: 'new',
-            sequence: uniqueId(),
-            model: item.tvcModel,
+            sequence: uniqueId('map-'),
+            model: item.model,
             quantity: quantities[item.$id],
             unitPrice: Number(item.listPrice),
             description: item.name,
-            providerId: item.$id,
-            provider: 'tvc'
+            providerId: item.$id.replace('tvc-', '').replace('syscom-', ''),
+            provider: item.provider
           } as QuotationItemDto)
       );
 
