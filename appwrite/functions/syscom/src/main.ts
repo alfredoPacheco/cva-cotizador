@@ -32,10 +32,17 @@ interface ProductDto {
   weight: string;
   existence: string;
   uom: string;
+  uomCode: string;
+  uomName: string;
+  uomSat: string;
   height: string;
   large: string;
   width: string;
   prices: string;
+  priceOne: string;
+  priceSpecial: string;
+  priceDiscount: string;
+  priceList: string;
   note: string;
   attributes: string;
 }
@@ -55,11 +62,11 @@ const main = async ({ req, res, log, error }: any) => {
   let currentTime = new Date().getTime();
 
   // @ts-ignore
-  let startPage = Number(Bun.env['START_PAGE'] || 1);
+  let startPage = Number(get(Bun.env, 'START_PAGE', 1));
   let startBrand;
 
   try {
-    startPage = JSON.parse(req.body).startPage;
+    startPage = JSON.parse(req.body).startPage || startPage;
     log('startPage from request: ' + startPage);
   } catch {}
 
@@ -74,7 +81,8 @@ const main = async ({ req, res, log, error }: any) => {
 
   const existingBrands = await databases.listDocuments('syscom', 'brands', [
     Query.limit(999999999),
-    Query.select(['$id'])
+    Query.select(['$id']),
+    Query.orderAsc('$id')
   ]);
 
   const response = await fetch(brandUrl, {
@@ -93,6 +101,8 @@ const main = async ({ req, res, log, error }: any) => {
   const brands = json;
 
   if (!startBrand) {
+    let brandsUpdated = 0;
+    let brandsCreated = 0;
     log('going to process brands');
     for await (const brand of brands) {
       const id = get(brand, 'id').toString();
@@ -106,52 +116,68 @@ const main = async ({ req, res, log, error }: any) => {
       if (existingBrands.documents.some((doc: any) => doc.$id === id)) {
         log('updating brand: ' + id);
         await databases.updateDocument('syscom', 'brands', id, payload);
+        brandsUpdated++;
       } else {
         log('creating product: ' + id);
         await databases.createDocument('syscom', 'brands', id, payload);
+        brandsCreated++;
       }
     }
-  }
-  // END BRANDS
 
-  const existingProducts = await databases.listDocuments('syscom', 'products', [
+    await functions.createExecution(
+      'APPWRITE_FUNCTION_ID',
+      JSON.stringify({
+        startBrand: brands[brands.length - 1].id
+      }),
+      true
+    );
+
+    return res.json({ brandsUpdated, brandsCreated });
+  }
+  // END BRANDS ==========================
+
+  // START PRODUCTS ======================
+  log('going to process products');
+  const productsByBrand = await databases.listDocuments('syscom', 'products', [
     Query.limit(999999999),
-    Query.select(['$id'])
+    Query.select(['$id']),
+    Query.equal('brand', startBrand)
   ]);
 
-  const baseUrl = new URL('https://api.tvc.mx/products');
+  log('productsByBrand');
+  log(productsByBrand);
 
-  let CURRENT_PAGE = startPage;
-  const PER_PAGE = '100';
+  const productsUrl = new URL('https://developers.syscom.mx/api/v1/productos');
+
   const MAX_LOOP_TIMES = 999999999;
-  // const MAX_LOOP_TIMES = 1;
+  const MAX_ATTEMPTS = 3;
+
   let LOOP_COUNT = 1;
   let ATTEMPTS_COUNT = 1;
-  const MAX_ATTEMPTS = 3;
+
+  let CURRENT_PAGE = startPage;
+  let CURRENT_BRAND = startBrand;
 
   let hasNextPage = false;
 
   let params = {
-    // tvcIds: [31071, 148],
-    // tvcModels: ['RBM0220002', '42109'],
-    withInventory: 'detailed',
-    withPrice: true,
-    withMedia: true,
-    withOverviews: false,
-    withWeightsAndDimensions: true,
-    withCategoryBreadcrumb: true,
-    perPage: PER_PAGE,
-    page: CURRENT_PAGE.toString()
+    orden: 'modelo:asc',
+    marca: CURRENT_BRAND,
+    pagina: CURRENT_PAGE.toString()
   };
+
   Object.keys(params).forEach(key =>
-    baseUrl.searchParams.append(key, params[key])
+    productsUrl.searchParams.append(key, params[key])
   );
 
   do {
     try {
-      const url = new URL(baseUrl);
-      url.searchParams.set('page', CURRENT_PAGE.toString());
-      // url.searchParams.append('tvcIds[]', '4804');
+      const url = new URL(productsUrl);
+      url.searchParams.set('pagina', CURRENT_PAGE.toString());
+      url.searchParams.set('marca', CURRENT_BRAND);
+
+      log('url');
+      log(url);
 
       const response = await fetch(url, {
         method: 'GET',
@@ -164,90 +190,87 @@ const main = async ({ req, res, log, error }: any) => {
 
       const json = await response.json();
 
-      // log(JSON.stringify(json, null, 2));
+      log(JSON.stringify(json, null, 2));
 
-      const products = json.data;
+      const products = json.productos;
+      const paginas = Number(get(json, 'paginas', 1));
+      const cantidad = Number(get(json, 'cantidad', 0));
+      log('paginas: ' + paginas);
+      log('cantidad: ' + cantidad);
 
       for await (const product of products) {
         log(
           'goint to process page: ' +
             CURRENT_PAGE +
+            ', current brand: ' +
+            CURRENT_BRAND +
             ', LOOP_COUNT: ' +
             LOOP_COUNT
         );
-        // const payload: ProductDto = {
-        const payload = {
-          // $id: get(product, 'tvc_id').toString(),
+
+        const productId = get(product, 'producto_id').toString();
+        const payload: ProductDto = {
           raw: JSON.stringify(product),
-          tvcModel: get(product, 'tvc_model'),
-          providerModel: get(product, 'provider_model'),
-          tvcId: get(product, 'tvc_id'),
-          name: get(product, 'name'),
-          type: get(product, 'type'),
-          brand: get(product, 'brand'),
-          brandId: get(product, 'brand_id'),
-          categoryId: get(product, 'category_id'),
-          category: get(product, 'category'),
-          // categoryBreadcrumb: get(product, 'category_breadcrumb'),
+          productId: productId,
+          model: get(product, 'modelo'),
+          totalStock: get(product, 'total_existencia'),
+          title: get(product, 'titulo'),
+          brand: get(product, 'marca'),
           satKey: get(product, 'sat_key'),
-          productFlowType: get(product, 'product_flow_type'),
-          stageId: get(product, 'stage_id'),
-          stageName: get(product, 'stage_name'),
-          listPrice: get(product, 'list_price'),
-          distributorPrice: get(product, 'distributor_price'),
-          mediaMainImage: get(product, 'media.main_image'),
-          mediaGallery: get(product, 'media.gallery'),
-          mediaDocuments: get(product, 'media.documents'),
-          mediaVideos: get(product, 'media.videos'),
-          // overviews: JSON.stringify(get(product, 'overviews', [])),
-          piecesPerBox: get(product, 'weights_and_dimensions.pieces_per_box'),
-          pieceHeight: get(product, 'weights_and_dimensions.piece_height'),
-          pieceLength: get(product, 'weights_and_dimensions.piece_length'),
-          pieceWidth: get(product, 'weights_and_dimensions.piece_width'),
-          pieceWeight: get(product, 'weights_and_dimensions.piece_weight'),
-          boxHeight: get(product, 'weights_and_dimensions.box_height'),
-          boxLength: get(product, 'weights_and_dimensions.box_length'),
-          boxWidth: get(product, 'weights_and_dimensions.box_width'),
-          boxWeight: get(product, 'weights_and_dimensions.box_weight'),
-          breadcrumb: get(product, 'category_breadcrumb'),
-          breadcrumbTree: JSON.stringify(
-            get(product, 'category_breadcrumb_tree', {})
-          ),
-          inventory: (get(product, 'inventory_detailed', []) as any[]).map(
-            item => ({
-              name: get(item, 'name'),
-              quantity: get(item, 'quantity'),
-              warehouseId: get(item, 'warehouse_id').toString(),
-              $id: [get(product, 'tvc_id'), get(item, 'warehouse_id')].join('-')
-            })
-          )
+          imgMain: get(product, 'img_portada'),
+          privateLink: get(product, 'link_privado'),
+          categories: (get(product, 'categorias', []) as any[]).map(item => ({
+            id: get(item, 'id'),
+            name: get(item, 'nombre'),
+            level: get(item, 'nivel'),
+            productId,
+            $id: [productId, get(item, 'id')].join('-')
+          })),
+          pvol: get(product, 'pvol'),
+          brandLogo: get(product, 'marca_logo'),
+          link: get(product, 'link'),
+          icons: get(product, 'iconos'),
+          weight: get(product, 'peso'),
+          existence: JSON.stringify(get(product, 'existencia', {})),
+          uom: JSON.stringify(get(product, 'unidad_de_medida', {})),
+          uomCode: get(product, 'unidad_de_medida.codigo_unidad'),
+          uomName: get(product, 'unidad_de_medida.nombre'),
+          uomSat: get(product, 'unidad_de_medida.clave_unidad_sat'),
+          height: get(product, 'alto'),
+          large: get(product, 'largo'),
+          width: get(product, 'ancho'),
+          prices: get(product, 'precios'),
+          priceOne: get(product, 'prices.precio_1'),
+          priceSpecial: get(product, 'prices.precio_especial'),
+          priceDiscount: get(product, 'prices.precio_descuento'),
+          priceList: get(product, 'prices.precio_lista'),
+          note: get(product, 'nota'),
+          attributes: JSON.stringify(get(product, 'atributos', {}))
         };
 
-        // log(payload);
+        log(payload);
         if (
-          existingProducts.documents.some(
-            (doc: any) => doc.$id === payload.tvcId.toString()
-          )
+          productsByBrand.documents.some((doc: any) => doc.$id === productId)
         ) {
-          log('updating product: ' + payload.tvcId);
+          log('updating product: ' + productId);
           await databases.updateDocument(
-            'tvc',
+            'syscom',
             'products',
-            payload.tvcId.toString(),
+            productId,
             payload
           );
         } else {
-          log('creating product: ' + payload.tvcId);
+          log('creating product: ' + productId);
           await databases.createDocument(
-            'tvc',
+            'syscom',
             'products',
-            payload.tvcId.toString(),
+            productId,
             payload
           );
         }
       }
 
-      hasNextPage = json.links.next !== null;
+      hasNextPage = paginas > CURRENT_PAGE;
       CURRENT_PAGE++;
       ATTEMPTS_COUNT = 1;
       LOOP_COUNT++;
@@ -278,14 +301,32 @@ const main = async ({ req, res, log, error }: any) => {
     LOOP_COUNT <= MAX_LOOP_TIMES
   ) {
     log("didn't finish, calling again with next page:" + CURRENT_PAGE);
-    functions.createExecution(
+    await functions.createExecution(
       // @ts-ignore
       Bun.env['APPWRITE_FUNCTION_ID'],
       JSON.stringify({
-        startPage: CURRENT_PAGE
+        startPage: CURRENT_PAGE,
+        startBrand: CURRENT_BRAND
       }),
       true
     );
+  }
+
+  if (!hasNextPage) {
+    const nextBrand =
+      brands[brands.findIndex((brand: any) => brand.id === CURRENT_BRAND) + 1];
+
+    if (nextBrand) {
+      log('calling again with next brand');
+      await functions.createExecution(
+        // @ts-ignore
+        Bun.env['APPWRITE_FUNCTION_ID'],
+        JSON.stringify({
+          startBrand: nextBrand.id
+        }),
+        true
+      );
+    }
   }
 
   return res.json({ ok: true });
@@ -294,7 +335,11 @@ const main = async ({ req, res, log, error }: any) => {
 export default main;
 
 main({
-  req: {},
+  req: {
+    body: JSON.stringify({
+      startBrand: 'zkteco'
+    })
+  },
   res: { json: console.log },
   log: console.log,
   error: console.error

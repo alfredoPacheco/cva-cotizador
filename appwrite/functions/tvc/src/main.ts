@@ -279,7 +279,7 @@ const main = async ({ req, res, log, error }: any) => {
     LOOP_COUNT <= MAX_LOOP_TIMES
   ) {
     log("didn't finish, calling again with next page:" + CURRENT_PAGE);
-    functions.createExecution(
+    await functions.createExecution(
       // @ts-ignore
       Bun.env['APPWRITE_FUNCTION_ID'],
       JSON.stringify({
