@@ -156,8 +156,8 @@
     {
       "$id": "syscom",
       "name": "syscom",
-      "$createdAt": "2023-12-14T06:11:14.138+00:00",
-      "$updatedAt": "2023-12-14T06:11:14.138+00:00",
+      "$createdAt": "2024-01-05T07:07:29.371+00:00",
+      "$updatedAt": "2024-01-05T07:07:29.371+00:00",
       "enabled": true
     }
   ],
@@ -1353,74 +1353,13 @@
       "documentSecurity": false,
       "attributes": [
         {
-          "key": "productId",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": true,
-          "array": false,
-          "size": 50,
-          "default": null
-        },
-        {
-          "key": "model",
+          "key": "link",
           "type": "string",
           "status": "available",
           "error": "",
           "required": false,
           "array": false,
-          "size": 200,
-          "default": null
-        },
-        {
-          "key": "totalStock",
-          "type": "double",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "min": -1.7976931348623157e308,
-          "max": 1.7976931348623157e308,
-          "default": null
-        },
-        {
-          "key": "title",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 500,
-          "default": null
-        },
-        {
-          "key": "brand",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 200,
-          "default": null
-        },
-        {
-          "key": "satKey",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 50,
-          "default": null
-        },
-        {
-          "key": "imgMain",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 500,
+          "size": 300,
           "default": null
         },
         {
@@ -1434,30 +1373,6 @@
           "default": null
         },
         {
-          "key": "categories",
-          "type": "relationship",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "relatedCollection": "categories",
-          "relationType": "oneToMany",
-          "twoWay": false,
-          "twoWayKey": "products",
-          "onDelete": "setNull",
-          "side": "parent"
-        },
-        {
-          "key": "pvol",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 50,
-          "default": null
-        },
-        {
           "key": "brandLogo",
           "type": "string",
           "status": "available",
@@ -1468,13 +1383,13 @@
           "default": null
         },
         {
-          "key": "link",
+          "key": "existence",
           "type": "string",
           "status": "available",
           "error": "",
           "required": false,
           "array": false,
-          "size": 300,
+          "size": 500,
           "default": null
         },
         {
@@ -1498,16 +1413,6 @@
           "default": null
         },
         {
-          "key": "existence",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 500,
-          "default": null
-        },
-        {
           "key": "uom",
           "type": "string",
           "status": "available",
@@ -1518,43 +1423,24 @@
           "default": null
         },
         {
-          "key": "height",
+          "key": "brand",
           "type": "string",
           "status": "available",
           "error": "",
           "required": false,
           "array": false,
-          "size": 10,
+          "size": 200,
           "default": null
         },
         {
-          "key": "large",
-          "type": "string",
+          "key": "totalStock",
+          "type": "double",
           "status": "available",
           "error": "",
           "required": false,
           "array": false,
-          "size": 20,
-          "default": null
-        },
-        {
-          "key": "width",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 20,
-          "default": null
-        },
-        {
-          "key": "prices",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 500,
+          "min": -1.7976931348623157e308,
+          "max": 1.7976931348623157e308,
           "default": null
         },
         {
@@ -1568,6 +1454,16 @@
           "default": null
         },
         {
+          "key": "width",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 20,
+          "default": null
+        },
+        {
           "key": "attributes",
           "type": "string",
           "status": "available",
@@ -1578,7 +1474,7 @@
           "default": null
         },
         {
-          "key": "uomCode",
+          "key": "height",
           "type": "string",
           "status": "available",
           "error": "",
@@ -1598,13 +1494,83 @@
           "default": null
         },
         {
-          "key": "uomSat",
+          "key": "imgMain",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 500,
+          "default": null
+        },
+        {
+          "key": "productId",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": true,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "title",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 500,
+          "default": null
+        },
+        {
+          "key": "priceList",
           "type": "string",
           "status": "available",
           "error": "",
           "required": false,
           "array": false,
           "size": 50,
+          "default": null
+        },
+        {
+          "key": "satKey",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "brandId",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "prices",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 500,
+          "default": null
+        },
+        {
+          "key": "large",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 20,
           "default": null
         },
         {
@@ -1618,7 +1584,57 @@
           "default": null
         },
         {
+          "key": "pvol",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "uomCode",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 10,
+          "default": null
+        },
+        {
           "key": "priceSpecial",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 50,
+          "default": null
+        },
+        {
+          "key": "model",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
+          "default": null
+        },
+        {
+          "key": "raw",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 1000000,
+          "default": null
+        },
+        {
+          "key": "uomSat",
           "type": "string",
           "status": "available",
           "error": "",
@@ -1638,34 +1654,18 @@
           "default": null
         },
         {
-          "key": "priceList",
-          "type": "string",
+          "key": "categories",
+          "type": "relationship",
           "status": "available",
           "error": "",
           "required": false,
           "array": false,
-          "size": 50,
-          "default": null
-        },
-        {
-          "key": "raw",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 1000000,
-          "default": null
-        },
-        {
-          "key": "brandId",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 50,
-          "default": null
+          "relatedCollection": "categories",
+          "relationType": "oneToMany",
+          "twoWay": false,
+          "twoWayKey": "products",
+          "onDelete": "setNull",
+          "side": "parent"
         }
       ],
       "indexes": []
@@ -1684,7 +1684,17 @@
       "documentSecurity": false,
       "attributes": [
         {
-          "key": "id",
+          "key": "name",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
+          "default": null
+        },
+        {
+          "key": "productId",
           "type": "string",
           "status": "available",
           "error": "",
@@ -1694,13 +1704,13 @@
           "default": null
         },
         {
-          "key": "name",
+          "key": "id",
           "type": "string",
           "status": "available",
           "error": "",
           "required": false,
           "array": false,
-          "size": 200,
+          "size": 100,
           "default": null
         },
         {
@@ -1712,16 +1722,6 @@
           "array": false,
           "min": -9223372036854775808,
           "max": 9223372036854775807,
-          "default": null
-        },
-        {
-          "key": "productId",
-          "type": "string",
-          "status": "available",
-          "error": "",
-          "required": false,
-          "array": false,
-          "size": 100,
           "default": null
         }
       ],
