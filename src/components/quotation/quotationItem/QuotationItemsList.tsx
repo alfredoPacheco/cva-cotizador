@@ -4,8 +4,7 @@ import type { QuotationItemDto } from './quotationItem';
 import type { UseFormReturn } from 'react-hook-form';
 import type { QuotationDto } from '../quotation';
 import { Dialog, useDialog } from '@/ui/Dialog';
-import {
-  ProductList,
+import ProductList, {
   type StandardProduct
 } from '@/components/product/ProductList';
 import uniqueId from 'lodash/uniqueId';
@@ -52,7 +51,7 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({ form, items }) => {
   const onSearchProducts = async () => {
     const dialogFeddback: any = await dialogProducts.open().catch(err => {});
     // console.log('dialogFeddback', dialogFeddback);
-    if ((dialogFeddback.feedback = 'ok')) {
+    if (dialogFeddback?.feedback === 'ok') {
       const [selectedItems, quantities] = dialogFeddback.args;
       // adapt TVCProductDto to QuotationItemDto
       const added = selectedItems.map(

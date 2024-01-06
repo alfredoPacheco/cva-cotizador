@@ -38,7 +38,9 @@ export const useSyscomProductList = (enabled = true) => {
     meta: {
       DATABASE_ID,
       COLLECTION_ID: 'products'
-    }
+    },
+    staleTime: 1000 * 60 * 60 * 24, // 1 day
+    gcTime: 1000 * 60 * 60 * 24 * 3 // 3 days
   });
 
   return { query, filtersForm, debouncedSearch };

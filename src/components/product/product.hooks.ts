@@ -5,10 +5,8 @@ import {
   defaultDeleteMutation
 } from '@/core/ReactQueryProvider/defaultMutations';
 import type { TVCProductDto } from './product';
-import { useForm } from 'react-hook-form';
 import { Query } from 'appwrite';
-import { useDebounce } from '@/core';
-import { get, omit } from 'lodash';
+import { get } from 'lodash';
 import type { ListQueryType } from '@/core/ReactQueryProvider/queryKeys';
 import { databases } from '@/core/appwriteClient';
 
@@ -16,29 +14,6 @@ const QUERY_KEY = 'products';
 const COLLECTION_ID = 'products';
 
 const DATABASE_ID = import.meta.env.PUBLIC_APPWRITE_DATABASE_TVC!;
-
-function getSearchQuery(searchValue: string, sample: any) {
-  const result: string[] = [];
-  if (!searchValue || searchValue.trim() === '') return result;
-
-  // const sample: T = {} as T;
-  const entity = omit(sample, [
-    '$id',
-    '$collectionId',
-    '$createdAt',
-    '$databaseId',
-    '$permissions',
-    '$updatedAt'
-  ]);
-  // console.log('sample', sample);
-  // console.log('entity', entity);
-  Object.keys(entity).forEach(prop => {
-    if (typeof sample[prop] === 'string') {
-      result.push(Query.search(prop, searchValue));
-    }
-  });
-  return result;
-}
 
 export const useProductList = (enabled = true) => {
   const query = useQuery<TVCProductDto[]>({
@@ -64,12 +39,10 @@ export const useProductList = (enabled = true) => {
     enabled,
     meta: {
       DATABASE_ID
-    }
+    },
+    staleTime: 1000 * 60 * 60 * 24, // 1 day
+    gcTime: 1000 * 60 * 60 * 24 * 3 // 3 days
   });
-
-  // useEffect(() => {
-  //   query.refetch();
-  // }, [debouncedSearch]);
 
   return { query };
 };
@@ -103,11 +76,11 @@ export const useProductImages = (id: string, enabled = true) => {
       const images = get(firstItem, 'mediaGallery', []);
       result.push(...images);
 
-      // console.log('useProductImages result', result);
-
       return result;
     },
-    enabled: enabled && !!id
+    enabled: enabled && !!id,
+    staleTime: 1000 * 60 * 60 * 24, // 1 day
+    gcTime: 1000 * 60 * 60 * 24 * 3 // 3 days
   });
 };
 

@@ -23,6 +23,7 @@ import { useSyscomProductList } from '../product-syscom/product.hooks';
 import { useDebounce } from '@/core';
 import type { TVCProductDto } from './product';
 import type { SyscomProductDto } from '../product-syscom/product';
+import PersistQueryProvider from '@/core/ReactQueryProvider/PersistQueryProvider';
 
 const searchLocally = (query: string) => (item: any) => {
   if (!query || query.trim() === '') return true;
@@ -245,11 +246,11 @@ export const ProductList: React.FC<ProductListProps> = ({ dialog }) => {
   );
 };
 
-const WithAppShell = () => {
+const WithAppShell = props => {
   return (
-    <AppShell>
-      <ProductList />
-    </AppShell>
+    <PersistQueryProvider>
+      <ProductList dialog={props.dialog} />
+    </PersistQueryProvider>
   );
 };
 
