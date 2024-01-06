@@ -1,5 +1,4 @@
 import { functions } from '@/core/appwriteClient';
-import { formatCurrency } from '@/core/utils';
 import { Button, Chip } from '@nextui-org/react';
 import { useQuery } from '@tanstack/react-query';
 import type { UseFormReturn } from 'react-hook-form';
@@ -20,7 +19,9 @@ const useDollar = () => {
       // console.log(json);
       return json;
     },
-    refetchInterval: 1000 * 60 * 5
+    refetchInterval: 1000 * 60 * 5, // 5 minutes
+    gcTime: 1000 * 60 * 60 * 24, // 24 hours
+    staleTime: 1000 * 60 * 4 // 4 minutes
   });
 };
 
@@ -64,9 +65,9 @@ const Dollar: React.FC<DollarProps> = ({ form }) => {
       </Chip>
       {notSaved && <span>No guardado</span>}
       {dollarChanged && (
-        <span>
-          El dollar ha cambiado <Button onPress={update}>Actualizar</Button>
-        </span>
+        <Button onPress={update} variant="light">
+          El dollar ha cambiado
+        </Button>
       )}
     </div>
   );

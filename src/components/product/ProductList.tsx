@@ -82,7 +82,7 @@ const syscomToStandardProduct = (
   };
 };
 
-export const ProductList: React.FC<ProductListProps> = ({ dialog }) => {
+const ProductList: React.FC<ProductListProps> = ({ dialog }) => {
   const filtersForm = useForm(); // This form is to handle search and filters over list
   const debouncedSearch = useDebounce(filtersForm.watch('search'), 100);
 
@@ -151,7 +151,7 @@ export const ProductList: React.FC<ProductListProps> = ({ dialog }) => {
 
   return (
     <Container maxWidth="5xl">
-      <div className="flex flex-row justify-between items-center mt-5 min-h-unit-16">
+      <div className="flex flex-row justify-between items-center mt-5 min-h-unit-16 gap-5">
         {/* <TextButton onPress={dialog.open}>Crear nuevo producto</TextButton> */}
         <Checkbox
           isSelected={filterSelected}
@@ -159,9 +159,20 @@ export const ProductList: React.FC<ProductListProps> = ({ dialog }) => {
         >
           Mostrar seleccionados
         </Checkbox>
-        {!filterSelected && (
-          <SearchInput control={filtersForm.control} name="search" />
-        )}
+        <Button
+          onPress={() => {
+            query.refetch();
+            syscomQuery.refetch();
+          }}
+          isLoading={query.isFetching || syscomQuery.isFetching}
+        >
+          Refrescar
+        </Button>
+        <div className="flex flex-1 justify-end">
+          {!filterSelected && (
+            <SearchInput control={filtersForm.control} name="search" />
+          )}
+        </div>
       </div>
 
       {filterSelected && items?.length === 0 && (
@@ -248,7 +259,7 @@ export const ProductList: React.FC<ProductListProps> = ({ dialog }) => {
 
 const WithAppShell = props => {
   return (
-    <PersistQueryProvider>
+    <PersistQueryProvider persistKey="productList">
       <ProductList dialog={props.dialog} />
     </PersistQueryProvider>
   );

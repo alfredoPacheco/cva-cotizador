@@ -10,6 +10,9 @@ import ProductList, {
 import uniqueId from 'lodash/uniqueId';
 import Dollar from '@/components/dollar';
 import DollarSyscom from '@/components/dollar-syscom';
+import { GoSearch } from 'react-icons/go';
+import { PiPlusCircle } from 'react-icons/pi';
+import PersistQueryProvider from '@/core/ReactQueryProvider/PersistQueryProvider';
 
 interface QuotationItemsProps {
   form: UseFormReturn<QuotationDto>;
@@ -77,12 +80,32 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({ form, items }) => {
   return (
     <div className="flex flex-col justify-center gap-2">
       <div className="my-0 flex flex-row justify-center">
-        <FormButton onPress={handleAddItem}>Agregar partida</FormButton>
-        <FormButton onPress={onSearchProducts}>Buscar productos</FormButton>
-        <div className="flex flex-col flex-1 gap-1">
-          <DollarSyscom form={form} />
-          <Dollar form={form} />
-        </div>
+        <FormButton
+          onPress={handleAddItem}
+          startContent={
+            <span className="text-xl text-primary">
+              <PiPlusCircle />
+            </span>
+          }
+        >
+          Agregar partida
+        </FormButton>
+        <FormButton
+          onPress={onSearchProducts}
+          startContent={
+            <span className="text-xl text-primary">
+              <GoSearch />
+            </span>
+          }
+        >
+          Buscar productos
+        </FormButton>
+        <PersistQueryProvider persistKey="dollar">
+          <div className="flex flex-col flex-1 gap-1 justify-end">
+            <DollarSyscom form={form} />
+            <Dollar form={form} />
+          </div>
+        </PersistQueryProvider>
       </div>
 
       {items?.map((item, index) => (

@@ -22,13 +22,17 @@ const queryClient = new QueryClient({
 //   key: 'CVT_QUOTATIONS_OFFLINE_CACHE'
 // });
 
-const persistor = createIDBPersister('CVT_QUOTATIONS_OFFLINE_CACHE');
-
-const PersistQueryProvider = ({ children }: { children: React.ReactNode }) => {
+const PersistQueryProvider = ({
+  children,
+  persistKey = 'ReactQuery'
+}: {
+  children: React.ReactNode;
+  persistKey: string;
+}) => {
   return (
     <PersistQueryClientProvider
       client={queryClient}
-      persistOptions={{ persister: persistor }}
+      persistOptions={{ persister: createIDBPersister(persistKey) }}
     >
       {children}
       <ReactQueryDevtools initialIsOpen={false} buttonPosition="top-right" />

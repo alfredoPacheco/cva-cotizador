@@ -310,7 +310,7 @@ export const SearchInput: React.FC<TextInputProps> = props => {
       {...props}
       type="search"
       placeholder="Buscar"
-      w={200}
+      w={300}
       classNames={{ inputWrapper: ['h-14', 'rounded-xl', 'px-4'] }}
       endContent={
         <span className="text-xl text-default-400 pointer-events-none">
