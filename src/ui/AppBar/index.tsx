@@ -12,6 +12,9 @@ import {
 } from '@nextui-org/react';
 import Container from '../Container';
 import { authCentralState } from '@/core/AuthCentralService';
+import TVCDollarReadonly from '@/components/dollar/TVCDollarReadonly';
+import SyscomDollarReadonly from '@/components/dollar-syscom/SyscomDollarReadonly';
+import PersistQueryProvider from '@/core/ReactQueryProvider/PersistQueryProvider';
 
 const AppBar = ({ logout }) => {
   return (
@@ -28,6 +31,12 @@ const AppBar = ({ logout }) => {
           </Link>
         </NavbarBrand>
         <NavbarContent as="div" justify="end">
+          <PersistQueryProvider persistKey="dollar">
+            <div className="flex flex-col gap-1 items-end text-sm">
+              <TVCDollarReadonly />
+              <SyscomDollarReadonly />
+            </div>
+          </PersistQueryProvider>
           <Dropdown placement="bottom-end" className="bg-default-100">
             <DropdownTrigger>
               {/* <Button
