@@ -50,6 +50,7 @@ interface TextInputProps extends InputProps {
     | 'success'
     | 'warning'
     | 'danger';
+  inputWrapper?: string;
   //   left?: string;
   //   right?: string;
   //   rightProps?: any;
@@ -73,6 +74,7 @@ export const TextInput: React.FC<TextInputProps> = ({
   h,
   rows = 0,
   variant = 'bordered',
+  inputWrapper = '',
   ...props
   // label,
   // placeholder,
@@ -137,6 +139,9 @@ export const TextInput: React.FC<TextInputProps> = ({
             min={props.min}
             step="any"
             readOnly={props.readOnly}
+            classNames={{
+              inputWrapper
+            }}
           />
         </div>
       )}
