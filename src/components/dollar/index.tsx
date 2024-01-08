@@ -4,26 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { UseFormReturn } from 'react-hook-form';
 import type { QuotationDto } from '../quotation/quotation';
 import { useEffect } from 'react';
-
-interface DollarResponse {
-  dollar?: number;
-  ok?: string;
-}
-
-const useDollar = () => {
-  return useQuery<DollarResponse>({
-    queryKey: ['dollar'],
-    queryFn: async () => {
-      const response = await functions.createExecution('dollar', '', false);
-      const json = JSON.parse(response.responseBody);
-      // console.log(json);
-      return json;
-    },
-    refetchInterval: 1000 * 60 * 5, // 5 minutes
-    gcTime: 1000 * 60 * 60 * 24, // 24 hours
-    staleTime: 1000 * 60 * 4 // 4 minutes
-  });
-};
+import { useDollar } from './dollar.hooks';
 
 interface DollarProps {
   form: UseFormReturn<QuotationDto>;
