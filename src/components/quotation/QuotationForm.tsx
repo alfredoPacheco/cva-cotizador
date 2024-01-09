@@ -31,7 +31,7 @@ import QuotationItemsList from './quotationItem/QuotationItemsList';
 import { useQuotationItemDelete } from './quotationItem/quotationItem.hooks';
 import { useCustomerList } from '../customer/customer.hooks';
 import { useEffect } from 'react';
-import { omit } from 'lodash';
+import { get, omit } from 'lodash';
 import dayjs from 'dayjs';
 import Attachments from '@/ui/Attachments';
 import { fileDeserialize } from '@/ui/Attachments/FileSerialize';
@@ -171,23 +171,31 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
     if (payload.items) {
       payload.items.forEach((item, index) => {
         item.sequence = index + 1;
-        item.amount =
-          // Number(payload.dollar) *
-          Number(item.quantity) * Number(item.unitPrice);
+        item.amount = Number(item.quantity) * Number(item.unitPrice);
+        item.amountMxn = item.amount * Number(payload.dollar || 1);
       });
 
       const subtotal = items?.reduce((prev, current) => {
-        return (
-          prev + // Number(payload.dollar) *
-          Number(current.quantity) * Number(current.unitPrice)
-        );
+        return prev + Number(current.quantity) * Number(current.unitPrice);
       }, 0);
+      const subtotalMxn = subtotal * Number(payload.dollar || 1);
       const iva = subtotal * 0.16;
       const total = subtotal + iva;
 
       payload.subtotal = subtotal;
       payload.iva = iva;
       payload.total = total;
+      payload.subtotalMxn = subtotalMxn;
+      payload.ivaMxn = iva * Number(payload.dollar || 1);
+      payload.totalMxn = total * Number(payload.dollar || 1);
+    }
+    if (dirtyFields.dollar) {
+      if (!get(payload, 'dollar')) {
+        payload.dollar = null;
+        payload.currency = 'MXN';
+      } else {
+        payload.currency = 'USD';
+      }
     }
     payload = omit(payload, [
       '_convertedQuotationDate',
@@ -279,20 +287,37 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
 
   const items = useWatch({
     control: form.control,
-    name: `items`
+    name: 'items'
+  });
+
+  const dollar = useWatch({
+    control: form.control,
+    name: 'dollar'
   });
 
   useEffect(() => {
     const subtotal = items?.reduce((prev, current) => {
-      return prev + Number(current.quantity) * Number(current.unitPrice);
+      return (
+        prev +
+        Number(current.quantity) *
+          Number(current.unitPrice) *
+          Number(dollar || 1)
+      );
     }, 0);
     const iva = subtotal * 0.16;
     const total = subtotal + iva;
 
+    const subtotalMxn = subtotal * Number(dollar || 1);
+    const ivaMxn = iva * Number(dollar || 1);
+    const totalMxn = total * Number(dollar || 1);
+
     form.setValue('subtotal', subtotal, { shouldDirty: false });
     form.setValue('iva', iva, { shouldDirty: false });
     form.setValue('total', total, { shouldDirty: false });
-  }, [items]);
+    form.setValue('subtotalMxn', subtotalMxn, { shouldDirty: false });
+    form.setValue('ivaMxn', ivaMxn, { shouldDirty: false });
+    form.setValue('totalMxn', totalMxn, { shouldDirty: false });
+  }, [items, dollar]);
 
   const updateSuscribers = useUpdateSuscribers();
 
@@ -443,7 +468,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
       {/* <pre>{JSON.stringify(watch(), null, 2)}</pre> */}
 
       <div className="bg-white -ml-6 -mr-6 p-8 -mb-6 rounded-b-lg border-default-200 border-b-1 flex flex-col gap-4">
-        <QuotationItemsList form={form} items={items} />
+        <QuotationItemsList form={form} items={items} dollar={dollar} />
 
         {/* <pre>{JSON.stringify(items, null, 1)}</pre> */}
         <div className="flex flex-col sm:flex-row gap-10">
@@ -496,6 +521,11 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
               prefix="$"
               format={formatCurrency}
             />
+            {dollar > 0 && (
+              <span className="text-sm whitespace-nowrap">
+                MXN: {formatCurrency(form.watch('subtotalMxn'))}
+              </span>
+            )}
           </div>
           <Divider orientation="vertical" className="h-0 sm:h-14 mx-10" />
           <div className="flex flex-col gap-2 flex-1">
@@ -508,6 +538,11 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
               prefix="$"
               format={formatCurrency}
             />
+            {dollar > 0 && (
+              <span className="text-sm whitespace-nowrap">
+                MXN: {formatCurrency(form.watch('ivaMxn'))}
+              </span>
+            )}
           </div>
           <Divider orientation="vertical" className="h-0 sm:h-14 mx-10" />
           <div className="flex flex-col gap-2 flex-1">
@@ -520,6 +555,11 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
               prefix="$"
               format={formatCurrency}
             />
+            {dollar > 0 && (
+              <span className="text-sm whitespace-nowrap">
+                MXN: {formatCurrency(form.watch('totalMxn'))}
+              </span>
+            )}
           </div>
         </div>
 

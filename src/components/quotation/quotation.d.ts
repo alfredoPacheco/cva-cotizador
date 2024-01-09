@@ -37,4 +37,8 @@ export interface QuotationDto extends BaseDto {
   suscribers?: string[] | ContactDto[];
   dollar?: number;
   dollarSyscom?: number;
+  subtotalMxn?: number;
+  ivaMxn?: number;
+  totalMxn?: number;
+  currency?: 'MXN' | 'USD';
 }

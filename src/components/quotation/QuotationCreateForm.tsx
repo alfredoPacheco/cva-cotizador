@@ -8,9 +8,6 @@ import type { DialogWidget } from '@/ui/Dialog';
 import { authCentralState } from '@/core/AuthCentralService';
 import { useCustomerList } from '../customer/customer.hooks';
 import { useEffect } from 'react';
-import dayjs from 'dayjs';
-import { databases } from '@/core/appwriteClient';
-import { Query } from 'appwrite';
 
 const FormField = ({ label, name, control, ...props }) => {
   return (

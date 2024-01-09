@@ -399,9 +399,11 @@ export const FormTextInput: React.FC<TextInputProps> = ({
   );
 };
 
-export const FormLabel = ({ children, size }) => {
+export const FormLabel = ({ children, size, className = '' }) => {
   return (
-    <label className={`text-default-600 text-${size} font-semibold`}>
+    <label
+      className={`text-default-600 text-${size} font-semibold ${className}`}
+    >
       {children}
     </label>
   );
@@ -413,6 +415,7 @@ interface FieldProps {
   className?: string | undefined;
   size?: string;
   style?: React.CSSProperties;
+  labelClassName?: string;
 }
 
 export const Field: React.FC<FieldProps> = props => {
@@ -421,7 +424,9 @@ export const Field: React.FC<FieldProps> = props => {
       className={'flex flex-col ' + (props.className || '')}
       style={props.style}
     >
-      <FormLabel size={props.size}>{props.label}</FormLabel>
+      <FormLabel size={props.size} className={props.labelClassName || ''}>
+        {props.label}
+      </FormLabel>
       <div className="flex flex-row whitespace-nowrap">{props.children}</div>
     </div>
   );

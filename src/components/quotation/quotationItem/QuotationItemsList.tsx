@@ -15,8 +15,13 @@ import { Field, TextInput } from '@/ui/Inputs';
 interface QuotationItemsProps {
   form: UseFormReturn<QuotationDto>;
   items: QuotationItemDto[];
+  dollar?: string | number;
 }
-const QuotationItems: React.FC<QuotationItemsProps> = ({ form, items }) => {
+const QuotationItems: React.FC<QuotationItemsProps> = ({
+  form,
+  items,
+  dollar
+}) => {
   const handleAddItem = async () => {
     const added = {
       // $id: 'new',
@@ -63,6 +68,7 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({ form, items }) => {
             model: item.model,
             quantity: quantities[item.$id],
             unitPrice: Number(item.listPrice),
+            unitPriceMxn: Number(item.listPrice) * Number(dollar || 1),
             description: item.name,
             providerId: item.$id.replace('tvc-', '').replace('syscom-', ''),
             provider: item.provider
@@ -106,6 +112,7 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({ form, items }) => {
               variant="bordered"
               type="number"
               inputWrapper="h-8"
+              min={0}
             />
           </Field>
         </div>
@@ -119,6 +126,7 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({ form, items }) => {
           index={index}
           partida={index + 1}
           handleRemoveItem={handleRemoveItem}
+          dollar={dollar}
         />
       ))}
 

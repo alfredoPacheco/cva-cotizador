@@ -10,4 +10,6 @@ export interface QuotationItemDto extends BaseDto {
   description?: string;
   providerId?: string;
   provider?: 'tvc' | 'syscom';
+  unitPriceMxn?: number;
+  amountMxn?: number;
 }
