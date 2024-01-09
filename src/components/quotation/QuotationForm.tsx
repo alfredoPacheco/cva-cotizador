@@ -168,35 +168,46 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
       payload.validUntil = dayjs(payload._convertedValidUntil).toISOString();
     }
 
-    if (payload.items) {
-      payload.items.forEach((item, index) => {
-        item.sequence = index + 1;
-        item.amount = Number(item.quantity) * Number(item.unitPrice);
-        item.amountMxn = item.amount * Number(payload.dollar || 1);
+    if (payload.items || dirtyFields.dollar) {
+      payload.items = data.items.map((item, index) => {
+        const amount = Number(item.quantity) * Number(item.unitPrice);
+        const unitPriceMxn = Number(item.unitPrice) * Number(data.dollar || 1);
+        return {
+          ...item,
+          sequence: index + 1,
+          amount,
+          unitPriceMxn,
+          amountMxn: Number(item.quantity) * Number(unitPriceMxn)
+        };
       });
 
-      const subtotal = items?.reduce((prev, current) => {
-        return prev + Number(current.quantity) * Number(current.unitPrice);
+      const subtotal = payload.items?.reduce((prev, current) => {
+        return prev + current.amount;
       }, 0);
-      const subtotalMxn = subtotal * Number(payload.dollar || 1);
       const iva = subtotal * 0.16;
       const total = subtotal + iva;
+
+      const subtotalMxn = subtotal * Number(data.dollar || 1);
+      const ivaMxn = subtotalMxn * 0.16;
+      const totalMxn = subtotalMxn + ivaMxn;
 
       payload.subtotal = subtotal;
       payload.iva = iva;
       payload.total = total;
       payload.subtotalMxn = subtotalMxn;
-      payload.ivaMxn = iva * Number(payload.dollar || 1);
-      payload.totalMxn = total * Number(payload.dollar || 1);
+      payload.ivaMxn = ivaMxn;
+      payload.totalMxn = totalMxn;
     }
+
     if (dirtyFields.dollar) {
       if (!get(payload, 'dollar')) {
         payload.dollar = null;
-        payload.currency = 'MXN';
-      } else {
         payload.currency = 'USD';
+      } else {
+        payload.currency = 'MXN';
       }
     }
+
     payload = omit(payload, [
       '_convertedQuotationDate',
       '_convertedValidUntil',
@@ -297,19 +308,14 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
 
   useEffect(() => {
     const subtotal = items?.reduce((prev, current) => {
-      return (
-        prev +
-        Number(current.quantity) *
-          Number(current.unitPrice) *
-          Number(dollar || 1)
-      );
+      return prev + Number(current.quantity) * Number(current.unitPrice);
     }, 0);
     const iva = subtotal * 0.16;
     const total = subtotal + iva;
 
     const subtotalMxn = subtotal * Number(dollar || 1);
-    const ivaMxn = iva * Number(dollar || 1);
-    const totalMxn = total * Number(dollar || 1);
+    const ivaMxn = subtotalMxn * 0.16;
+    const totalMxn = subtotalMxn + ivaMxn;
 
     form.setValue('subtotal', subtotal, { shouldDirty: false });
     form.setValue('iva', iva, { shouldDirty: false });
