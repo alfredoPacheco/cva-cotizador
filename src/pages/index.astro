@@ -1,10 +1,8 @@
 ---
-import AppShell from '@/common/AppShell';
-import BaseLayout from '../layouts/BaseLayout.astro';
+import QuotationList from '@/components/quotation/QuotationList';
+import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title={import.meta.env.PUBLIC_APP_NAME}>
-  <AppShell client:only="react">
-    <div class="text-center mt-20">Home</div>
-  </AppShell>
+  <QuotationList client:only="react" />
 </BaseLayout>
