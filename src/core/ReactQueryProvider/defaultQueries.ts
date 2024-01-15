@@ -15,7 +15,7 @@ export const defaultQueryFn: QueryFunction<unknown, QueryType> = async ({
 
   const collectionId = get(meta, 'COLLECTION_ID', queryKey[0]) as string;
   if (!collectionId) {
-    return { documents: [] };
+    return [];
   }
 
   const byIdQuery = queryKey[1];
@@ -47,6 +47,8 @@ export const defaultQueryFn: QueryFunction<unknown, QueryType> = async ({
   Object.keys(params).forEach(key => {
     allQueries.push(Query.equal(key, params[key]));
   });
+
+  allQueries.push(Query.isNull('deletedAt'));
 
   const res = await databases.listDocuments(
     DATABASE_ID,

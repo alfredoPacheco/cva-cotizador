@@ -1,6 +1,8 @@
 import type { QueryClient, QueryKey } from '@tanstack/react-query';
 import { ID, databases } from '../appwriteClient';
 import omit from 'lodash/omit';
+import { authCentralState } from '../AuthCentralService';
+import dayjs from 'dayjs';
 
 export const DEFAULT_DATABASE_ID = import.meta.env.PUBLIC_APPWRITE_DATABASE!;
 
@@ -13,12 +15,14 @@ interface defaultCreateMutationProps {
   collectionId?: string;
   queryClient: QueryClient;
   appendMode?: 'none' | 'append' | 'prepend';
+  invalidateQueries?: QueryKey[];
 }
 export function defaultCreateMutation<T extends BaseDto>({
   queryKey,
   collectionId,
   queryClient,
-  appendMode = 'append'
+  appendMode = 'append',
+  invalidateQueries = []
 }: defaultCreateMutationProps) {
   return {
     mutationFn: async (data: T) => {
@@ -73,6 +77,9 @@ export function defaultCreateMutation<T extends BaseDto>({
     // Always refetch after error or success:
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey });
+      invalidateQueries.forEach(key =>
+        queryClient.invalidateQueries({ queryKey: key })
+      );
     }
   };
 }
@@ -80,7 +87,8 @@ export function defaultCreateMutation<T extends BaseDto>({
 export function defaultUpdateMutation<T extends BaseDto>(
   queryKey,
   queryClient: QueryClient,
-  collectionId?: string
+  collectionId?: string,
+  invalidateQueries: QueryKey[] = []
 ) {
   return {
     mutationFn: async (data: T) => {
@@ -134,6 +142,9 @@ export function defaultUpdateMutation<T extends BaseDto>(
     onSettled: (_, error) => {
       if (error) return;
       queryClient.invalidateQueries({ queryKey });
+      invalidateQueries.forEach(key =>
+        queryClient.invalidateQueries({ queryKey: key })
+      );
     }
   };
 }
@@ -141,15 +152,27 @@ export function defaultUpdateMutation<T extends BaseDto>(
 export function defaultDeleteMutation<T extends BaseDto>(
   queryKey,
   queryClient: QueryClient,
-  collectionId?: string
+  collectionId?: string,
+  invalidateQueries: QueryKey[] = []
 ) {
   return {
     mutationFn: async (id: string) => {
       if (!collectionId) throw new Error('collectionId is required');
-      return await databases.deleteDocument(
+      // return await databases.deleteDocument(
+      //   DEFAULT_DATABASE_ID,
+      //   collectionId,
+      //   id
+      // );
+
+      // soft delete:
+      return await databases.updateDocument(
         DEFAULT_DATABASE_ID,
         collectionId,
-        id
+        id,
+        {
+          deletedAt: dayjs().toISOString(),
+          deletedBy: authCentralState.account.value?.email
+        }
       );
     },
     onMutate: async (id: string) => {
@@ -176,6 +199,9 @@ export function defaultDeleteMutation<T extends BaseDto>(
     // Always refetch after error or success:
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey });
+      invalidateQueries.forEach(key =>
+        queryClient.invalidateQueries({ queryKey: key })
+      );
     }
   };
 }

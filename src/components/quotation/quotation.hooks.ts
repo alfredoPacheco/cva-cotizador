@@ -19,47 +19,10 @@ import type { ContactDto } from '@/types';
 const QUERY_KEY = 'quotations';
 const COLLECTION_ID = 'quotations';
 
-function getSearchQuery(searchValue: string, sample: any) {
-  const result: string[] = [];
-  if (!searchValue || searchValue.trim() === '') return result;
-
-  // const sample: T = {} as T;
-  const entity = omit(sample, [
-    '$id',
-    '$collectionId',
-    '$createdAt',
-    '$databaseId',
-    '$permissions',
-    '$updatedAt'
-  ]);
-  // console.log('sample', sample);
-  // console.log('entity', entity);
-  Object.keys(entity).forEach(prop => {
-    if (typeof sample[prop] === 'string') {
-      result.push(Query.search(prop, searchValue));
-    }
-  });
-  return result;
-}
-
 export const useQuotationList = (enabled = true) => {
   const filtersForm = useForm(); // This form is to handle search and filters over list
 
   const debouncedSearch = useDebounce(filtersForm.watch('search'), 100);
-  // const [searchQuery, setSearchQuery] = useState<Query[]>([]);
-
-  // useEffect(() => {
-  //   const newSearch = getSearchQuery(debouncedSearch, {
-  //     name: ''
-  //     // email: '',
-  //     // phone: '',
-  //     // address: '',
-  //     // businessName: '',
-  //     // taxRegime: ''
-  //   });
-  //   console.log('newSearch', newSearch);
-  //   // setSearchQuery(newSearch);
-  // }, [debouncedSearch]);
 
   const query = useQuery<QuotationDto[]>({
     queryKey: [
@@ -80,10 +43,6 @@ export const useQuotationList = (enabled = true) => {
     ],
     enabled
   });
-
-  // useEffect(() => {
-  //   query.refetch();
-  // }, [debouncedSearch]);
 
   return { query, filtersForm, debouncedSearch };
 };

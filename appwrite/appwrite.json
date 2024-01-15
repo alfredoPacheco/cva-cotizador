@@ -513,6 +513,26 @@
           "twoWayKey": "products",
           "onDelete": "cascade",
           "side": "parent"
+        },
+        {
+          "key": "deletedAt",
+          "type": "datetime",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "format": "",
+          "default": null
+        },
+        {
+          "key": "deletedBy",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
+          "default": null
         }
       ],
       "indexes": []
@@ -534,6 +554,26 @@
           "array": false,
           "min": -1.7976931348623157e308,
           "max": 1.7976931348623157e308,
+          "default": null
+        },
+        {
+          "key": "deletedAt",
+          "type": "datetime",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "format": "",
+          "default": null
+        },
+        {
+          "key": "deletedBy",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
           "default": null
         }
       ],
@@ -580,6 +620,26 @@
           "required": false,
           "array": false,
           "size": 50,
+          "default": null
+        },
+        {
+          "key": "deletedAt",
+          "type": "datetime",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "format": "",
+          "default": null
+        },
+        {
+          "key": "deletedBy",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
           "default": null
         }
       ],
@@ -877,8 +937,8 @@
           "error": "",
           "required": false,
           "array": false,
-          "min": -1.7976931348623157e308,
-          "max": 1.7976931348623157e308,
+          "min": 0,
+          "max": 100,
           "default": null
         },
         {
@@ -890,6 +950,69 @@
           "array": false,
           "min": -1.7976931348623157e308,
           "max": 1.7976931348623157e308,
+          "default": null
+        },
+        {
+          "key": "subtotalMxn",
+          "type": "double",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": 0,
+          "max": 9999999,
+          "default": null
+        },
+        {
+          "key": "ivaMxn",
+          "type": "double",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": 0,
+          "max": 999999,
+          "default": null
+        },
+        {
+          "key": "totalMxn",
+          "type": "double",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": 0,
+          "max": 99999999,
+          "default": null
+        },
+        {
+          "key": "currency",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 5,
+          "default": "USD"
+        },
+        {
+          "key": "deletedAt",
+          "type": "datetime",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "format": "",
+          "default": null
+        },
+        {
+          "key": "deletedBy",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
           "default": null
         }
       ],
@@ -967,6 +1090,26 @@
           "required": false,
           "array": false,
           "size": 150,
+          "default": null
+        },
+        {
+          "key": "deletedAt",
+          "type": "datetime",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "format": "",
+          "default": null
+        },
+        {
+          "key": "deletedBy",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
           "default": null
         }
       ],
@@ -1077,6 +1220,48 @@
           "min": 0,
           "max": 9999999,
           "default": null
+        },
+        {
+          "key": "unitPriceMxn",
+          "type": "double",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": 0,
+          "max": 1000000,
+          "default": null
+        },
+        {
+          "key": "amountMxn",
+          "type": "double",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "min": 0,
+          "max": 9000000,
+          "default": null
+        },
+        {
+          "key": "deletedAt",
+          "type": "datetime",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "format": "",
+          "default": null
+        },
+        {
+          "key": "deletedBy",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
+          "default": null
         }
       ],
       "indexes": []
@@ -1116,6 +1301,26 @@
           "required": true,
           "array": false,
           "size": 50,
+          "default": null
+        },
+        {
+          "key": "deletedAt",
+          "type": "datetime",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "format": "",
+          "default": null
+        },
+        {
+          "key": "deletedBy",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
           "default": null
         }
       ],
@@ -1208,6 +1413,26 @@
           "array": false,
           "size": 100,
           "default": null
+        },
+        {
+          "key": "deletedAt",
+          "type": "datetime",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "format": "",
+          "default": null
+        },
+        {
+          "key": "deletedBy",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
+          "default": null
         }
       ],
       "indexes": []
@@ -1299,6 +1524,26 @@
           "array": false,
           "size": 50,
           "default": null
+        },
+        {
+          "key": "deletedAt",
+          "type": "datetime",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "format": "",
+          "default": null
+        },
+        {
+          "key": "deletedBy",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
+          "default": null
         }
       ],
       "indexes": []
@@ -1334,6 +1579,26 @@
           "required": false,
           "array": false,
           "size": 50,
+          "default": null
+        },
+        {
+          "key": "deletedAt",
+          "type": "datetime",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "format": "",
+          "default": null
+        },
+        {
+          "key": "deletedBy",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
           "default": null
         }
       ],
@@ -1666,6 +1931,26 @@
           "twoWayKey": "products",
           "onDelete": "setNull",
           "side": "parent"
+        },
+        {
+          "key": "deletedAt",
+          "type": "datetime",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "format": "",
+          "default": null
+        },
+        {
+          "key": "deletedBy",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
+          "default": null
         }
       ],
       "indexes": []
@@ -1722,6 +2007,26 @@
           "array": false,
           "min": -9223372036854775808,
           "max": 9223372036854775807,
+          "default": null
+        },
+        {
+          "key": "deletedAt",
+          "type": "datetime",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "format": "",
+          "default": null
+        },
+        {
+          "key": "deletedBy",
+          "type": "string",
+          "status": "available",
+          "error": "",
+          "required": false,
+          "array": false,
+          "size": 200,
           "default": null
         }
       ],
