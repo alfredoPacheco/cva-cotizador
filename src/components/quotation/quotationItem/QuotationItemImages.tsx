@@ -14,9 +14,17 @@ const QuotationItemImages: React.FC<QuotationItemImagesProps> = ({ item }) => {
 
   return (
     <Field label="Imagen(es)">
-      <div className="flex flex-row">
+      <div className="flex flex-row gap-2">
         {data?.map((image, index) => (
-          <Image key={index} src={image} width={100} height={100} />
+          <Image
+            key={index}
+            src={image}
+            width={100}
+            style={{ objectFit: 'contain' }}
+            shadow="md"
+            height="auto"
+            removeWrapper
+          />
         ))}
       </div>
     </Field>

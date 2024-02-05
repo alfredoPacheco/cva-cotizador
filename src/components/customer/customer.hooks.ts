@@ -15,29 +15,6 @@ import type { ListQueryType } from '@/core/ReactQueryProvider/queryKeys';
 const QUERY_KEY = 'customers';
 const COLLECTION_ID = 'customers';
 
-function getSearchQuery(searchValue: string, sample: any) {
-  const result: string[] = [];
-  if (!searchValue || searchValue.trim() === '') return result;
-
-  // const sample: T = {} as T;
-  const entity = omit(sample, [
-    '$id',
-    '$collectionId',
-    '$createdAt',
-    '$databaseId',
-    '$permissions',
-    '$updatedAt'
-  ]);
-  // console.log('sample', sample);
-  // console.log('entity', entity);
-  Object.keys(entity).forEach(prop => {
-    if (typeof sample[prop] === 'string') {
-      result.push(Query.search(prop, searchValue));
-    }
-  });
-  return result;
-}
-
 export const useCustomerList = (enabled = true) => {
   const filtersForm = useForm(); // This form is to handle search and filters over list
 

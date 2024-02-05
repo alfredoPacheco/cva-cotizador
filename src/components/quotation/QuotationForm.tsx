@@ -30,7 +30,7 @@ import { Dialog, useDialog, type DialogWidget } from '@/ui/Dialog';
 import QuotationItemsList from './quotationItem/QuotationItemsList';
 import { useQuotationItemDelete } from './quotationItem/quotationItem.hooks';
 import { useCustomerList } from '../customer/customer.hooks';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { get, omit } from 'lodash';
 import dayjs from 'dayjs';
 import Attachments from '@/ui/Attachments';
@@ -241,17 +241,27 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
     setValue('_attachments', updatedFiles, { shouldDirty: false });
   };
 
+  const [saving, setSaving] = useState(false);
+  const [pdfLoading, setPdfLoading] = useState(false);
+
   const onSubmit = handleSubmit(async (data: QuotationDto) => {
     try {
+      if (saving || pdfLoading) return;
+      setSaving(true);
       await save(data);
     } catch (err) {
       handleErrors(err, error);
+    } finally {
+      setSaving(false);
     }
   });
 
   const quotationPDF = useQuotationPDF();
+
   const handlePDF = handleSubmit(async (data: QuotationDto) => {
     try {
+      if (pdfLoading || saving) return;
+      setPdfLoading(true);
       const updated = await save(data);
       if (updated || !data.reportId) {
         await quotationPDF.mutateAsync(id);
@@ -259,6 +269,8 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
       window.open(`/reports/quotations/${id}.pdf`, '_blank');
     } catch (err) {
       handleErrors(err, error);
+    } finally {
+      setPdfLoading(false);
     }
   });
 
@@ -422,7 +434,12 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
           <div className="flex flex-grow flex-row items-center justify-end gap-1">
             <FormButton onPress={onRemove}>Borrar</FormButton>
             <Divider orientation="vertical" className="h-5" />
-            <FormButton type="submit">Guardar</FormButton>
+            <FormButton
+              loading={saving || saveQuotation.isPending}
+              type="submit"
+            >
+              Guardar
+            </FormButton>
             <Divider orientation="vertical" className="h-5" />
             <FormButton type="button" onPress={handleEmail}>
               Email
@@ -431,7 +448,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
             <FormButton
               type="button"
               onPress={handlePDF}
-              loading={quotationPDF.isPending}
+              loading={quotationPDF.isPending || pdfLoading}
             >
               PDF
             </FormButton>

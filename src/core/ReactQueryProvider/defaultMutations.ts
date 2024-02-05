@@ -35,6 +35,12 @@ export function defaultCreateMutation<T extends BaseDto>({
         '$permissions',
         '$updatedAt'
       ]);
+      // trim all string fields:
+      Object.keys(payload).forEach(key => {
+        if (typeof payload[key] === 'string') {
+          payload[key] = payload[key].trim();
+        }
+      });
       return await databases.createDocument(
         DEFAULT_DATABASE_ID,
         collectionId,
@@ -101,6 +107,12 @@ export function defaultUpdateMutation<T extends BaseDto>(
         '$permissions',
         '$updatedAt'
       ]);
+      // trim all string fields:
+      Object.keys(payload).forEach(key => {
+        if (typeof payload[key] === 'string') {
+          payload[key] = payload[key].trim();
+        }
+      });
       return await databases.updateDocument(
         DEFAULT_DATABASE_ID,
         collectionId,

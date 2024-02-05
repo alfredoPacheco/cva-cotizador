@@ -7,14 +7,14 @@ import {
 import type { QuotationDto } from './quotation';
 import { useForm } from 'react-hook-form';
 import { Query, type Models } from 'appwrite';
-import { useEffect } from 'react';
 import { useDebounce } from '@/core';
-import { get, omit } from 'lodash';
+import { get } from 'lodash';
 import type { ListQueryType } from '@/core/ReactQueryProvider/queryKeys';
-import { databases, functions, storage } from '@/core/appwriteClient';
+import { databases, functions } from '@/core/appwriteClient';
 import dayjs from 'dayjs';
 import { DEFAULT_DATABASE_ID } from '@/core/ReactQueryProvider/defaultQueries';
 import type { ContactDto } from '@/types';
+import { formatCurrency } from '@/core/utils';
 
 const QUERY_KEY = 'quotations';
 const COLLECTION_ID = 'quotations';
@@ -84,6 +84,68 @@ export const generateQuotationPDF = async id => {
     COLLECTION_ID,
     id
   );
+
+  quotation.d = dayjs(quotation.quotationDate).format('DD');
+  quotation.m = dayjs(quotation.quotationDate).format('MM');
+  quotation.y = dayjs(quotation.quotationDate).format('YYYY');
+
+  quotation.sub = formatCurrency(quotation.subtotalMxn);
+  quotation.iva = formatCurrency(quotation.ivaMxn);
+  quotation.tot = formatCurrency(quotation.totalMxn);
+
+  quotation.num = quotation.quotationNumber;
+
+  quotation.sections = [];
+  if (quotation.scope) {
+    quotation.sections.push({
+      title: 'Alcance del servicio',
+      content: quotation.scope
+    });
+  }
+  if (quotation.exclusions) {
+    quotation.sections.push({
+      title: 'Exclusiones',
+      content: quotation.exclusions
+    });
+  }
+
+  if (quotation.paymentConditions) {
+    quotation.sections.push({
+      title: 'Terminos y condiciones de pago',
+      content: quotation.paymentConditions
+    });
+  }
+  if (quotation.capacitation) {
+    quotation.sections.push({
+      title: 'Capacitación',
+      content: quotation.capacitation
+    });
+  }
+  if (quotation.warranty) {
+    quotation.sections.push({
+      title: 'Garantías',
+      content: quotation.warranty
+    });
+  }
+  if (quotation.observations) {
+    quotation.sections.push({
+      title: 'Observaciones y comentarios adicionales',
+      content: quotation.observations
+    });
+  }
+
+  quotation.cur = quotation.currency;
+
+  quotation.its = quotation.items.map(item => {
+    return {
+      ...item,
+      s: item.sequence,
+      qty: item.quantity,
+      prc: formatCurrency(item.unitPriceMxn),
+      amt: formatCurrency(item.amountMxn)
+    };
+  });
+
   const payload = JSON.stringify(quotation);
   const resp = await functions.createExecution(
     'reports',
