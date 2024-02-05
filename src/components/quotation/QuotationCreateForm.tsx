@@ -58,7 +58,7 @@ const QuotationCreateForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
           prev[current] = data[current];
         }
         return prev;
-      }, {} as any);
+      }, {} as any) as QuotationDto;
       payload.$id = 'new';
       payload.createdBy = authCentralState.account.value.email;
       if (payload.customer) {
@@ -68,6 +68,17 @@ const QuotationCreateForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
           payload.customerId = payload.customer.$id;
         }
       }
+
+      // default values:
+      payload.exclusions =
+        'Perforación y reparación de pisos de concreto y pavimento.\nPerforaciones, remodelación y resanes a muros y techos.\nExcavación, relleno y compactación de pisos de asfalto.\nCualquier trabajo de ingeniería u obra civil.';
+      payload.observations =
+        'Instalación, pruebas, puesta en marcha y programación del equipo se realizarán conforme a los métodos recomendados por los fabricantes.';
+      payload.capacitation =
+        'CVA SYSTEMS, PROPORCIONARÁ al CLIENTE, capacitación teórica y práctica para la operación, uso y manejo de los equipos instalados, capacitando al personal que se nos indique.';
+      payload.paymentConditions =
+        'PAGO POR TRANSFERENCIA.\nTitular CORPORATIVO MEXICANO ESPECIALIZADO EN SISTEMAS DE VIDEOVIGILANCIA, ALARMAS, GPS Y MONITOREO S.A. DE C.V.\nRFC:  CME 211111 C5A\nBanco:    SANTANDER\nCuenta:   65509091242\nClabe Interbancaria:  0143 2065 5090 9124 23\nPrecios expresados en  MONEDA NACIONAL.\nOferta válida por 15 días.';
+
       console.log('payload to be sent', payload);
       await createQuotation.mutateAsync(payload);
       success('Registro creado.');
