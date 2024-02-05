@@ -24,7 +24,7 @@ export const useSyscomProductList = (enabled = true) => {
             'title',
             'model',
             'priceList',
-            'priceOne', // Verify if this is distribuitor price
+            'priceDiscount',
             // 'brand',
             // 'brandId',
             'imgMain',

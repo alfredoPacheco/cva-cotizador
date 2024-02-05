@@ -67,8 +67,8 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({
             sequence: uniqueId('map-'),
             model: item.model,
             quantity: quantities[item.$id],
-            unitPrice: Number(item.listPrice),
-            unitPriceMxn: Number(item.listPrice) * Number(dollar || 1),
+            unitPrice: Number(item.distributorPrice),
+            unitPriceMxn: Number(item.distributorPrice) * Number(dollar || 1),
             description: item.name,
             providerId: item.$id.replace('tvc-', '').replace('syscom-', ''),
             provider: item.provider

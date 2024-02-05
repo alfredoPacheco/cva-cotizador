@@ -6,6 +6,7 @@ import { FormButton } from '@/ui/Buttons';
 import { type UseFormReturn } from 'react-hook-form';
 import type { QuotationDto } from '../quotation';
 import QuotationItemImages from './QuotationItemImages';
+import { PiTrash } from 'react-icons/pi';
 
 interface QutationItemFormProps {
   item: QuotationItemDto;
@@ -26,7 +27,15 @@ const QuotationItemForm: React.FC<QutationItemFormProps> = ({
   return (
     <div className="flex flex-col gap-4 rounded-lg border p-5 pt-1">
       <div className="flex flex-row justify-start -ml-2 -mb-4">
-        <FormButton onPress={() => handleRemoveItem(index)}>
+        <FormButton
+          onPress={() => handleRemoveItem(index)}
+          className="text-primary-400"
+          startContent={
+            <span className="text-xl">
+              <PiTrash />
+            </span>
+          }
+        >
           Remover Partida
         </FormButton>
       </div>
