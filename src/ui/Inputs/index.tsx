@@ -51,6 +51,7 @@ interface TextInputProps extends InputProps {
     | 'warning'
     | 'danger';
   inputWrapper?: string;
+  textAlign?: 'left' | 'center' | 'right';
   //   left?: string;
   //   right?: string;
   //   rightProps?: any;
@@ -75,6 +76,7 @@ export const TextInput: React.FC<TextInputProps> = ({
   rows = 0,
   variant = 'bordered',
   inputWrapper = '',
+  textAlign = 'left',
   ...props
   // label,
   // placeholder,
@@ -131,7 +133,8 @@ export const TextInput: React.FC<TextInputProps> = ({
             style={{
               // backgroundColor: theme.colors.tertiary,
               marginTop: mt,
-              marginBottom: mb
+              marginBottom: mb,
+              textAlign
             }}
             isInvalid={!!error}
             errorMessage={customMessage || error?.message}
@@ -337,6 +340,7 @@ export const FormTextInput: React.FC<TextInputProps> = ({
   color = 'default',
   type = 'text',
   w = '100%',
+  textAlign = 'left',
   required = false,
   ...props
 }) => {
@@ -384,10 +388,12 @@ export const FormTextInput: React.FC<TextInputProps> = ({
             style={{
               // backgroundColor: theme.colors.tertiary,
               marginTop: mt,
-              marginBottom: mb
+              marginBottom: mb,
+              textAlign
             }}
             isInvalid={!!error}
             errorMessage={customMessage || error?.message}
+            startContent={props.startContent}
             endContent={props.endContent}
             min={props.min}
             step="any"

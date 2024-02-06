@@ -38,6 +38,7 @@ import { fileDeserialize } from '@/ui/Attachments/FileSerialize';
 import { authCentralState } from '@/core/AuthCentralService';
 import type { ContactDto } from '@/types';
 import EmailForm from '@/common/Email/EmailForm';
+import { calculateAmounts, calculateGrandTotals } from './calcs';
 
 const FormField = ({ label, name, control, rows = 2, ...props }) => {
   return (
@@ -170,26 +171,22 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
 
     if (payload.items || dirtyFields.dollar) {
       payload.items = data.items.map((item, index) => {
-        const amount = Number(item.quantity) * Number(item.unitPrice);
-        const unitPriceMxn = Number(item.unitPrice) * Number(data.dollar || 1);
+        const [amount, amountMxn, unitPrice, unitPriceMxn] = calculateAmounts(
+          item,
+          data.dollar
+        );
         return {
           ...item,
           sequence: index + 1,
           amount,
-          unitPriceMxn,
-          amountMxn: Number(item.quantity) * Number(unitPriceMxn)
+          amountMxn,
+          unitPrice,
+          unitPriceMxn
         };
       });
 
-      const subtotal = payload.items?.reduce((prev, current) => {
-        return prev + current.amount;
-      }, 0);
-      const iva = subtotal * 0.16;
-      const total = subtotal + iva;
-
-      const subtotalMxn = subtotal * Number(data.dollar || 1);
-      const ivaMxn = subtotalMxn * 0.16;
-      const totalMxn = subtotalMxn + ivaMxn;
+      const [subtotal, iva, total, subtotalMxn, ivaMxn, totalMxn] =
+        calculateGrandTotals(payload.items, data.dollar);
 
       payload.subtotal = subtotal;
       payload.iva = iva;
@@ -319,16 +316,8 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
   });
 
   useEffect(() => {
-    const subtotal = items?.reduce((prev, current) => {
-      return prev + Number(current.quantity) * Number(current.unitPrice);
-    }, 0);
-    const iva = subtotal * 0.16;
-    const total = subtotal + iva;
-
-    const subtotalMxn = subtotal * Number(dollar || 1);
-    const ivaMxn = subtotalMxn * 0.16;
-    const totalMxn = subtotalMxn + ivaMxn;
-
+    const [subtotal, iva, total, subtotalMxn, ivaMxn, totalMxn] =
+      calculateGrandTotals(items, dollar);
     form.setValue('subtotal', subtotal, { shouldDirty: false });
     form.setValue('iva', iva, { shouldDirty: false });
     form.setValue('total', total, { shouldDirty: false });

@@ -7,6 +7,7 @@ import { type UseFormReturn } from 'react-hook-form';
 import type { QuotationDto } from '../quotation';
 import QuotationItemImages from './QuotationItemImages';
 import { PiTrash } from 'react-icons/pi';
+import { calculateAmounts } from '../calcs';
 
 interface QutationItemFormProps {
   item: QuotationItemDto;
@@ -24,6 +25,8 @@ const QuotationItemForm: React.FC<QutationItemFormProps> = ({
   handleRemoveItem,
   dollar
 }) => {
+  const [subtotalDlls, subtotalMxn, unitPriceDlls, unitPriceMxn, increment] =
+    calculateAmounts(item, dollar);
   return (
     <div className="flex flex-col gap-4 rounded-lg border p-5 pt-1">
       <div className="flex flex-row justify-start -ml-2 -mb-4">
@@ -40,7 +43,7 @@ const QuotationItemForm: React.FC<QutationItemFormProps> = ({
         </FormButton>
       </div>
       <div className="flex flex-col sm:flex-row justify-between gap-2">
-        <Field label="Partida" className="flex-1" style={{ maxWidth: 80 }}>
+        <Field label="#" className="flex-1" style={{ maxWidth: 20 }}>
           {partida}
         </Field>
 
@@ -73,29 +76,59 @@ const QuotationItemForm: React.FC<QutationItemFormProps> = ({
 
         <Divider orientation="vertical" className="h-15" />
 
-        <Field label="P.U." style={{ maxWidth: '16%' }} className="flex-1">
-          <FormTextInput
-            control={form.control}
-            name={`items[${index}].unitPrice`}
-            type="number"
-            min={0}
-          />
-        </Field>
+        <div
+          className={'flex flex-1 flex-col'}
+          style={{ maxWidth: '16%', height: 80 }}
+        >
+          <FormLabel size="md">P.U.</FormLabel>
+          <div className="flex flex-1 flex-col items-stretch gap-1">
+            <FormTextInput
+              control={form.control}
+              name={`items[${index}].unitPrice`}
+              type="number"
+              startContent={<span className="text-xs">$</span>}
+              textAlign="right"
+              min={0}
+            />
+            {Number(dollar) > 0 && (
+              <div className="flex flex-1 flex-row items-center mt-7">
+                <span className="text-xs">MXN:</span>
+                <span className="w-full text-right">
+                  {formatCurrency(unitPriceMxn)}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
 
         <Divider orientation="vertical" className="h-15" />
 
-        <Field label="Cantidad" style={{ maxWidth: '16%' }} className="flex-1">
+        <Field label="Cantidad" style={{ maxWidth: 90 }} className="flex-1">
           <FormTextInput
             control={form.control}
             name={`items[${index}].quantity`}
             type="number"
+            textAlign="right"
             min={0}
           />
         </Field>
 
         <Divider orientation="vertical" className="h-15" />
 
-        <div className={'flex flex-1 flex-col'} style={{ maxWidth: '16%' }}>
+        <Field label="Inc." style={{ maxWidth: 80 }} className="flex-1">
+          <FormTextInput
+            control={form.control}
+            name={`items[${index}].increment`}
+            type="number"
+            min={0}
+            textAlign="right"
+            endContent={<span>%</span>}
+          />
+        </Field>
+
+        <Divider orientation="vertical" className="h-15" />
+
+        <div className={'flex flex-1 flex-col'} style={{ maxWidth: 110 }}>
           <FormLabel size="md" className="text-right">
             Subtotal
           </FormLabel>
@@ -103,16 +136,14 @@ const QuotationItemForm: React.FC<QutationItemFormProps> = ({
             <div className="flex flex-1 flex-row items-center">
               {Number(dollar) > 0 && <span className="text-xs">USD:</span>}
               <span className="w-full text-right">
-                {formatCurrency(item.unitPrice * item.quantity)}
+                {formatCurrency(subtotalDlls)}
               </span>
             </div>
             {Number(dollar) > 0 && (
               <div className="flex flex-row items-center">
                 <span className="text-xs">MXN:</span>
                 <span className="w-full text-right">
-                  {formatCurrency(
-                    item.unitPrice * item.quantity * Number(dollar || 1)
-                  )}
+                  {formatCurrency(subtotalMxn)}
                 </span>
               </div>
             )}

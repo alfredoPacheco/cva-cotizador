@@ -67,6 +67,7 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({
             sequence: uniqueId('map-'),
             model: item.model,
             quantity: quantities[item.$id],
+            increment: 30,
             unitPrice: Number(item.distributorPrice),
             unitPriceMxn: Number(item.distributorPrice) * Number(dollar || 1),
             description: item.name,
@@ -112,6 +113,7 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({
               variant="bordered"
               type="number"
               inputWrapper="h-8"
+              w={110}
               min={0}
             />
           </Field>
