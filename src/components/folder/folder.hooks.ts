@@ -1,47 +1,49 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient
+} from '@tanstack/react-query';
 import {
   defaultCreateMutation,
   defaultUpdateMutation,
   defaultDeleteMutation
 } from '@/core/ReactQueryProvider/defaultMutations';
-import type { CustomerDto } from './customer';
+import type { FolderDto } from './folder';
 import { useForm } from 'react-hook-form';
-import { Query } from 'appwrite';
-import { useEffect } from 'react';
 import { useDebounce } from '@/core';
+import { Query } from 'appwrite';
 import type { ListQueryType } from '@/core/ReactQueryProvider/queryKeys';
 
-const QUERY_KEY = 'customers';
-const COLLECTION_ID = 'customers';
+const COLLECTION_ID = 'folders';
+const QUERY_KEY = COLLECTION_ID;
 
-export const useCustomerList = (enabled = true) => {
+export const useFolderList = (enabled = true) => {
   const filtersForm = useForm(); // This form is to handle search and filters over list
 
-  const debouncedSearch = useDebounce(filtersForm.watch('search'), 100);
+  const debouncedSearch = useDebounce(filtersForm.watch('search'), 200);
 
-  const query = useQuery<CustomerDto[]>({
+  const query = useQuery<FolderDto[]>({
     queryKey: [
       QUERY_KEY,
-      { limit: 5000, queries: [Query.orderDesc('$createdAt')] } as ListQueryType
+      { limit: 5000, queries: [Query.orderDesc('name')] } as ListQueryType,
+      debouncedSearch
     ],
-    enabled
+    enabled,
+    placeholderData: keepPreviousData
   });
-
-  useEffect(() => {
-    query.refetch();
-  }, [debouncedSearch]);
 
   return { query, filtersForm, debouncedSearch };
 };
 
-export const useCustomerSingle = (id: string, enabled = true) => {
-  return useQuery<CustomerDto>({
+export const useFolderSingle = (id: string, enabled = true) => {
+  return useQuery<FolderDto>({
     queryKey: [QUERY_KEY, id],
     enabled
   });
 };
 
-export const useCustomerCreate = () => {
+export const useFolderCreate = () => {
   return useMutation({
     ...defaultCreateMutation({
       queryKey: [QUERY_KEY],
@@ -52,13 +54,13 @@ export const useCustomerCreate = () => {
   });
 };
 
-export const useCustomerUpdate = () => {
+export const useFolderUpdate = () => {
   return useMutation({
     ...defaultUpdateMutation([QUERY_KEY], useQueryClient(), COLLECTION_ID)
   });
 };
 
-export const useCustomerDelete = () => {
+export const useFolderDelete = () => {
   return useMutation({
     ...defaultDeleteMutation([QUERY_KEY], useQueryClient(), COLLECTION_ID)
   });

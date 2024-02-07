@@ -55,6 +55,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ id, dialog }) => {
       handleErrors(err, error);
     }
   });
+
   const onRemove = async () => {
     try {
       if (confirm('¿Estás seguro de eliminar este registro?') === false) return;

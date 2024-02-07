@@ -1,8 +1,8 @@
 ---
-import QuotationList from '@/components/quotation/QuotationList';
+import FolderList from '@/components/folder/FolderList';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title={import.meta.env.PUBLIC_APP_NAME}>
-  <QuotationList client:only="react" />
+  <FolderList client:only="react" />
 </BaseLayout>
