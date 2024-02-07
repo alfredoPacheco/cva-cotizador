@@ -90,10 +90,6 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
   const form = useForm<QuotationDto>({
     values: {
       ...data,
-      customer:
-        typeof data?.customer === 'string'
-          ? data?.customer
-          : data?.customer?.$id,
       _convertedQuotationDate: data?.quotationDate
         ? new Date(data?.quotationDate).toISOString().split('T')[0]
         : undefined,
@@ -163,15 +159,15 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
       if (typeof payload.customer === 'string') {
         payload.customerId = payload.customer;
       } else {
-        payload.customerId = payload.customer.$id;
+        payload.customerId = payload.customer?.$id || null;
       }
     }
 
     if (dirtyFields.folder) {
       if (typeof payload.folder === 'string') {
-        payload.customerId = payload.folder;
+        payload.folder = payload.folder;
       } else {
-        payload.customerId = payload.folder.$id;
+        payload.folder = payload.folder?.$id || null;
       }
     }
 
@@ -419,16 +415,18 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
       <Dialog {...emailDialog} formOff okLabel="Enviar Email" title="Email">
         {d => <EmailForm id="new" dialog={d} quotationId={id} />}
       </Dialog>
-      <div className="flex flex-row justify-between items-baseline">
-        <div className="flex flex-auto">
-          <Field label="Realizado por:" size="md" style={{ minWidth: 30 }}>
-            <div className={`flex flex-row items-center pt-5`}>
-              <ReadonlyField control={control} name="createdBy" />
-            </div>
+      <div className="flex flex-row justify-between items-center gap-5">
+        <div className="flex">
+          <Field
+            label="Realizado por:"
+            size="md"
+            style={{ minWidth: 30 }}
+            labelClassName="text-sm"
+          >
+            <ReadonlyField control={control} name="createdBy" fontSize="xs" />
           </Field>
         </div>
-        <div className="flex flex-auto">
-          {/* <Field label="Cliente"> */}
+        <div className="flex w-full max-w-[200px]">
           <Controller
             control={control}
             name="customer"
@@ -438,14 +436,17 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
               return (
                 <Select
                   label="Cliente"
-                  className="max-w-xs"
+                  aria-label="Cliente"
+                  size="sm"
                   fullWidth
-                  value={selectedId}
+                  variant="bordered"
+                  // value={selectedId}
                   selectedKeys={selectedId ? [selectedId] : []}
                   // onChange={e => onChange(e.target.value)}
                   onSelectionChange={e => {
                     const arr = [...e];
-                    onChange(arr[0]);
+                    if (arr.length > 0) onChange(arr[0]);
+                    else onChange(null);
                   }}
                 >
                   {customers?.map(item => (
@@ -457,14 +458,6 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
               );
             }}
           />
-          {/* <Autocomplete
-              control={control}
-              name="customer"
-              items={customers}
-              labelProp="name"
-              secondaryLabelProp="email"
-            /> */}
-          {/* </Field> */}
         </div>
         <div className="flex flex-grow flex-col items-end gap-1">
           <div className="flex flex-grow flex-row items-center justify-end gap-1">
@@ -628,17 +621,18 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
             name="folder"
             render={({ field: { value, onChange } }) => {
               const selectedId = typeof value === 'string' ? value : value?.$id;
-              console.log('selectedId', selectedId);
               return (
                 <Select
                   label="Folder"
+                  aria-label="Folder"
                   className="max-w-xs"
                   fullWidth
                   value={selectedId}
                   selectedKeys={selectedId ? [selectedId] : []}
                   onSelectionChange={e => {
                     const arr = [...e];
-                    onChange(arr[0]);
+                    if (arr.length > 0) onChange(arr[0]);
+                    else onChange(null);
                   }}
                 >
                   {folders?.map(item => (
@@ -650,7 +644,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
               );
             }}
           />
-          <pre>{JSON.stringify(watch(), null, 2)}</pre>
+          {/* <pre>{JSON.stringify(watch(), null, 2)}</pre> */}
         </div>
 
         <Field label="Archivos adjuntos">

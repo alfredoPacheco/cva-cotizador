@@ -29,7 +29,7 @@ const QuotationItemForm: React.FC<QutationItemFormProps> = ({
     calculateAmounts(item, dollar);
   return (
     <div className="flex flex-col gap-4 rounded-lg border p-5 pt-1">
-      <div className="flex flex-row justify-start -ml-2 -mb-4">
+      <div className="flex flex-row justify-start -ml-3 -mb-4">
         <FormButton
           onPress={() => handleRemoveItem(index)}
           className="text-primary-400"
