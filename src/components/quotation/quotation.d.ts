@@ -2,6 +2,7 @@ import type { BaseDto } from '@/core/ReactQueryProvider/defaultMutations';
 import type { CustomerDto } from '../customer/customer';
 import type { QuotationItemDto } from './quotationItem/quotationItem';
 import type { ContactDto } from '@/types';
+import type { FolderDto } from '../folder/folder';
 
 export interface QuotationDto extends BaseDto {
   $id: string;
@@ -41,4 +42,5 @@ export interface QuotationDto extends BaseDto {
   ivaMxn?: number;
   totalMxn?: number;
   currency?: 'MXN' | 'USD';
+  folder?: FolderDto | string;
 }

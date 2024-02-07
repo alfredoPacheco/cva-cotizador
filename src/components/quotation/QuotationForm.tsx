@@ -10,6 +10,8 @@ import {
   AvatarGroup,
   Button,
   Divider,
+  Select,
+  SelectItem,
   Tooltip
 } from '@nextui-org/react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
@@ -39,6 +41,8 @@ import { authCentralState } from '@/core/AuthCentralService';
 import type { ContactDto } from '@/types';
 import EmailForm from '@/common/Email/EmailForm';
 import { calculateAmounts, calculateGrandTotals } from './calcs';
+import { useFolderList } from '../folder/folder.hooks';
+import type { FolderDto } from '../folder/folder';
 
 const FormField = ({ label, name, control, rows = 2, ...props }) => {
   return (
@@ -97,6 +101,8 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
         ? new Date(data?.validUntil).toISOString().split('T')[0]
         : undefined,
       _attachments: data?.attachments?.map(fileDeserialize) || []
+      // folder:
+      //   typeof data?.folder === 'string' ? data?.folder : data?.folder?.$id
     }
   });
 
@@ -105,6 +111,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
     handleSubmit,
     getValues,
     setValue,
+    watch,
     formState: { isValid, isDirty, dirtyFields }
   } = form;
 
@@ -157,6 +164,14 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
         payload.customerId = payload.customer;
       } else {
         payload.customerId = payload.customer.$id;
+      }
+    }
+
+    if (dirtyFields.folder) {
+      if (typeof payload.folder === 'string') {
+        payload.customerId = payload.folder;
+      } else {
+        payload.customerId = payload.folder.$id;
       }
     }
 
@@ -395,6 +410,10 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
 
   const emailDialog = useDialog();
 
+  const {
+    query: { data: folders }
+  } = useFolderList();
+
   return (
     <form className="flex flex-col gap-2" onSubmit={onSubmit}>
       <Dialog {...emailDialog} formOff okLabel="Enviar Email" title="Email">
@@ -409,15 +428,43 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
           </Field>
         </div>
         <div className="flex flex-auto">
-          <Field label="Cliente">
-            <Autocomplete
+          {/* <Field label="Cliente"> */}
+          <Controller
+            control={control}
+            name="customer"
+            render={({ field: { value, onChange } }) => {
+              const selectedId = typeof value === 'string' ? value : value?.$id;
+              console.log('selectedId', selectedId);
+              return (
+                <Select
+                  label="Cliente"
+                  className="max-w-xs"
+                  fullWidth
+                  value={selectedId}
+                  selectedKeys={selectedId ? [selectedId] : []}
+                  // onChange={e => onChange(e.target.value)}
+                  onSelectionChange={e => {
+                    const arr = [...e];
+                    onChange(arr[0]);
+                  }}
+                >
+                  {customers?.map(item => (
+                    <SelectItem key={item.$id} value={item.$id}>
+                      {item.name}
+                    </SelectItem>
+                  ))}
+                </Select>
+              );
+            }}
+          />
+          {/* <Autocomplete
               control={control}
               name="customer"
               items={customers}
               labelProp="name"
               secondaryLabelProp="email"
-            />
-          </Field>
+            /> */}
+          {/* </Field> */}
         </div>
         <div className="flex flex-grow flex-col items-end gap-1">
           <div className="flex flex-grow flex-row items-center justify-end gap-1">
@@ -573,6 +620,37 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
               </span>
             )}
           </div>
+        </div>
+
+        <div className="max-w-60 flex-1">
+          <Controller
+            control={control}
+            name="folder"
+            render={({ field: { value, onChange } }) => {
+              const selectedId = typeof value === 'string' ? value : value?.$id;
+              console.log('selectedId', selectedId);
+              return (
+                <Select
+                  label="Folder"
+                  className="max-w-xs"
+                  fullWidth
+                  value={selectedId}
+                  selectedKeys={selectedId ? [selectedId] : []}
+                  onSelectionChange={e => {
+                    const arr = [...e];
+                    onChange(arr[0]);
+                  }}
+                >
+                  {folders?.map(item => (
+                    <SelectItem key={item.$id} value={item.$id}>
+                      {item.name}
+                    </SelectItem>
+                  ))}
+                </Select>
+              );
+            }}
+          />
+          <pre>{JSON.stringify(watch(), null, 2)}</pre>
         </div>
 
         <Field label="Archivos adjuntos">

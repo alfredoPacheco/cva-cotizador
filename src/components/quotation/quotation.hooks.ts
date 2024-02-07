@@ -23,13 +23,6 @@ const COLLECTION_ID = 'quotations';
 export const useQuotationList = (folder, enabled = true) => {
   const filtersForm = useForm(); // This form is to handle search and filters over list
   const debouncedSearch = useDebounce(filtersForm.watch('search'), 100);
-  const [queries, setQueries] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (folder) {
-      setQueries([Query.equal('folder', folder)]);
-    }
-  }, [folder]);
 
   const query = useQuery<QuotationDto[]>({
     queryKey: [
@@ -44,10 +37,11 @@ export const useQuotationList = (folder, enabled = true) => {
             'validUntil',
             'quotationDate'
           ]),
-          Query.orderDesc('$createdAt'),
-          ...queries
+          Query.orderDesc('$createdAt')
+          // Query.equal('folder', folder)
         ]
-      } as ListQueryType
+      } as ListQueryType,
+      folder
     ],
     enabled: enabled && !!folder
   });

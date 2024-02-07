@@ -98,7 +98,7 @@ export const QuotationList: React.FC<QuotationListProps> = ({ folder }) => {
         Cotizaciones
       </Title>
 
-      <div className="flex flex-row justify-between items-center -ml-1 mt-5">
+      <div className="flex flex-row justify-between items-center -ml-1">
         <TextButton onPress={dialog.open}>Crear nueva cotización</TextButton>
         <SearchInput control={filtersForm.control} name="search" />
       </div>
