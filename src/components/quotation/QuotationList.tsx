@@ -66,9 +66,12 @@ export const QuotationList: React.FC<QuotationListProps> = ({ folder }) => {
   const dialog = useDialog();
   const { data: folders } = useFolderByName(folder);
 
+  let folderId = folders?.length > 0 ? folders[0].$id : undefined;
+  if (folder === 'no-folder') folderId = 'no-folder';
+
   const { query, filtersForm, debouncedSearch } = useQuotationList(
-    folders?.length > 0 ? folders[0].$id : undefined,
-    !dialog.isOpen && folder && folders?.length > 0
+    folderId,
+    !dialog.isOpen
   );
 
   const filteredData = query.data?.filter(searchLocally(debouncedSearch));

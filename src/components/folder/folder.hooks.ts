@@ -52,7 +52,7 @@ export const useFolderByName = (name: string) => {
         queries: [Query.select(['$id', 'name'])]
       } as ListQueryType
     ],
-    enabled: !!name
+    enabled: !!name && name !== 'no-folder'
   });
 };
 

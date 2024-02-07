@@ -41,6 +41,28 @@ const FolderList = () => {
         </div>
       )}
       <div className="FoldersGrid gap-3 content-between place-content-center">
+        <div
+          key={'emptyFolder'}
+          className="flex flex-col items-center justify-center"
+        >
+          <Card
+            shadow="none"
+            isPressable
+            onPress={() => {
+              // using setTimeout to wait for animation
+              setTimeout(() => {
+                window.location.href = `/no-folder`;
+              }, 400);
+            }}
+          >
+            <CardBody className="p-0 text-8xl text-default items-center">
+              <PiFolder />
+            </CardBody>
+            <CardFooter className="text-sm justify-center p-0">
+              (Sin folder)
+            </CardFooter>
+          </Card>
+        </div>
         {filteredData?.map(item => (
           <div
             key={item.$id}

@@ -24,6 +24,15 @@ export const useQuotationList = (folder, enabled = true) => {
   const filtersForm = useForm(); // This form is to handle search and filters over list
   const debouncedSearch = useDebounce(filtersForm.watch('search'), 100);
 
+  const queries = [];
+  if (folder) {
+    if (folder === 'no-folder') {
+      queries.push(Query.isNull('folder'));
+    } else {
+      queries.push(Query.equal('folder', folder));
+    }
+  }
+
   const query = useQuery<QuotationDto[]>({
     queryKey: [
       QUERY_KEY,
@@ -37,8 +46,8 @@ export const useQuotationList = (folder, enabled = true) => {
             'validUntil',
             'quotationDate'
           ]),
-          Query.orderDesc('$createdAt')
-          // Query.equal('folder', folder)
+          Query.orderDesc('$createdAt'),
+          ...queries
         ]
       } as ListQueryType,
       folder
