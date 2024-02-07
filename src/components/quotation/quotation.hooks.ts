@@ -15,14 +15,21 @@ import dayjs from 'dayjs';
 import { DEFAULT_DATABASE_ID } from '@/core/ReactQueryProvider/defaultQueries';
 import type { ContactDto } from '@/types';
 import { formatCurrency } from '@/core/utils';
+import { useEffect, useState } from 'react';
 
 const QUERY_KEY = 'quotations';
 const COLLECTION_ID = 'quotations';
 
-export const useQuotationList = (enabled = true) => {
+export const useQuotationList = (folder, enabled = true) => {
   const filtersForm = useForm(); // This form is to handle search and filters over list
-
   const debouncedSearch = useDebounce(filtersForm.watch('search'), 100);
+  const [queries, setQueries] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (folder) {
+      setQueries([Query.equal('folder', folder)]);
+    }
+  }, [folder]);
 
   const query = useQuery<QuotationDto[]>({
     queryKey: [
@@ -37,11 +44,12 @@ export const useQuotationList = (enabled = true) => {
             'validUntil',
             'quotationDate'
           ]),
-          Query.orderDesc('$createdAt')
+          Query.orderDesc('$createdAt'),
+          ...queries
         ]
       } as ListQueryType
     ],
-    enabled
+    enabled: enabled && !!folder
   });
 
   return { query, filtersForm, debouncedSearch };

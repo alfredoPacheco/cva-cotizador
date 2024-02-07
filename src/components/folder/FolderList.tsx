@@ -50,7 +50,12 @@ const FolderList = () => {
               shadow="none"
               key={item.$id}
               isPressable
-              onPress={() => console.log('item pressed')}
+              onPress={() => {
+                // using setTimeout to wait for animation
+                setTimeout(() => {
+                  window.location.href = `/${item.name}`;
+                }, 400);
+              }}
             >
               <CardBody className="p-0 text-8xl text-primary items-center">
                 <PiFolder />

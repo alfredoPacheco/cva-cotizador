@@ -43,6 +43,19 @@ export const useFolderSingle = (id: string, enabled = true) => {
   });
 };
 
+export const useFolderByName = (name: string) => {
+  return useQuery<FolderDto[]>({
+    queryKey: [
+      QUERY_KEY,
+      {
+        params: { name },
+        queries: [Query.select(['$id', 'name'])]
+      } as ListQueryType
+    ],
+    enabled: !!name
+  });
+};
+
 export const useFolderCreate = () => {
   return useMutation({
     ...defaultCreateMutation({

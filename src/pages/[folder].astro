@@ -1,0 +1,12 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import QuotationsByFolder from '@/components/quotation/QuotationsByFolder';
+
+export const prerender = false;
+
+const { folder } = Astro.params;
+---
+
+<BaseLayout title={import.meta.env.PUBLIC_APP_NAME}>
+  <QuotationsByFolder client:only="react" folder={folder} />
+</BaseLayout>

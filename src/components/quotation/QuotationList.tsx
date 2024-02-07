@@ -18,6 +18,8 @@ import type { QuotationDto } from './quotation';
 import { formatDate } from '@/core/utils';
 import QuotationCreateForm from './QuotationCreateForm';
 import { useEffect, useState } from 'react';
+import FolderBreadcrumb from '../folder/FolderBreadcrumb';
+import { useFolderByName } from '../folder/folder.hooks';
 
 const searchLocally = (query: string) => (item: any) => {
   if (!query || query.trim() === '') return true;
@@ -57,10 +59,16 @@ const ItemTitle = ({ item }: { item: QuotationDto }) => (
   </div>
 );
 
-const QuotationList = () => {
+interface QuotationListProps {
+  folder?: string;
+}
+export const QuotationList: React.FC<QuotationListProps> = ({ folder }) => {
   const dialog = useDialog();
+  const { data: folders } = useFolderByName(folder);
+
   const { query, filtersForm, debouncedSearch } = useQuotationList(
-    !dialog.isOpen
+    folders?.length > 0 ? folders[0].$id : undefined,
+    !dialog.isOpen && folder && folders?.length > 0
   );
 
   const filteredData = query.data?.filter(searchLocally(debouncedSearch));
@@ -79,12 +87,14 @@ const QuotationList = () => {
   }, [quotationId, query.data]);
 
   return (
-    <Container>
+    <>
       <Dialog {...dialog} formOff okLabel="Crear" title="Cotización">
         {d => <QuotationCreateForm id="new" dialog={d} />}
       </Dialog>
 
-      <Title mt={40} mb={40} divider>
+      <FolderBreadcrumb folder={folder} />
+
+      <Title mt={folder ? 10 : 40} mb={40} divider>
         Cotizaciones
       </Title>
 
@@ -127,14 +137,16 @@ const QuotationList = () => {
 
       {/* <pre>{JSON.stringify(query.data, null, 2)}</pre> */}
       <div style={{ minHeight: 300 }} />
-    </Container>
+    </>
   );
 };
 
 const WithAppShell = () => {
   return (
     <AppShell>
-      <QuotationList />
+      <Container>
+        <QuotationList />
+      </Container>
     </AppShell>
   );
 };
