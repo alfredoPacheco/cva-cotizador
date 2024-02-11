@@ -10,7 +10,6 @@ import {
   NavbarContent,
   User
 } from '@nextui-org/react';
-import Container from '../Container';
 import { authCentralState } from '@/core/AuthCentralService';
 import TVCDollarReadonly from '@/components/dollar/TVCDollarReadonly';
 import SyscomDollarReadonly from '@/components/dollar-syscom/SyscomDollarReadonly';
@@ -18,21 +17,30 @@ import PersistQueryProvider from '@/core/ReactQueryProvider/PersistQueryProvider
 
 const AppBar = ({ logout }) => {
   return (
-    <Container gap={0}>
+    <div
+      className={`container max-w-4xl mx-auto`}
+      // style={{ border: '1px solid red' }}
+    >
       <Navbar
         maxWidth="full"
-        className="bg-transparent h-32"
+        className="bg-transparent h-20 sm:h-32"
         isBlurred={false}
         isBordered
+        classNames={{
+          // base: 'border-primary-500 border-2',
+          // brand: 'border-lime-500 border-2 w-[50px]',
+          // content: 'border-blue-500 border-2',
+          wrapper: 'p-0'
+        }}
       >
-        <NavbarBrand>
+        <NavbarBrand className="max-w-24 sm:max-w-full">
           <Link href="/">
             <Logo width={120} />
           </Link>
         </NavbarBrand>
         <NavbarContent as="div" justify="end">
           <PersistQueryProvider persistKey="dollar">
-            <div className="flex flex-col gap-1 items-end text-sm">
+            <div className="flex flex-col items-end text-sm sm:text-sm">
               <TVCDollarReadonly />
               <SyscomDollarReadonly />
             </div>
@@ -106,7 +114,7 @@ const AppBar = ({ logout }) => {
         </NavbarContent>
       </Navbar>
       {/* <Divider /> */}
-    </Container>
+    </div>
   );
 };
 

@@ -1,5 +1,5 @@
 import { QueryClient } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+// import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { defaultQueryFn } from './defaultQueries';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { createIDBPersister } from './indexedDbPersister';
@@ -35,7 +35,7 @@ const PersistQueryProvider = ({
       persistOptions={{ persister: createIDBPersister(persistKey) }}
     >
       {children}
-      <ReactQueryDevtools initialIsOpen={false} buttonPosition="top-right" />
+      {/* <ReactQueryDevtools initialIsOpen={false} buttonPosition="top-right" /> */}
     </PersistQueryClientProvider>
   );
 };

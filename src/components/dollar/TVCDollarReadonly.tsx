@@ -4,7 +4,7 @@ const TVCDollarReadonly = () => {
   const { data, isLoading } = useDollar();
   return (
     <div className="flex flex-row gap-2">
-      <label>TVC Dollar:</label>
+      <label>TVC:</label>
       <span>{isLoading ? '...cargando' : data?.dollar}</span>
     </div>
   );
