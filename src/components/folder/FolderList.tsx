@@ -30,16 +30,11 @@ const FolderList = () => {
       <Dialog {...dialog} formOff okLabel="Guardar" title="Folder">
         {d => <FolderForm id="new" dialog={d} />}
       </Dialog>
-      <div className="flex flex-row justify-between items-center -ml-1 mt-5">
+      <div className="flex flex-col sm:flex-row justify-between items-center mx-0 sm:-ml-1 mt-5 gap-3 sm:gap-0">
         <TextButton onPress={dialog.open}>Crear nuevo folder</TextButton>
         <SearchInput control={filtersForm.control} name="search" />
       </div>
       {query.isError && <div>Error: {query.error.message}</div>}
-      {query.isSuccess && !filteredData?.length && (
-        <div>
-          <span>No hay folders...</span>
-        </div>
-      )}
       <div className="FoldersGrid gap-3 content-between place-content-center">
         <div
           key={'emptyFolder'}
