@@ -409,48 +409,51 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
         {d => <EmailForm id="new" dialog={d} quotationId={id} />}
       </Dialog>
       <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-0 sm:gap-5">
-        <div className="flex">
-          <Field
-            label="Realizado por:"
-            size="md"
-            style={{ minWidth: 30 }}
-            labelClassName="text-sm"
-          >
-            <ReadonlyField control={control} name="createdBy" fontSize="xs" />
-          </Field>
-        </div>
-        <div className="flex w-full sm:max-w-[200px]">
-          <Controller
-            control={control}
-            name="customer"
-            render={({ field: { value, onChange } }) => {
-              const selectedId = typeof value === 'string' ? value : value?.$id;
-              return (
-                <Select
-                  label="Cliente"
-                  aria-label="Cliente"
-                  size="sm"
-                  classNames={{ trigger: 'p-0 sm:p-3' }}
-                  fullWidth
-                  variant="bordered"
-                  // value={selectedId}
-                  selectedKeys={selectedId ? [selectedId] : []}
-                  // onChange={e => onChange(e.target.value)}
-                  onSelectionChange={e => {
-                    const arr = [...e];
-                    if (arr.length > 0) onChange(arr[0]);
-                    else onChange(null);
-                  }}
-                >
-                  {customers?.map(item => (
-                    <SelectItem key={item.$id} value={item.$id}>
-                      {item.name}
-                    </SelectItem>
-                  ))}
-                </Select>
-              );
-            }}
-          />
+        <div className="flex flex-col md:flex-row w-full">
+          <div className="flex">
+            <Field
+              label="Realizado por:"
+              size="md"
+              style={{ minWidth: 30 }}
+              labelClassName="text-sm"
+            >
+              <ReadonlyField control={control} name="createdBy" fontSize="xs" />
+            </Field>
+          </div>
+          <div className="flex w-full sm:max-w-[200px]">
+            <Controller
+              control={control}
+              name="customer"
+              render={({ field: { value, onChange } }) => {
+                const selectedId =
+                  typeof value === 'string' ? value : value?.$id;
+                return (
+                  <Select
+                    label="Cliente"
+                    aria-label="Cliente"
+                    size="sm"
+                    classNames={{ trigger: 'p-0 md:p-3' }}
+                    fullWidth
+                    variant="bordered"
+                    // value={selectedId}
+                    selectedKeys={selectedId ? [selectedId] : []}
+                    // onChange={e => onChange(e.target.value)}
+                    onSelectionChange={e => {
+                      const arr = [...e];
+                      if (arr.length > 0) onChange(arr[0]);
+                      else onChange(null);
+                    }}
+                  >
+                    {customers?.map(item => (
+                      <SelectItem key={item.$id} value={item.$id}>
+                        {item.name}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                );
+              }}
+            />
+          </div>
         </div>
         <div className="flex flex-grow flex-col items-end gap-1 mt-4 sm:mt-0">
           <div className="flex flex-row items-center justify-evenly sm:justify-end sm:gap-1 w-full">

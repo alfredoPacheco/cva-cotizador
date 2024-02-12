@@ -33,10 +33,10 @@ const AccountList = () => {
       <Dialog {...dialog} formOff okLabel="Guardar" title="Usuario">
         {d => <AccountForm id="new" dialog={d} />}
       </Dialog>
-      <Title mt={40} mb={40} divider>
+      <Title divider className="mt-7">
         Usuarios
       </Title>
-      <div className="flex flex-row justify-between items-center -ml-1 mt-5">
+      <div className="flex flex-col sm:flex-row justify-between items-center sm:-ml-1 sm:mt-5 gap-3 sm:gap-0">
         <TextButton onPress={dialog.open}>Crear nuevo usuario</TextButton>
         <SearchInput control={filtersForm.control} name="search" />
       </div>
@@ -68,7 +68,7 @@ const AccountList = () => {
         ))}
       </Accordion>
       {/* <pre>{JSON.stringify(query.data, null, 2)}</pre> */}
-      <div style={{ minHeight: 300 }} />
+      {/* <div style={{ minHeight: 300 }} /> */}
     </Container>
   );
 };

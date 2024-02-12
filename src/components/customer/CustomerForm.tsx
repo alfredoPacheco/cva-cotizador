@@ -101,6 +101,9 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ id, dialog }) => {
         <>
           <Field label="Cotizaciones">
             <div className="flex flex-col">
+              {quotationsByCustomer?.length === 0 && (
+                <span className="text-default-400">(No hay cotizaciones)</span>
+              )}
               {quotationsByCustomer?.map(q => (
                 <a
                   className="text-primary-300"

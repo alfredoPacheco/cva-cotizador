@@ -33,10 +33,10 @@ const CustomerList = () => {
       <Dialog {...dialog} formOff okLabel="Guardar" title="Cliente">
         {d => <CustomerForm id="new" dialog={d} />}
       </Dialog>
-      <Title mt={40} mb={40} divider>
+      <Title divider className="mt-7">
         Clientes
       </Title>
-      <div className="flex flex-row justify-between items-center -ml-1 mt-5">
+      <div className="flex flex-col sm:flex-row justify-between items-center sm:-ml-1 sm:mt-5 gap-3 sm:gap-0">
         <TextButton onPress={dialog.open}>Crear nuevo cliente</TextButton>
         <SearchInput control={filtersForm.control} name="search" />
       </div>
@@ -51,10 +51,11 @@ const CustomerList = () => {
               </span>
             )}
             classNames={{
-              base: 'border-1 border-default-200 rounded-xl mt-5',
-              title: 'bg-primary text-white text-2xl font-bold',
-              heading: 'bg-primary rounded-xl px-6 py-2',
-              content: 'p-6'
+              base: 'border-1 border-default-200 rounded-xl mt-2 sm:mt-5 bg-default-200',
+              title: 'bg-primary text-white text-1xl sm:text-2xl font-bold',
+              heading:
+                'bg-primary rounded-xl px-2 sm:px-6 py-0 [&>button]:py-4',
+              content: 'p-2 sm:p-6'
             }}
             title={item.name}
           >
@@ -63,7 +64,7 @@ const CustomerList = () => {
         ))}
       </Accordion>
       {/* <pre>{JSON.stringify(query.data, null, 2)}</pre> */}
-      <div style={{ minHeight: 300 }} />
+      {/* <div style={{ minHeight: 300 }} /> */}
     </Container>
   );
 };

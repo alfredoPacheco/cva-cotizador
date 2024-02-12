@@ -138,7 +138,7 @@ export const QuotationList: React.FC<QuotationListProps> = ({ folder }) => {
       </Accordion>
 
       {/* <pre>{JSON.stringify(query.data, null, 2)}</pre> */}
-      <div style={{ minHeight: 300 }} />
+      {/* <div style={{ minHeight: 300 }} /> */}
     </>
   );
 };

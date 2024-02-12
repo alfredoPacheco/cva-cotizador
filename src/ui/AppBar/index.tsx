@@ -73,7 +73,7 @@ const AppBar = ({ logout }) => {
               <DropdownItem
                 key="quotations"
                 onPress={() => {
-                  window.location.href = '/quotations';
+                  window.location.href = '/';
                 }}
               >
                 Cotizaciones

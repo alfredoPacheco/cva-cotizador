@@ -588,6 +588,9 @@ export const Checkbox: React.FC<CheckboxProps> = ({
         <CheckboxNextUI
           isSelected={value || false}
           onValueChange={onChange}
+          classNames={{
+            label: 'text-xs sm:text-sm'
+          }}
           radius="full"
           size="md"
           style={{
