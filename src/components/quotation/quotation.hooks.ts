@@ -212,7 +212,13 @@ export const useQuotationsByCustomer = (customerId: string) => {
       QUERY_KEY,
       {
         queries: [
-          Query.select(['$id', 'title', 'quotationNumber', 'quotationDate']),
+          Query.select([
+            '$id',
+            'title',
+            'quotationNumber',
+            'quotationDate',
+            'folder.*'
+          ]),
           Query.equal('customerId', customerId),
           Query.orderDesc('$createdAt')
         ]

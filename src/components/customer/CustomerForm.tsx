@@ -14,6 +14,7 @@ import { useNotifications } from '@/core/useNotifications';
 import { handleErrors } from '@/core/utils';
 import type { DialogWidget } from '@/ui/Dialog';
 import { useQuotationsByCustomer } from '../quotation/quotation.hooks';
+import type { QuotationDto } from '../quotation/quotation';
 
 const FormField = ({ label, name, control, rows = 0, ...props }) => {
   return (
@@ -84,6 +85,18 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ id, dialog }) => {
 
   const { data: quotationsByCustomer } = useQuotationsByCustomer(id);
 
+  const getQuotationHref = (q: QuotationDto) => {
+    let folder = 'no-folder';
+    if (!!q.folder) {
+      if (typeof q.folder === 'string') {
+        folder = q.folder;
+      } else {
+        folder = q.folder.name;
+      }
+    }
+    return `/${folder}#${q.$id}`;
+  };
+
   return (
     <form className="flex flex-col gap-5" onSubmit={onSubmit}>
       <FormField control={control} name="name" label="Nombre" />
@@ -108,7 +121,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ id, dialog }) => {
                 <a
                   className="text-primary-300"
                   key={q.$id}
-                  href={'/quotations#' + q.$id}
+                  href={getQuotationHref(q)}
                 >
                   {q.quotationNumber} {q.title}
                 </a>
