@@ -7,6 +7,7 @@ import Providers from './Providers';
 import { useIsFetching, useIsMutating } from '@tanstack/react-query';
 import { useGlobalLoader } from '@/ui/GlobalLoader';
 import { useEffect } from 'react';
+import Footer from '@/components/footer';
 
 interface AppShellProps {
   children?: React.ReactNode;
@@ -52,6 +53,7 @@ const AppShell: React.FC<AppShellProps> = ({
       {/* <main className="green-light text-foreground bg-background"> */}
       {/* <main className="green-light bg-background"> */}
       <main className="green-light">{children}</main>
+      <Footer />
     </>
   );
 };

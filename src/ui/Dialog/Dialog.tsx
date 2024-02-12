@@ -4,6 +4,7 @@ import {
   Modal,
   ModalBody,
   ModalContent,
+  ModalFooter,
   ModalHeader
 } from '@nextui-org/react';
 import { Component } from 'react';
@@ -129,11 +130,11 @@ export class DialogWidget extends Component<DialogProps> {
             <>
               {title && (
                 <ModalHeader className="flex flex-col gap-1">
-                  <Title>{title}</Title>
+                  <Title h1ClassName="!text-4xl">{title}</Title>
                 </ModalHeader>
               )}
 
-              <ModalBody>
+              <ModalBody className="overflow-y-auto max-h-[75vh]">
                 {formOff ? (
                   children(this)
                 ) : (
@@ -142,7 +143,8 @@ export class DialogWidget extends Component<DialogProps> {
                     <button type="submit" className="hidden" />
                   </form>
                 )}
-
+              </ModalBody>
+              <ModalFooter>
                 {(actions && actions(this, okDisabled)) ||
                   (!actionsOff && (
                     <div className="flex flex-row gap-3 items-baseline justify-end">
@@ -165,7 +167,7 @@ export class DialogWidget extends Component<DialogProps> {
                       )}
                     </div>
                   ))}
-              </ModalBody>
+              </ModalFooter>
             </>
           )}
         </ModalContent>

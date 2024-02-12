@@ -57,9 +57,34 @@ const authChanged = (auth?: Models.Session, nextAuth?: Models.Session) => {
   return false;
 };
 
+const AuthUrl = import.meta.env.PUBLIC_AUTH_URL;
+
+const request = async (method: string, endpoint: string, headers = {}) => {
+  try {
+    if (!AuthUrl) {
+      throw new Error('NEXT_PUBLIC_AUTH_URL is not defined');
+    }
+    const resp = await fetch(AuthUrl + endpoint, {
+      method: method,
+      mode: 'cors',
+      cache: 'no-cache',
+      headers: { 'Content-Type': 'application/json', ...headers }
+    });
+    if (resp.status >= 200 && resp.status < 300) {
+      return await resp.json();
+    } else {
+      throw resp;
+    }
+  } catch (err) {
+    console.error('err', err);
+    throw err;
+  }
+};
+
 export class AuthCentralService {
   static OnAuthChange = new Subject<any>();
   static auth?: Models.Session;
+  static jwt?: string;
 
   static setAuth(value?: Models.Session, quietly = false) {
     if (authChanged(AuthCentralService.auth, value)) {
@@ -79,6 +104,10 @@ export class AuthCentralService {
     if (!AuthCentralService.auth) {
       // maybe there is an oauth session:
       try {
+        const session = await account.getSession('current');
+        if (session) {
+          AuthCentralService.setAuth(session);
+        }
         // const auth = await request('GET', `auth/jwt/any`, undefined, true);
         // const auth = await account.createOAuth2Session('')
         // AuthCentralService.setAuth(auth);
@@ -104,6 +133,42 @@ export class AuthCentralService {
     try {
       const centralAuth = await account.createEmailSession(email, password);
       AuthCentralService.setAuth(centralAuth);
+      const repsonseJwt = await account.createJWT();
+      AuthCentralService.jwt = repsonseJwt.jwt;
+
+      // let responseInstances = await request(
+      //   'GET',
+      //   'appwrite/instances?UserId=' + centralAuth.userId,
+      //   { Authorization: `Bearer ${repsonseJwt.jwt}` }
+      // );
+      // console.log('responseInstances', responseInstances);
+
+      // let instances: string[] = [];
+      // try {
+      //   instances = JSON.parse(get(responseInstances, 'Meta.Instances', '[]'));
+      // } catch {}
+
+      // let loginToInstance = 'any';
+      // if (instances.length > 0) {
+      //   const selectedInstance = AuthService.getSelectedInstance(
+      //     AuthCentralService.auth?.userId
+      //   );
+      //   if (
+      //     !!selectedInstance?.Identifier &&
+      //     instances.includes(selectedInstance.Identifier)
+      //   ) {
+      //     loginToInstance = selectedInstance.Identifier;
+      //   } else {
+      //     loginToInstance = instances[0];
+      //   }
+      // }
+
+      // await AuthService.login(
+      //   loginToInstance,
+      //   centralAuth.userId,
+      //   repsonseJwt.jwt
+      // );
+
       return centralAuth;
     } catch (e) {
       console.error(e);

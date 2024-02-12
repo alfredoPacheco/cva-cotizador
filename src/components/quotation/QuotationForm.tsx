@@ -427,6 +427,16 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
               render={({ field: { value, onChange } }) => {
                 const selectedId =
                   typeof value === 'string' ? value : value?.$id;
+
+                const getSelectedKeys = () => {
+                  if (customers?.length > 0) {
+                    if (selectedId) {
+                      return [selectedId];
+                    }
+                  }
+                  return [];
+                };
+
                 return (
                   <Select
                     label="Cliente"
@@ -435,8 +445,9 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
                     classNames={{ trigger: 'p-0 md:p-3' }}
                     fullWidth
                     variant="bordered"
+                    items={customers || []}
                     // value={selectedId}
-                    selectedKeys={selectedId ? [selectedId] : []}
+                    selectedKeys={getSelectedKeys()}
                     // onChange={e => onChange(e.target.value)}
                     onSelectionChange={e => {
                       const arr = [...e];
@@ -444,11 +455,11 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
                       else onChange(null);
                     }}
                   >
-                    {customers?.map(item => (
+                    {item => (
                       <SelectItem key={item.$id} value={item.$id}>
                         {item.name}
                       </SelectItem>
-                    ))}
+                    )}
                   </Select>
                 );
               }}
@@ -617,6 +628,14 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
             name="folder"
             render={({ field: { value, onChange } }) => {
               const selectedId = typeof value === 'string' ? value : value?.$id;
+              const getSelectedKeys = () => {
+                if (folders?.length > 0) {
+                  if (selectedId) {
+                    return [selectedId];
+                  }
+                }
+                return [];
+              };
               return (
                 <Select
                   label="Folder"
@@ -624,7 +643,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
                   className="max-w-xs"
                   fullWidth
                   value={selectedId}
-                  selectedKeys={selectedId ? [selectedId] : []}
+                  selectedKeys={getSelectedKeys()}
                   onSelectionChange={e => {
                     const arr = [...e];
                     if (arr.length > 0) onChange(arr[0]);

@@ -23,11 +23,14 @@ const FormField = ({ label, name, control, ...props }) => {
 };
 
 interface QuotationFormProps {
-  id: string;
   dialog?: DialogWidget;
+  folderId?: string;
 }
 
-const QuotationCreateForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
+const QuotationCreateForm: React.FC<QuotationFormProps> = ({
+  dialog,
+  folderId
+}) => {
   const { success, error } = useNotifications();
   const form = useForm<QuotationDto>({
     defaultValues: {
@@ -61,6 +64,7 @@ const QuotationCreateForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
       }, {} as any) as QuotationDto;
       payload.$id = 'new';
       payload.createdBy = authCentralState.account.value.email;
+      payload.folder = folderId;
       if (payload.customer) {
         if (typeof payload.customer === 'string') {
           payload.customerId = payload.customer;

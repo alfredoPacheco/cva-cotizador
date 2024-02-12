@@ -7,18 +7,23 @@ import {
 import {
   defaultCreateMutation,
   defaultUpdateMutation,
-  defaultDeleteMutation
+  DEFAULT_DATABASE_ID
 } from '@/core/ReactQueryProvider/defaultMutations';
 import type { FolderDto } from './folder';
 import { useForm } from 'react-hook-form';
-import { useDebounce } from '@/core';
+import { useAuth, useDebounce } from '@/core';
 import { Query } from 'appwrite';
 import type { ListQueryType } from '@/core/ReactQueryProvider/queryKeys';
+import { databases } from '@/core/appwriteClient';
+import { QUOTATIONS_COLLECTION_ID } from '../quotation/quotation.hooks';
+import dayjs from 'dayjs';
+import { authCentralState } from '@/core/AuthCentralService';
 
 const COLLECTION_ID = 'folders';
 const QUERY_KEY = COLLECTION_ID;
 
 export const useFolderList = (enabled = true) => {
+  const { auth } = useAuth();
   const filtersForm = useForm(); // This form is to handle search and filters over list
 
   const debouncedSearch = useDebounce(filtersForm.watch('search'), 200);
@@ -27,7 +32,8 @@ export const useFolderList = (enabled = true) => {
     queryKey: [
       QUERY_KEY,
       { limit: 5000, queries: [Query.orderDesc('name')] } as ListQueryType,
-      debouncedSearch
+      debouncedSearch,
+      auth?.userId
     ],
     enabled,
     placeholderData: keepPreviousData
@@ -75,6 +81,29 @@ export const useFolderUpdate = () => {
 
 export const useFolderDelete = () => {
   return useMutation({
-    ...defaultDeleteMutation([QUERY_KEY], useQueryClient(), COLLECTION_ID)
+    mutationFn: async (id: string) => {
+      if (!id)
+        throw new Error('No se puede eliminar la carpeta. El id es requerido');
+
+      if (id == 'no-folder')
+        throw new Error('No se puede eliminar la carpeta "no-folder"');
+
+      const quotationsInFolder = await databases.listDocuments(
+        DEFAULT_DATABASE_ID,
+        QUOTATIONS_COLLECTION_ID,
+        [Query.equal('folder', id), Query.isNull('deletedAt'), Query.limit(1)]
+      );
+
+      if (quotationsInFolder.documents.length > 0) {
+        throw new Error(
+          'No se puede eliminar la carpeta porque tiene cotizaciones'
+        );
+      }
+
+      return databases.updateDocument(DEFAULT_DATABASE_ID, COLLECTION_ID, id, {
+        deletedAt: dayjs().toISOString(),
+        deletedBy: authCentralState.account.value?.email
+      });
+    }
   });
 };

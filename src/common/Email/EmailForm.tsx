@@ -10,7 +10,6 @@ import {
   parseContacts,
   useQuotationSingle
 } from '@/components/quotation/quotation.hooks';
-import ContactsSelector from '@/ui/ContactsSelector';
 import { useGlobalLoader } from '@/ui/GlobalLoader';
 import { authCentralState } from '@/core/AuthCentralService';
 import type { CustomerDto } from '@/components/customer/customer';
@@ -72,6 +71,7 @@ const EmailForm: React.FC<EmailFormProps> = ({ id, dialog, quotationId }) => {
   console.log('suscribers', suscribers);
 
   const allContacts = [quotation.customer as ContactDto, ...suscribers];
+  console.log('allContacts', allContacts);
 
   const { setLoading } = useGlobalLoader();
 
@@ -83,6 +83,24 @@ const EmailForm: React.FC<EmailFormProps> = ({ id, dialog, quotationId }) => {
       const data = getValues();
       data.quotationId = quotationId;
       data.sentBy = authCentralState.account.value.$id;
+      if (data.to) {
+        data.to =
+          (data.to as string)
+            .split(';')
+            .map(to => ({ email: to } as ContactDto)) || '';
+      }
+      if (data.cc) {
+        data.cc =
+          (data.cc as string)
+            .split(';')
+            .map(cc => ({ email: cc } as ContactDto)) || '';
+      }
+      if (data.bcc) {
+        data.bcc =
+          (data.bcc as string)
+            .split(';')
+            .map(bcc => ({ email: bcc } as ContactDto)) || '';
+      }
       // console.log('data', data);
       await sendEmail.mutateAsync(data);
       success('Email enviado');
@@ -107,7 +125,34 @@ const EmailForm: React.FC<EmailFormProps> = ({ id, dialog, quotationId }) => {
       <Field label="Título">
         <TextInput control={control} name="subject" variant="bordered" />
       </Field>
-      <ContactsSelector
+      <Field label="Para">
+        <TextInput
+          control={control}
+          name="to"
+          variant="bordered"
+          rows={1}
+          placeholder="ejemplo@email.com; otro@email.com"
+        />
+      </Field>
+      <Field label="Cc">
+        <TextInput
+          control={control}
+          name="cc"
+          variant="bordered"
+          rows={1}
+          placeholder="ejemplo@email.com; otro@email.com"
+        />
+      </Field>
+      <Field label="Bcc">
+        <TextInput
+          control={control}
+          name="bcc"
+          variant="bordered"
+          rows={1}
+          placeholder="ejemplo@email.com; otro@email.com"
+        />
+      </Field>
+      {/* <ContactsSelector
         control={control}
         name="to"
         label="Para"
@@ -124,10 +169,10 @@ const EmailForm: React.FC<EmailFormProps> = ({ id, dialog, quotationId }) => {
         name="bcc"
         label="Bcc"
         contacts={allContacts}
-      />
+      /> */}
 
-      <Field label="">
-        <RichTextEditor control={control} name="body" toolbar />
+      <Field label="" className="border-2 rounded-md p-2">
+        <RichTextEditor control={control} name="body" />
       </Field>
     </div>
   );

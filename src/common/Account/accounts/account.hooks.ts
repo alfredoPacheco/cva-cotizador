@@ -6,311 +6,257 @@ import {
 import type { AccountDto } from './account';
 import { useForm } from 'react-hook-form';
 import { useDebounce } from '@/core';
-import get from 'lodash/get';
-import { functions } from '@/core/appwriteClient';
+import { account, storage } from '@/core/appwriteClient';
 import omit from 'lodash/omit';
+import { Get, Post, Delete, Put, Patch } from '@/core/ApiService';
 
-const USERS_FN = import.meta.env.PUBLIC_APPWRITE_FUNCTION_USERS!;
+// const USERS_FN = import.meta.env.PUBLIC_APPWRITE_FUNCTION_USERS!;
+const BASE_URL = import.meta.env.PUBLIC_NEST_HOST!;
 
 const QUERY_KEY = 'accounts';
 
-const parseResponse = (resp: any) => {
-  let response;
-  try {
-    const hasBody = get(resp, 'responseBody', false);
-    if (hasBody) response = JSON.parse(resp.responseBody);
-    else response = JSON.parse(resp);
-  } catch {
-    response = resp;
-  }
-  if (response?.status === 'failed') {
-    throw new Error('Function error');
-  }
-  if (response?.error) {
-    if (response.error.response) {
-      throw response.error.response;
-    }
-    throw response.error;
-  }
-  console.log('response: ', response);
-  return response;
+// const parseResponse = (resp: any) => {
+//   let response;
+//   try {
+//     const hasBody = get(resp, 'responseBody', false);
+//     if (hasBody) response = JSON.parse(resp.responseBody);
+//     else response = JSON.parse(resp);
+//   } catch {
+//     response = resp;
+//   }
+//   if (response?.status === 'failed') {
+//     throw new Error('Function error');
+//   }
+//   if (response?.error) {
+//     if (response.error.response) {
+//       throw response.error.response;
+//     }
+//     throw response.error;
+//   }
+//   console.log('response: ', response);
+//   return response;
+// };
+
+export const getAccount = async () => {
+  const acc = await account.get();
+  const prefs = await account.getPrefs();
+  acc.prefs = prefs;
+  return acc;
 };
 
 export const listUsers = async (query = '') => {
   // console.log('should send query: ', query);
-  const resp = await functions.createExecution(
-    USERS_FN,
-    undefined,
-    false,
-    '/',
-    'GET'
-  );
-  return parseResponse(resp);
+  const url = new URL(BASE_URL);
+  url.pathname = '/users';
+  const resp = await Get(url.toString());
+  console.log('resp: ', resp);
+  return resp;
 };
+
+const BUCKET_ID = import.meta.env.PUBLIC_APPWRITE_STORAGE_AVATARS;
+export function getAvatarUrl(fileId?: string) {
+  if (!fileId) return '';
+  const f = storage.getFilePreview(BUCKET_ID, fileId);
+  return f;
+}
 
 export const createUser = async data => {
   console.log('createuser: ', data);
   if (!data) throw new Error('data is required');
 
-  const payload = JSON.stringify(omit(data, ['$id']));
+  const payload = omit(data, ['$id']);
 
-  const resp = await functions.createExecution(
-    USERS_FN,
-    payload,
-    false,
-    '/',
-    'POST'
-  );
-  return parseResponse(resp);
+  const url = new URL(BASE_URL);
+  url.pathname = '/users';
+  const resp = await Post(url.toString(), payload);
+  console.log('resp: ', resp);
+  return resp;
 };
 
 export const listIdentities = async () => {
-  const resp = await functions.createExecution(
-    USERS_FN,
-    undefined,
-    false,
-    `/identities`,
-    'GET'
-  );
-  const json = JSON.parse(resp.responseBody);
-  return json;
+  const url = new URL(BASE_URL);
+  url.pathname = '/users/identities';
+  const resp = await Get(url.toString());
+  console.log('resp: ', resp);
+  return resp;
 };
 
-export const deleteIdentity = async (id: string) => {
-  const resp = await functions.createExecution(
-    USERS_FN,
-    undefined,
-    false,
-    `/identities/${id}`,
-    'DELETE'
-  );
-  const json = JSON.parse(resp.responseBody);
-  return json;
+export const deleteIdentity = async (userId: string, identityId: string) => {
+  const url = new URL(BASE_URL);
+  url.pathname = `/users/${userId}/identities/${identityId}`;
+  const resp = await Delete(url.toString());
+  console.log('resp: ', resp);
+  return resp;
 };
 
 export const getUser = async (id: string) => {
-  const resp = await functions.createExecution(
-    USERS_FN,
-    undefined,
-    false,
-    `/${id}`,
-    'GET'
-  );
-  return parseResponse(resp);
+  const url = new URL(BASE_URL);
+  url.pathname = `/users/${id}`;
+  const resp = await Get(url.toString());
+  console.log('resp: ', resp);
+  return resp;
 };
 
 export const deleteUser = async (id: string) => {
-  const resp = await functions.createExecution(
-    USERS_FN,
-    undefined,
-    false,
-    `/${id}`,
-    'DELETE'
-  );
-  return parseResponse(resp);
+  const url = new URL(BASE_URL);
+  url.pathname = `/users/${id}`;
+  const resp = await Delete(url.toString());
+  console.log('resp: ', resp);
+  return resp;
 };
 
 export const updateEmail = async (id: string, email: string) => {
-  const resp = await functions.createExecution(
-    USERS_FN,
-    JSON.stringify({ email }),
-    false,
-    `/${id}/email`,
-    'PATCH'
-  );
-  return parseResponse(resp);
+  const url = new URL(BASE_URL);
+  url.pathname = `/users/${id}/email`;
+  const resp = await Patch(url.toString(), { email });
+  console.log('resp: ', resp);
+  return resp;
 };
 
 export const updateUserLabels = async (id: string, labels: any) => {
-  const resp = await functions.createExecution(
-    USERS_FN,
-    JSON.stringify({ labels }),
-    false,
-    `/${id}/labels`,
-    'PUT'
-  );
-  return parseResponse(resp);
+  const url = new URL(BASE_URL);
+  url.pathname = `/users/${id}/labels`;
+  const resp = await Put(url.toString(), { labels });
+  console.log('resp: ', resp);
+  return resp;
 };
 
 export const listUserLogs = async (id: string) => {
-  const resp = await functions.createExecution(
-    USERS_FN,
-    undefined,
-    false,
-    `/${id}/logs`,
-    'GET'
-  );
-  const json = JSON.parse(resp.responseBody);
-  return json;
+  const url = new URL(BASE_URL);
+  url.pathname = `/users/${id}/logs`;
+  const resp = await Get(url.toString());
+  console.log('resp: ', resp);
+  return resp;
 };
 
 export const listUserMemberships = async (id: string) => {
-  const resp = await functions.createExecution(
-    USERS_FN,
-    undefined,
-    false,
-    `/${id}/memberships`,
-    'GET'
-  );
-  return parseResponse(resp);
+  const url = new URL(BASE_URL);
+  url.pathname = `/users/${id}/memberships`;
+  const resp = await Get(url.toString());
+  console.log('resp: ', resp);
+  return resp;
 };
 
 export const updateName = async (id: string, name: string) => {
-  const resp = await functions.createExecution(
-    USERS_FN,
-    JSON.stringify({ name }),
-    false,
-    `/${id}/name`,
-    'PATCH'
-  );
-  return parseResponse(resp);
+  const url = new URL(BASE_URL);
+  url.pathname = `/users/${id}/name`;
+  const resp = await Patch(url.toString(), { name });
+  console.log('resp: ', resp);
+  return resp;
 };
 
 export const updatePassword = async (id: string, password: string) => {
-  const resp = await functions.createExecution(
-    USERS_FN,
-    JSON.stringify({ password }),
-    false,
-    `/${id}/password`,
-    'PATCH'
-  );
-  return parseResponse(resp);
+  const url = new URL(BASE_URL);
+  url.pathname = `/users/${id}/password`;
+  const resp = await Patch(url.toString(), { password });
+  console.log('resp: ', resp);
+  return resp;
 };
 
 export const updatePhone = async (id: string, phone: string) => {
-  const resp = await functions.createExecution(
-    USERS_FN,
-    JSON.stringify({ phone }),
-    false,
-    `/${id}/phone`,
-    'PATCH'
-  );
-  return parseResponse(resp);
+  const url = new URL(BASE_URL);
+  url.pathname = `/users/${id}/phone`;
+  const resp = await Patch(url.toString(), { phone });
+  console.log('resp: ', resp);
+  return resp;
 };
 
 export const getUserPrefs = async (id: string) => {
-  console.log('id: ', id);
-  const resp = await functions.createExecution(
-    USERS_FN,
-    undefined,
-    false,
-    `/${id}/prefs`,
-    'GET'
-  );
-  return parseResponse(resp);
+  const url = new URL(BASE_URL);
+  url.pathname = `/users/${id}/prefs`;
+  const resp = await Get(url.toString());
+  console.log('resp: ', resp);
+  return resp;
 };
 
 export const updateUserPrefs = async (id: string, prefs: any) => {
-  const resp = await functions.createExecution(
-    USERS_FN,
-    JSON.stringify({ prefs }),
-    false,
-    `/${id}/prefs`,
-    'PATCH'
-  );
-  return parseResponse(resp);
+  const url = new URL(BASE_URL);
+  url.pathname = `/users/${id}/prefs`;
+  const resp = await Patch(url.toString(), { prefs });
+  console.log('resp: ', resp);
+  return resp;
 };
 
 export const listUserSessions = async (id: string) => {
-  const resp = await functions.createExecution(
-    USERS_FN,
-    undefined,
-    false,
-    `/${id}/sessions`,
-    'GET'
-  );
-  const json = JSON.parse(resp.responseBody);
-  return json;
+  const url = new URL(BASE_URL);
+  url.pathname = `/users/${id}/sessions`;
+  const resp = await Get(url.toString());
+  console.log('resp: ', resp);
+  return resp;
 };
 
 export const deleteUserSessions = async (id: string) => {
-  const resp = await functions.createExecution(
-    USERS_FN,
-    undefined,
-    false,
-    `/${id}/sessions`,
-    'DELETE'
-  );
-  const json = JSON.parse(resp.responseBody);
-  return json;
+  const url = new URL(BASE_URL);
+  url.pathname = `/users/${id}/sessions`;
+  const resp = await Delete(url.toString());
+  console.log('resp: ', resp);
+  return resp;
 };
 
 export const deleteUserSession = async (id: string, sessionId: string) => {
-  const resp = await functions.createExecution(
-    USERS_FN,
-    undefined,
-    false,
-    `/${id}/session/${sessionId}`,
-    'DELETE'
-  );
-  const json = JSON.parse(resp.responseBody);
-  return json;
+  const url = new URL(BASE_URL);
+  url.pathname = `/users/${id}/session/${sessionId}`;
+  const resp = await Delete(url.toString());
+  console.log('resp: ', resp);
+  return resp;
 };
 
 export const activateUser = async (id: string) => {
-  const resp = await functions.createExecution(
-    USERS_FN,
-    undefined,
-    false,
-    `/${id}/activate`,
-    'GET'
-  );
-  return parseResponse(resp);
+  const url = new URL(BASE_URL);
+  url.pathname = `/users/${id}/activate`;
+  const resp = await Get(url.toString());
+  console.log('resp: ', resp);
+  return resp;
 };
 
 export const deactivateUser = async (id: string) => {
-  const resp = await functions.createExecution(
-    USERS_FN,
-    undefined,
-    false,
-    `/${id}/deactivate`,
-    'GET'
-  );
-  return parseResponse(resp);
+  const url = new URL(BASE_URL);
+  url.pathname = `/users/${id}/deactivate`;
+  const resp = await Get(url.toString());
+  console.log('resp: ', resp);
+  return resp;
 };
 
 export const activateEmail = async (id: string) => {
-  const resp = await functions.createExecution(
-    USERS_FN,
-    undefined,
-    false,
-    `/${id}/email/activate`,
-    'GET'
-  );
-  return parseResponse(resp);
+  const url = new URL(BASE_URL);
+  url.pathname = `/users/${id}/email/activate`;
+  const resp = await Get(url.toString());
+  console.log('resp: ', resp);
+  return resp;
 };
 
 export const deactivateEmail = async (id: string) => {
-  const resp = await functions.createExecution(
-    USERS_FN,
-    undefined,
-    false,
-    `/${id}/email/deactivate`,
-    'GET'
-  );
-  return parseResponse(resp);
+  const url = new URL(BASE_URL);
+  url.pathname = `/users/${id}/email/deactivate`;
+  const resp = await Get(url.toString());
+  console.log('resp: ', resp);
+  return resp;
 };
 
 export const activatePhone = async (id: string) => {
-  const resp = await functions.createExecution(
-    USERS_FN,
-    undefined,
-    false,
-    `/${id}/phone/activate`,
-    'GET'
-  );
-  return parseResponse(resp);
+  const url = new URL(BASE_URL);
+  url.pathname = `/users/${id}/phone/activate`;
+  const resp = await Get(url.toString());
+  console.log('resp: ', resp);
+  return resp;
 };
 
 export const deactivatePhone = async (id: string) => {
-  const resp = await functions.createExecution(
-    USERS_FN,
-    undefined,
-    false,
-    `/${id}/phone/deactivate`,
-    'GET'
-  );
-  return parseResponse(resp);
+  const url = new URL(BASE_URL);
+  url.pathname = `/users/${id}/phone/deactivate`;
+  const resp = await Get(url.toString());
+  console.log('resp: ', resp);
+  return resp;
+};
+
+export const useCurrentAccount = () => {
+  return useQuery<AccountDto>({
+    queryKey: ['currentAccount'],
+    queryFn: async () => {
+      const resp = await getAccount();
+      return resp as AccountDto;
+    }
+  });
 };
 
 export const useAccountList = (enabled = true) => {
@@ -333,7 +279,7 @@ export const useAccountList = (enabled = true) => {
 export const useAccountSingle = (id: string, enabled = true) => {
   return useQuery<AccountDto>({
     queryKey: [QUERY_KEY, id],
-    enabled,
+    enabled: enabled && !!id,
     queryFn: async () => {
       const resp = await getUser(id);
       return resp;
@@ -343,12 +289,11 @@ export const useAccountSingle = (id: string, enabled = true) => {
 
 export const useAccountCreate = () => {
   return useMutation({
-    // Disabling optimistic update for Users because it uses Users cloud function
-    // ...defaultCreateMutation({
-    //   queryKey: [QUERY_KEY],
-    //   queryClient: useQueryClient(),
-    //   appendMode: 'prepend'
-    // }),
+    ...defaultCreateMutation({
+      queryKey: [QUERY_KEY],
+      queryClient: useQueryClient(),
+      appendMode: 'prepend'
+    }),
     mutationFn: async (data: AccountDto) => {
       const resp = await createUser(data);
       return resp;
@@ -365,6 +310,7 @@ export const useAccountUpdatePassword = () => {
     }
   });
 };
+
 export const useAccountUpdateName = () => {
   return useMutation({
     // ...defaultUpdateMutation([QUERY_KEY], useQueryClient()),
@@ -374,11 +320,23 @@ export const useAccountUpdateName = () => {
     }
   });
 };
-export const useAccountUpdatePhone = () => {
+
+export const useAccountUpdatePrefs = () => {
   return useMutation({
     // ...defaultUpdateMutation([QUERY_KEY], useQueryClient()),
     mutationFn: async ({ $id, prefs }: any) => {
-      const resp = await updateUserPrefs($id, prefs);
+      const payload = omit(prefs, ['_attachments']);
+      const resp = await updateUserPrefs($id, payload);
+      return resp;
+    }
+  });
+};
+
+export const useAccountUpdatePhone = () => {
+  return useMutation({
+    // ...defaultUpdateMutation([QUERY_KEY], useQueryClient()),
+    mutationFn: async ({ $id, phone }: any) => {
+      const resp = await updatePhone($id, phone);
       return resp;
     }
   });

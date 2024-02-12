@@ -3,9 +3,9 @@ import type { ContactDto } from '@/types';
 
 export interface EmailDto extends BaseDto {
   $id?: string;
-  to?: ContactDto[];
-  cc?: ContactDto[];
-  bcc?: ContactDto[];
+  to?: ContactDto[] | string;
+  cc?: ContactDto[] | string;
+  bcc?: ContactDto[] | string;
   subject?: string;
   body?: string;
   attachments?: string[];

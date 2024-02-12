@@ -7,7 +7,7 @@ import {
 import type { QuotationDto } from './quotation';
 import { useForm } from 'react-hook-form';
 import { Query, type Models } from 'appwrite';
-import { useDebounce } from '@/core';
+import { useAuth, useDebounce } from '@/core';
 import { get } from 'lodash';
 import type { ListQueryType } from '@/core/ReactQueryProvider/queryKeys';
 import { databases, functions } from '@/core/appwriteClient';
@@ -15,12 +15,12 @@ import dayjs from 'dayjs';
 import { DEFAULT_DATABASE_ID } from '@/core/ReactQueryProvider/defaultQueries';
 import type { ContactDto } from '@/types';
 import { formatCurrency } from '@/core/utils';
-import { useEffect, useState } from 'react';
 
-const QUERY_KEY = 'quotations';
-const COLLECTION_ID = 'quotations';
+export const QUOTATIONS_COLLECTION_ID = 'quotations';
+const QUERY_KEY = QUOTATIONS_COLLECTION_ID;
 
 export const useQuotationList = (folder, enabled = true) => {
+  const { auth } = useAuth();
   const filtersForm = useForm(); // This form is to handle search and filters over list
   const debouncedSearch = useDebounce(filtersForm.watch('search'), 100);
 
@@ -50,7 +50,8 @@ export const useQuotationList = (folder, enabled = true) => {
           ...queries
         ]
       } as ListQueryType,
-      folder
+      folder,
+      auth?.userId
     ],
     enabled: enabled && !!folder
   });
@@ -69,7 +70,7 @@ export const useQuotationCreate = () => {
   return useMutation({
     ...defaultCreateMutation({
       queryKey: [QUERY_KEY],
-      collectionId: COLLECTION_ID,
+      collectionId: QUOTATIONS_COLLECTION_ID,
       queryClient: useQueryClient(),
       appendMode: 'prepend'
     })
@@ -78,13 +79,21 @@ export const useQuotationCreate = () => {
 
 export const useQuotationUpdate = () => {
   return useMutation({
-    ...defaultUpdateMutation([QUERY_KEY], useQueryClient(), COLLECTION_ID)
+    ...defaultUpdateMutation(
+      [QUERY_KEY],
+      useQueryClient(),
+      QUOTATIONS_COLLECTION_ID
+    )
   });
 };
 
 export const useQuotationDelete = () => {
   return useMutation({
-    ...defaultDeleteMutation([QUERY_KEY], useQueryClient(), COLLECTION_ID)
+    ...defaultDeleteMutation(
+      [QUERY_KEY],
+      useQueryClient(),
+      QUOTATIONS_COLLECTION_ID
+    )
   });
 };
 
@@ -92,7 +101,7 @@ export const generateQuotationPDF = async id => {
   if (!id) throw new Error('id is required');
   const quotation = await databases.getDocument(
     import.meta.env.PUBLIC_APPWRITE_DATABASE!,
-    COLLECTION_ID,
+    QUOTATIONS_COLLECTION_ID,
     id
   );
 
@@ -182,7 +191,7 @@ export const generateQuotationNumber = async () => {
   const date = dayjs().format('YYMMDD');
   const lastFromDb = await databases.listDocuments(
     DEFAULT_DATABASE_ID,
-    COLLECTION_ID,
+    QUOTATIONS_COLLECTION_ID,
     [
       Query.limit(1),
       Query.orderDesc('$createdAt'),
@@ -235,7 +244,7 @@ export const useQuotationSuscribers = (id: string) => {
     queryFn: async () => {
       const quotation = await databases.getDocument(
         DEFAULT_DATABASE_ID,
-        COLLECTION_ID,
+        QUOTATIONS_COLLECTION_ID,
         id
       );
       const suscribers = quotation.suscribers || [];
@@ -260,7 +269,7 @@ export const useUpdateSuscribers = () => {
       });
       const updated = await databases.updateDocument(
         DEFAULT_DATABASE_ID,
-        COLLECTION_ID,
+        QUOTATIONS_COLLECTION_ID,
         $id,
         { suscribers: parsedSuscribers }
       );

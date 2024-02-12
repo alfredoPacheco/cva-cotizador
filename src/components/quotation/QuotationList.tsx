@@ -92,10 +92,10 @@ export const QuotationList: React.FC<QuotationListProps> = ({ folder }) => {
   return (
     <>
       <Dialog {...dialog} formOff okLabel="Crear" title="Cotización">
-        {d => <QuotationCreateForm id="new" dialog={d} />}
+        {d => <QuotationCreateForm dialog={d} folderId={folderId} />}
       </Dialog>
 
-      <FolderBreadcrumb folder={folder} />
+      <FolderBreadcrumb folder={folder} folderId={folderId} />
 
       <Title divider>Cotizaciones</Title>
 

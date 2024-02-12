@@ -1,5 +1,5 @@
 import React from 'react';
-import LogoSvg from '../images/logo.svg';
+import HelenLogo from '@/images/hegen-fondosclaros.png';
 
 interface LogoProps {
   width?: number | string;
@@ -8,7 +8,7 @@ interface LogoProps {
 
 const Logo: React.FC<LogoProps> = ({ width = '150', height = 100 }) => {
   return (
-    <img src={LogoSvg.src} alt="Logo" width={width} className="self-center" />
+    <img src={HelenLogo.src} alt="Logo" width={width} className="self-center" />
   );
 };
 
