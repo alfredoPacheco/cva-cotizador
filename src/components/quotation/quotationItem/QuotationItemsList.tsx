@@ -83,8 +83,8 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({
   };
 
   return (
-    <div className="flex flex-col justify-center gap-2">
-      <div className="my-0 flex flex-row items-end">
+    <div className="flex flex-col justify-center gap-5 sm:gap-2">
+      <div className="my-0 flex flex-col sm:flex-row items-start sm:items-end gap-2 sm:gap-0">
         <FormButton
           onPress={handleAddItem}
           startContent={
@@ -105,7 +105,7 @@ const QuotationItems: React.FC<QuotationItemsProps> = ({
         >
           Buscar productos
         </FormButton>
-        <div className="flex flex-1 flex-col items-end">
+        <div className="flex flex-1 flex-col items-end self-end">
           <Field label="Dollar">
             <TextInput
               control={form.control}

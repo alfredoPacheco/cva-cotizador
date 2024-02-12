@@ -59,7 +59,7 @@ const TiptapToolbar: React.FC<TiptapToolbarProps> = ({ editor }) => {
     return null;
   }
   return (
-    <div className="flex flex-row flex-wrap justify-start items-center w-full gap-4 mb-4">
+    <div className="flex flex-row flex-wrap justify-start items-center w-full gap-1 sm:gap-4 mb-4">
       <ButtonGroup size="sm">
         <Button
           isIconOnly

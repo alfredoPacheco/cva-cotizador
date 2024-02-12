@@ -64,8 +64,11 @@ export const FormButton: React.FC<FormButtonProps> = props => {
       {...props}
       color="primary"
       variant="light"
-      className={'py-4 px-2 font-bold rounded-xl text-left ' + props.className}
-      size="md"
+      className={
+        'py-4 px-0 sm:px-2 font-bold rounded-xl text-left text-xs sm:text-sm ' +
+        props.className
+      }
+      size="sm"
       isLoading={props.loading}
     />
   );

@@ -1,15 +1,14 @@
-import { Divider } from '@nextui-org/react';
+import { Divider, cn } from '@nextui-org/react';
 
-const Title = ({ children, mt = 0, mb = 0, divider = false }) => {
+const Title = ({ children, divider = false, className = '' }) => {
   return (
-    <div className="flex flex-col justify-center">
+    <div className={cn('flex flex-col justify-center', className)}>
       <h1
-        className={`text-7xl font-extrabold text-primary font-montHeavy`}
-        style={{ marginBottom: mb, marginTop: mt }}
+        className={`text-4xl sm:text-7xl font-extrabold text-primary font-montHeavy mt-0 md:mt-5`}
       >
         {children}
       </h1>
-      {divider && <Divider />}
+      {divider && <Divider className="mt:0 sm:mt-5" />}
     </div>
   );
 };

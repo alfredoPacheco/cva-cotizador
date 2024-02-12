@@ -32,7 +32,7 @@ const searchLocally = (query: string) => (item: any) => {
 };
 
 const ItemTitle = ({ item }: { item: QuotationDto }) => (
-  <div className="flex flex-col">
+  <div className="flex flex-col gap-2 sm:gap-0">
     <div className="flex flex-row justify-start items-center gap-2">
       <span className="text-xs font-normal">
         <span className="font-bold">Cotización: </span>
@@ -97,11 +97,9 @@ export const QuotationList: React.FC<QuotationListProps> = ({ folder }) => {
 
       <FolderBreadcrumb folder={folder} />
 
-      <Title mt={folder ? 10 : 40} mb={40} divider>
-        Cotizaciones
-      </Title>
+      <Title divider>Cotizaciones</Title>
 
-      <div className="flex flex-row justify-between items-center -ml-1">
+      <div className="flex flex-col sm:flex-row justify-between items-center sm:-ml-1 sm:mt-5 gap-3 sm:gap-0">
         <TextButton onPress={dialog.open}>Crear nueva cotización</TextButton>
         <SearchInput control={filtersForm.control} name="search" />
       </div>
@@ -125,10 +123,11 @@ export const QuotationList: React.FC<QuotationListProps> = ({ folder }) => {
               </span>
             )}
             classNames={{
-              base: 'border-1 border-default-200 rounded-xl mt-5 bg-default-200',
+              base: 'border-1 border-default-200 rounded-xl mt-2 sm:mt-5 bg-default-200',
               title: 'bg-primary text-white',
-              heading: 'bg-primary rounded-xl px-6 py-0',
-              content: 'p-6'
+              heading:
+                'bg-primary rounded-xl px-2 sm:px-6 py-0 [&>button]:py-2 sm:[&>button]:py-4',
+              content: 'p-2 sm:p-6'
             }}
             title={<ItemTitle item={item} />}
             onKeyDown={e => e.stopPropagation()}

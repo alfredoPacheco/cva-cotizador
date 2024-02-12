@@ -1,10 +1,4 @@
-import {
-  Autocomplete,
-  Field,
-  ReadonlyField,
-  RichTextEditor,
-  TextInput
-} from '@/ui/Inputs';
+import { Field, ReadonlyField, RichTextEditor, TextInput } from '@/ui/Inputs';
 import {
   Avatar,
   AvatarGroup,
@@ -42,7 +36,6 @@ import type { ContactDto } from '@/types';
 import EmailForm from '@/common/Email/EmailForm';
 import { calculateAmounts, calculateGrandTotals } from './calcs';
 import { useFolderList } from '../folder/folder.hooks';
-import type { FolderDto } from '../folder/folder';
 
 const FormField = ({ label, name, control, rows = 2, ...props }) => {
   return (
@@ -415,7 +408,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
       <Dialog {...emailDialog} formOff okLabel="Enviar Email" title="Email">
         {d => <EmailForm id="new" dialog={d} quotationId={id} />}
       </Dialog>
-      <div className="flex flex-row justify-between items-center gap-5">
+      <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-0 sm:gap-5">
         <div className="flex">
           <Field
             label="Realizado por:"
@@ -426,18 +419,18 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
             <ReadonlyField control={control} name="createdBy" fontSize="xs" />
           </Field>
         </div>
-        <div className="flex w-full max-w-[200px]">
+        <div className="flex w-full sm:max-w-[200px]">
           <Controller
             control={control}
             name="customer"
             render={({ field: { value, onChange } }) => {
               const selectedId = typeof value === 'string' ? value : value?.$id;
-              console.log('selectedId', selectedId);
               return (
                 <Select
                   label="Cliente"
                   aria-label="Cliente"
                   size="sm"
+                  classNames={{ trigger: 'p-0 sm:p-3' }}
                   fullWidth
                   variant="bordered"
                   // value={selectedId}
@@ -459,8 +452,8 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
             }}
           />
         </div>
-        <div className="flex flex-grow flex-col items-end gap-1">
-          <div className="flex flex-grow flex-row items-center justify-end gap-1">
+        <div className="flex flex-grow flex-col items-end gap-1 mt-4 sm:mt-0">
+          <div className="flex flex-row items-center justify-evenly sm:justify-end sm:gap-1 w-full">
             <FormButton onPress={onRemove}>Borrar</FormButton>
             <Divider orientation="vertical" className="h-5" />
             <FormButton
@@ -562,7 +555,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
 
         <FormField control={control} name="notes" label="Notas" />
 
-        <div className="flex flex-col gap-5 sm:flex-row justify-between bg-default-200 rounded-lg p-8 mt-4">
+        <div className="flex flex-col gap-3 sm:gap-5 sm:flex-row justify-between bg-default-200 rounded-lg p-5 sm:p-8 mt-4">
           <div className="flex flex-col gap-2 flex-1">
             <ReadonlyFormField
               control={control}
@@ -615,7 +608,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ id, dialog }) => {
           </div>
         </div>
 
-        <div className="max-w-60 flex-1">
+        <div className="sm:max-w-60 flex-1">
           <Controller
             control={control}
             name="folder"

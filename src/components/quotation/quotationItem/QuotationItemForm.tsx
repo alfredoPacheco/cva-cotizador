@@ -28,7 +28,7 @@ const QuotationItemForm: React.FC<QutationItemFormProps> = ({
   const [subtotalDlls, subtotalMxn, unitPriceDlls, unitPriceMxn, increment] =
     calculateAmounts(item, dollar);
   return (
-    <div className="flex flex-col gap-4 rounded-lg border p-5 pt-1">
+    <div className="flex flex-col gap-4 rounded-lg border p-3 sm:p-5 pt-1">
       <div className="flex flex-row justify-start -ml-3 -mb-4">
         <FormButton
           onPress={() => handleRemoveItem(index)}
@@ -42,12 +42,16 @@ const QuotationItemForm: React.FC<QutationItemFormProps> = ({
           Remover Partida
         </FormButton>
       </div>
-      <div className="flex flex-col sm:flex-row justify-between gap-2">
-        <Field label="#" className="flex-1" style={{ maxWidth: 20 }}>
+      <div className="flex flex-col sm:flex-row justify-between gap-2 sm:gap-2">
+        <Field
+          label="#"
+          className="flex-1 !flex-row !sm:flex-col"
+          style={{ maxWidth: 30 }}
+        >
           {partida}
         </Field>
 
-        <Divider orientation="vertical" className="h-15" />
+        <Divider orientation="vertical" className="hidden sm:visible h-15 " />
 
         <Field label="Modelo" className="flex-1">
           <FormTextInput
@@ -74,11 +78,13 @@ const QuotationItemForm: React.FC<QutationItemFormProps> = ({
           />
         </Field>
 
-        <Divider orientation="vertical" className="h-15" />
+        <Divider orientation="vertical" className="hidden sm:visible h-15" />
 
         <div
-          className={'flex flex-1 flex-col'}
-          style={{ maxWidth: '16%', height: 80 }}
+          className={
+            'flex flex-1 flex-col sm:max-w-[16%] h-[80px] mt-7 sm:mt-0'
+          }
+          // style={{ maxWidth: '16%', height: 80 }}
         >
           <FormLabel size="md">P.U.</FormLabel>
           <div className="flex flex-1 flex-col items-stretch gap-1">
@@ -101,9 +107,9 @@ const QuotationItemForm: React.FC<QutationItemFormProps> = ({
           </div>
         </div>
 
-        <Divider orientation="vertical" className="h-15" />
+        <Divider orientation="vertical" className="hidden sm:visible h-15" />
 
-        <Field label="Cantidad" style={{ maxWidth: 90 }} className="flex-1">
+        <Field label="Cantidad" className="flex-1 sm:w-max-[90px]">
           <FormTextInput
             control={form.control}
             name={`items[${index}].quantity`}
@@ -113,9 +119,9 @@ const QuotationItemForm: React.FC<QutationItemFormProps> = ({
           />
         </Field>
 
-        <Divider orientation="vertical" className="h-15" />
+        <Divider orientation="vertical" className="hidden sm:visible h-15" />
 
-        <Field label="Inc." style={{ maxWidth: 80 }} className="flex-1">
+        <Field label="Inc." className="flex-1 sm:w-max-[80px] mt-7 sm:mt-0">
           <FormTextInput
             control={form.control}
             name={`items[${index}].increment`}
@@ -126,21 +132,21 @@ const QuotationItemForm: React.FC<QutationItemFormProps> = ({
           />
         </Field>
 
-        <Divider orientation="vertical" className="h-15" />
+        <Divider orientation="vertical" className="hidden sm:visible h-15" />
 
-        <div className={'flex flex-1 flex-col'} style={{ maxWidth: 110 }}>
+        <div className={'flex flex-1 flex-col sm:w-max-[110px] mt-7 sm:mt-0'}>
           <FormLabel size="md" className="text-right">
             Subtotal
           </FormLabel>
-          <div className="flex flex-1 flex-col items-stretch justify-center">
-            <div className="flex flex-1 flex-row items-center">
+          <div className="flex flex-1 flex-col items-end sm:items-stretch justify-center">
+            <div className="flex flex-1 flex-row items-center justify-between max-w-[130px] w-full">
               {Number(dollar) > 0 && <span className="text-xs">USD:</span>}
-              <span className="w-full text-right">
+              <span className="w-full text-right max-w-[100px]">
                 {formatCurrency(subtotalDlls)}
               </span>
             </div>
             {Number(dollar) > 0 && (
-              <div className="flex flex-row items-center">
+              <div className="flex flex-row items-center justify-between max-w-[130px] w-full">
                 <span className="text-xs">MXN:</span>
                 <span className="w-full text-right">
                   {formatCurrency(subtotalMxn)}
