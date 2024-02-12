@@ -151,7 +151,7 @@ const ProductList: React.FC<ProductListProps> = ({ dialog }) => {
 
   return (
     <Container maxWidth="5xl">
-      <div className="flex flex-row justify-between items-center mt-5 min-h-unit-16 gap-5">
+      <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center mt-5 min-h-unit-16 gap-5">
         {/* <TextButton onPress={dialog.open}>Crear nuevo producto</TextButton> */}
         <Checkbox
           isSelected={filterSelected}
