@@ -1,14 +1,6 @@
 import { Client, Databases, ID } from 'node-appwrite';
 import nodemailer from 'nodemailer';
 
-const DEV_CONTACTS = [
-  {
-    email: 'apacheco@inspiracode.net',
-    name: 'Freddy Pacheco',
-    phone: 'no importa',
-  },
-];
-
 const FN_RESPONSE = {
   ok: true,
   sentEmails: 0,
@@ -183,11 +175,22 @@ export default main;
 
 // main({
 //   req: {
-//     body: {
-//       to: 'apacheco@inspiracode.net',
-//       body: '<h1>Test</h1>',
-//       subject: 'Test',
-//     },
+//     body: JSON.stringify({
+//       body: '<p>\n        Estimado(a) <strong>F I X FERRETERIAS</strong>:\n      </p>\n      <p>\n        En la siguiente liga podrá encontrar la cotización que nos solicitó:\n      </p>\n      <a href="https://www.hegenapp.com/reports/quotations/65ca3746bab4a65be7bd.pdf" target="_blank">Cotización</a>\n      <p>\n        Quedamos atentos a sus comentarios.\n      </p>\n      <p>\n        Saludos,\n      </p>\n      <p>\n        Alfredo\n      </p>',
+//       subject: 'sample',
+//       to: [
+//         {
+//           email: 'apacheco@inspiracode.net',
+//         },
+//       ],
+//       cc: [
+//         {
+//           email: 'alfredo@kimera.mx',
+//         },
+//       ],
+//       quotationId: '65ca3746bab4a65be7bd',
+//       sentBy: '65c01f3c47c83d6fbe83',
+//     }),
 //   },
 //   res: { json: console.log },
 //   log: console.log,
