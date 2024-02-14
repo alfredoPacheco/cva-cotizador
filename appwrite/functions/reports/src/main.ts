@@ -16,8 +16,6 @@ const main = async ({ req, res, log, error }) => {
   const requestedReport = req.query.report;
   log('requestedReport: ' + requestedReport);
 
-  // https://carbone.do.inspiracode.com/report/cva%2Fcotizador%2Fcva-cotizacion-template.pptx
-
   const encodedReport = encodeURIComponent(requestedReport);
   log('encodedReport: ' + encodedReport);
 

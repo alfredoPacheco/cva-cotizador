@@ -26,9 +26,9 @@ export const EmailQuoteUpdate = ({
     <Preview>{subject}</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>CVA System Notifications</Heading>
+        <Heading style={h1}>Hegen App System Notifications</Heading>
         <Text style={{ ...text, marginBottom: '14px' }}>
-          Hola, el sistema de Cotizaciones de CVA le informa:
+          Hola, el sistema de Cotizaciones de Hegen le informa:
         </Text>
         <Link
           href={`${baseUrl}/quotations#${quotationId}`}
@@ -53,22 +53,6 @@ export const EmailQuoteUpdate = ({
         >
           Cotización en PDF
         </Link>
-
-        {/* <Img
-          src={`${baseUrl}/static/notion-logo.png`}
-          width="32"
-          height="32"
-          alt="Notion's Logo"
-        /> */}
-        {/* <Text style={footer}>
-          <Link
-            href="https://cva-cotizador.vercel.app/"
-            target="_blank"
-            style={{ ...link, color: '#898989' }}
-          >
-            https://cva-cotizador.vercel.app/
-          </Link>
-        </Text> */}
       </Container>
     </Body>
   </Html>

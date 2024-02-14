@@ -14,23 +14,7 @@ import { useGlobalLoader } from '@/ui/GlobalLoader';
 import { authCentralState } from '@/core/AuthCentralService';
 import type { CustomerDto } from '@/components/customer/customer';
 
-const FormField = ({ label, name, control, rows = 0, ...props }) => {
-  return (
-    <Field label={label}>
-      <TextInput
-        control={control}
-        name={name}
-        variant="underlined"
-        classNames={{
-          inputWrapper: ['!px-0']
-        }}
-        {...props}
-      />
-    </Field>
-  );
-};
-
-const baseUrl = 'https://cva-cotizador.vercel.app';
+const baseUrl = 'https://www.hegenapp.com';
 
 interface EmailFormProps {
   id: string;
