@@ -1,5 +1,5 @@
 import Container from '@/ui/Container';
-import HegenLogo from '@/images/hegen-fondosclaros.png';
+import HegenLogo from '@/images/logo2025-hegen.png';
 import { Link, Divider } from '@nextui-org/react';
 
 const Footer = () => {

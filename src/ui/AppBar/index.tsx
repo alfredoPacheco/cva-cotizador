@@ -35,7 +35,7 @@ const AppBar = ({ logout }) => {
       >
         <NavbarBrand className="max-w-24 sm:max-w-full">
           <Link href="/">
-            <Logo width={120} />
+            <Logo width={100} />
           </Link>
         </NavbarBrand>
         <NavbarContent as="div" justify="end">
