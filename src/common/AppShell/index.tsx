@@ -4,7 +4,7 @@ import Login from '../Account/Login';
 import { useDialog } from '@/ui/Dialog';
 import AppBar from '@/ui/AppBar';
 import Providers from './Providers';
-import { useIsFetching, useIsMutating } from '@tanstack/react-query';
+import { useIsFetching } from '@tanstack/react-query';
 import { useGlobalLoader } from '@/ui/GlobalLoader';
 import { useEffect } from 'react';
 import Footer from '@/components/footer';
